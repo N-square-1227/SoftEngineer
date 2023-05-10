@@ -31,8 +31,18 @@ public class Data {
 
     public Data(List<List<Double>> data) {
         this.data = data;
-        this.index_num = data.get(0).size();
-        this.sample_num = data.size();
+        /**
+         * 初始化的时候index_num 和 sample_num未必正确
+         * 所以需要做转置，转置之后就是对应的了
+         **/
+        this.index_num = data.size();
+        try {
+            this.sample_num = data.get(0).size();
+        }
+        catch (IndexOutOfBoundsException e) {
+            this.index_num = 0;
+            this.sample_num = 0;
+        }
     }
 
     public void data_clear() {
@@ -45,6 +55,14 @@ public class Data {
 
     public void setData(List<List<Double>> data) {
         this.data = data;
+        setIndex_num(data.size());
+        try {
+            setSample_num(data.get(0).size());
+        }
+        catch (IndexOutOfBoundsException e) {
+            setIndex_num(0);
+            setSample_num(0);
+        }
     }
 
     public Integer getIndex_num() {
