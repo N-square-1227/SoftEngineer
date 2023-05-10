@@ -22,6 +22,11 @@ public interface UsersService {
      */
     int addUsersInfo(Users users);
 
+    /**
+     * 熵权法
+     * @return
+     */
+    boolean Entropy();
 //    /**
 //     * 根据 id 获取书本信息
 //     * @param id

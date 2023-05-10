@@ -22,7 +22,7 @@ public class DataNumpy {
         int sample_num = data.getSample_num();
 
         /* 二维数组比较好还是List比较好我也不知道 */
-        Double data_matrix[][] = new Double[sample_num][index_num];
+        Double[][] data_matrix = new Double[sample_num][index_num];
 
         /* 先放到二维数组里存起来，二维数据方便就方便在可以下标遍历 */
         for(int i = 0; i < index_num; i ++)

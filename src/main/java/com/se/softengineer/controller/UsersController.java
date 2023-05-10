@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("/users")
 public class UsersController {
 
     @Autowired
@@ -126,6 +126,15 @@ public class UsersController {
         }else {
             return new R(Code.WORK_OK,"新增用户信息成功！");
         }
+    }
+
+    /**
+     * 熵权法
+     * @return
+     */
+    @GetMapping("/en")
+    public boolean entropy(){
+        return usersService.Entropy();
     }
 //
 //    /**
