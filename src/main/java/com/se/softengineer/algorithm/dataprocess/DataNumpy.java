@@ -41,7 +41,15 @@ public class DataNumpy {
                 sample.add(data_matrix[i][j]);
             }
         }
-
+        /**
+         * 意思就是这个意思，流程就是先把原来的数据存到二维数组里（方便行列转换直接取下标）
+         * 然后把原本的清空
+         * 转置之后再把新的数据set到对象里
+         *
+         * 问题在于：
+         * 1. 希望的是调用这个函数的时候，Data.transposition(data)，这一行运行完之后data里的List<List>就被转置了
+         * 2. 原本的List<List>被清空了, 不知道是不是保存了capacity信息，可能会有点问题
+         */
     }
 }
 

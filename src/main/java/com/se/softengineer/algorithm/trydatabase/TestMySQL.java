@@ -56,6 +56,7 @@ public class TestMySQL {
         int col_num = rs.getMetaData().getColumnCount();
         while (rs.next()) {
             List<Double> sample = new ArrayList<>();
+            /* 这个地方，数据表里是第一列是主键的ID，但是我不知道rs取是从第几列开始记的，有知道的改一下 */
             for (int i = 1; i <= col_num; i++)
                 sample.add(rs.getDouble(i));
             dataList.add(sample);
