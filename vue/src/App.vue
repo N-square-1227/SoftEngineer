@@ -1,17 +1,18 @@
 <template>
-  <div id="app">
-    <Main/>
-  </div>
+    <afterLogin/>
 </template>
 
 <script>
 
 import Login from "./components/Login";
-import Main from "./components/Main";
+//import Main from "./components/Main";
 import A from "./components/A";
+import AfterLogin from "./view/afterLogin";
+import afterLogin from "./view/afterLogin";
+import ImportExcel from "./view/ImportExcel";
 export default {
   name: 'App',
-  components: {A, Main, Login}
+  components: {ImportExcel, afterLogin, A, Login}
 }
 </script>
 

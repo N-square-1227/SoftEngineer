@@ -1,26 +1,19 @@
 package com.se.softengineer.controller;
 
 import com.se.softengineer.dao.IndexSymMapper;
+import com.se.softengineer.entity.Indexsym;
 import com.se.softengineer.entity.Users;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.UsersService;
 import com.se.softengineer.utils.Code;
 import com.se.softengineer.utils.R;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.awt.print.Book;
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 //@CrossOrigin(origins = {"*","null"})
 @RestController
@@ -28,6 +21,8 @@ import java.util.UUID;
 public class UsersController {
     @Autowired
     private IndexSymService indexSymService;
+    @Autowired
+    private IndexSymMapper indexSymMapper;
 
     @Autowired
     private UsersService usersService;
@@ -182,18 +177,24 @@ public class UsersController {
      * @author xiaxue
      * 主页面上传数据表
      *excel,xml,mysql
+     * @return
      */
     @RequestMapping("/test")
-    public ArrayList<String> test(){
-        ArrayList<String> a=new ArrayList<>();
+    public ArrayList<Indexsym> test(){
+        /*ArrayList<String> a=new ArrayList<>();
         a.add("a");
         a.add("b");
-        a.add("c");
-        return a;
+        a.add("c");*/
+        ArrayList<Indexsym> temp= (ArrayList<Indexsym>) indexSymMapper.selectList(null);
+        System.out.println(temp);
+        return temp;
+        //return a;
     }
-/*    @RequestMapping("/test2")
-    public String test2(){
+    @RequestMapping("/test2")
+    public List<Indexsym> test2(){
+        List<Indexsym> temp=indexSymService.selectAll();;
 
-    }*/
+        return temp;
+    }
 
 }

@@ -1,15 +1,33 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+
+/*const routes = [
+  {
+    path: '/afterLogin',
+    name: 'afterLogin',
+    component:()=>import("../view/afterLogin")
+  },{
+    path: '/ImportExcel',
+    name: 'ImportExcel',
+    component:()=>import("../view/ImportExcel")
+  }
+
+]*/
+
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      path: '/afterLogin',
+      name: 'afterLogin',
+      component:()=>import("../view/afterLogin")
+    },
+    {
+      path: '/ImportExcel',
+      name: 'ImportExcel',
+      component:()=>import("../view/ImportExcel")
     }
   ]
 })

@@ -45,8 +45,8 @@ export default {
         'http://localhost:8877/users/test',
       ).then(res=>{
         /*console.log(res.data);*/
-        this.u=res.data;
-        console.log(this.u);
+        //this.u=res.data;
+        console.log(res.data);
       })
 
     }
