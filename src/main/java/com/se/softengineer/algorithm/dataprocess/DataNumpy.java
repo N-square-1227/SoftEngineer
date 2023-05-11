@@ -14,6 +14,9 @@ import org.apache.commons.math3.stat.correlation.Covariance;
  */
 public class DataNumpy {
 
+    /**
+     * 单拎出来写了个函数，感觉用的还挺多
+     **/
     public static double[][] data_matrix(List<List<Double>> data, int row_num, int col_num) {
         /* 二维数组比较好还是List比较好我也不知道 */
         double[][] data_matrix = new double[row_num][col_num];
@@ -51,7 +54,6 @@ public class DataNumpy {
         data.data_clear();
 
         List<List<Double>> new_data = new ArrayList<>();
-        data.setData(new_data);
 
         /* 把data的List<List> 变成里面的List是指标，外面的List是样本 */
         for(int j = 0; j < col_num; j ++) {
@@ -61,6 +63,7 @@ public class DataNumpy {
             }
             new_data.add(sample);
         }
+        data.setData(new_data);
 
         /**
          * 意思就是这个意思，流程就是先把原来的数据存到二维数组里（方便行列转换直接取下标）
