@@ -4,6 +4,7 @@ import com.se.softengineer.algorithm.indexsym.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 还没写完私密马赛
@@ -11,6 +12,7 @@ import java.util.List;
  * 做一些类似求方差啦求平均值啦之类的事情
  */
 public class DataNumpy {
+
 
     /* 从数据库里读来的数据List<List>里面一个List是一个样本
      * 想改成里面的一个List一个指标方便处理

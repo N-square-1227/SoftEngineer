@@ -33,7 +33,7 @@ public class TestMySQL {
             node.setNode_id(rs.getInt("nodeID"));
             node.setNode_name(rs.getString("nodeName"));
             node.setNode_type(rs.getInt("nodeType"));
-            node.setNode_weight(rs.getInt("nodeWeight"));
+            node.setNode_weight(rs.getDouble("nodeWeight"));
             node.setFrnode_id(rs.getInt("ParentID"));
             nodeList.add(node);
         }

@@ -2,18 +2,19 @@ package com.se.softengineer.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.se.softengineer.algorithm.EntropyWeight.Entropy;
+import com.se.softengineer.algorithm.indexsym.Node;
 import com.se.softengineer.dao.DataMapper;
-import com.se.softengineer.entity.Users;
+import com.se.softengineer.dao.NodeMapper;
 import com.se.softengineer.dao.UsersMapper;
+import com.se.softengineer.entity.Users;
 import com.se.softengineer.entity.data;
+import com.se.softengineer.service.NodeService;
 import com.se.softengineer.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -25,6 +26,8 @@ public class UsersServiceImpl implements UsersService {
     private UsersMapper usersMapper;
     @Autowired
     private DataMapper dataMapper;
+    @Autowired
+    private NodeService nodeService;
 
 //    /**
 //     * 书城条件分页查询
@@ -62,12 +65,15 @@ public class UsersServiceImpl implements UsersService {
     public boolean Entropy() {
         // 初始化算法类
         Entropy entropy = new Entropy();
-        // 获取数据库数据的数组
+        // 获取数据库数据的数组并填充算法中数组的值
         List<Double> objList = getXColumns(entropy);
-        // 填充算法中数组的值
+
         entropy.setDataList(objList);
+        entropy.setEntropyList(saveEntropy());
+
         // 调用算法类的熵权法
         entropy.algorithm();
+
         return true;
     }
 
@@ -99,6 +105,17 @@ public class UsersServiceImpl implements UsersService {
         }
         return dataList;
     }
+
+    /**
+     * 把我新的指标体系存到数据库里
+     */
+    public List<Node> saveEntropy() {
+//        QueryWrapper<Node> queryWrapper = new QueryWrapper<>();
+//        return nodeMapper.selectList(queryWrapper);
+        //NodeServiceImpl nodeService = new NodeServiceImpl();
+        return nodeService.queryNodeList();
+    }
+
 
 //    /**
 //     * 根据id获取书本信息

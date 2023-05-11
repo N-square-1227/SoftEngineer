@@ -1,20 +1,37 @@
 package com.se.softengineer.algorithm.indexsym;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 /**
  * 指标体系一个节点的信息
  * 有需要再补充或者再改
  **/
+@Data
+@TableName("indexsym")
 public class Node {
+
+    @TableId(value = "nodeID")
     private Integer node_id;
+
+    @TableField("nodeName")
     private String node_name;
+
+    @TableField("nodeType")
     private Integer node_type;
-    private Integer node_weight;
+
+    @TableField("nodeWeight")
+    private Double node_weight;
+
+    @TableField("ParentID")
     // 先暂时用int, 不知道用id比较好还是用整个节点比较好
     private Integer frnode_id;   // father node id
 
     public Node() {}
 
-    public Node(int id, String name, int type, int weight, int father){
+    public Node(int id, String name, int type, double weight, int father){
         node_id = id;
         node_name = name;
         node_type = type;
@@ -46,11 +63,11 @@ public class Node {
         this.node_type = node_type;
     }
 
-    public Integer getNode_weight() {
+    public Double getNode_weight() {
         return node_weight;
     }
 
-    public void setNode_weight(Integer node_weight) {
+    public void setNode_weight(Double node_weight) {
         this.node_weight = node_weight;
     }
 

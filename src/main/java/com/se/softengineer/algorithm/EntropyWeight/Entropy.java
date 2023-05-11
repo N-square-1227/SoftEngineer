@@ -1,12 +1,9 @@
 package com.se.softengineer.algorithm.EntropyWeight;
 
-import com.se.softengineer.dao.UsersMapper;
-import com.se.softengineer.entity.data;
+import com.se.softengineer.algorithm.indexsym.Node;
+import com.se.softengineer.service.impl.NodeServiceImpl;
 import lombok.Data;
-import org.apache.catalina.mbeans.SparseUserDatabaseMBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,6 +48,15 @@ public class Entropy {
      */
     Map<String, Double> resultMap;
     /**
+     * 排序后的 Map
+     */
+    LinkedHashMap<String, Double> sortedMap;
+
+    /**
+     * 我的新指标体系！
+     */
+    List<Node> entropyList;
+    /**
      * 权重数组的总和
      */
     double sumWj;
@@ -82,7 +88,8 @@ public class Entropy {
 //        System.out.println(SList);
         // 5.验证阶段：取前 15 最大的，和 PDF 比较
         sortMap();
-
+        // 6.数据库持久化
+        save();
     }
 
     /**
@@ -201,30 +208,31 @@ public class Entropy {
             // 这里 k 指的是指标个数
             double Wi = (1 - aDouble) / (indexNumber - sumEj);
             WList.add(Wi);
-            //resultMap.put("X" + i, Wi);
-            //i++;
+
+            resultMap.put("X" + i, Wi);
+            i++;
+
             sumWj += Wi;
         }
 
-        double sum = 0.0;
-        for (int j = 0; j < WList.size(); j++) {
-            sum += WList.get(j);
-            if (j == 6) {
-                resultMap.put("第一类指标", sum);
-                sum = 0.0;
-            } else if (j == 16) {
-                resultMap.put("第二类指标", sum);
-                sum = 0.0;
-            } else if (j == 22) {
-                resultMap.put("第三类指标", sum);
-                sum = 0.0;
-            }
-
-        }
+//        double sum = 0.0;
+//        for (int j = 0; j < WList.size(); j++) {
+//            sum += WList.get(j);
+//            if (j == 6) {
+//                resultMap.put("第一类指标", sum);
+//                sum = 0.0;
+//            } else if (j == 16) {
+//                resultMap.put("第二类指标", sum);
+//                sum = 0.0;
+//            } else if (j == 22) {
+//                resultMap.put("第三类指标", sum);
+//                sum = 0.0;
+//            }
+//        }
     }
 
     /**
-     * 评分
+     * 评分（depressed）
      */
     public void score() {
         SList = new ArrayList<>(indexNumber);
@@ -261,13 +269,22 @@ public class Entropy {
                 .collect(Collectors.toList());
 
         // 将排好序的 Entry 对象重新存放到一个 LinkedHashMap 中，以保证排序后的顺序不被打乱
-        LinkedHashMap<String, Double> sortedMap = new LinkedHashMap<>();
+        sortedMap = new LinkedHashMap<>();
         entryList.forEach(entry -> sortedMap.put(entry.getKey(), entry.getValue()));
 
-        // 打印排序后的Map
-        System.out.println(sortedMap);
+        // 打印排序后的 Map
+//        System.out.println(sortedMap);
     }
 
-
-
+    /**
+     * 数据库持久化，我这里就直接拿原数组改了
+     */
+    public void save() {
+//        NodeServiceImpl nodeService = new NodeServiceImpl();
+//        setEntropyList(nodeService.queryNodeList());
+        for (int i = 0; i < entropyList.size(); i++) {
+            entropyList.get(i).setNode_weight(WList.get(i));
+        }
+        System.out.println(entropyList);
+    }
 }
