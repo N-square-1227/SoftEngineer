@@ -18,7 +18,8 @@ public class Main {
         /* 获取数据 */
         TestMySQL sql = new TestMySQL();
         Data data = new Data(sql.queryData("data"));
-        IndexSym indexSym = new IndexSym(sql.querySym("IndexSym"));
+//        System.out.println(data.getData());
+        IndexSym indexSym = new IndexSym(sql.querySym("indexsym"));
 
         /* 把数据做pca */
         PCA pca = new PCA(data);

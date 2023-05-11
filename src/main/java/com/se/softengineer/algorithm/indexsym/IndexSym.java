@@ -28,6 +28,7 @@ public class IndexSym {
     // 使用节点列表构造
     public IndexSym(List<Node> nodes) {
         nodeList = nodes;
+        nodeTree = new HashMap<>();
         int node_num = nodeList.size();
         for(int i = 0; i < node_num; i ++) {
             insert2tree(nodes.get(i));
@@ -42,7 +43,7 @@ public class IndexSym {
     }
 
     // 2. 使用节点的相关信息创建一个Node实例后加入
-    public void addNode(Integer node_id, String node_name, Integer node_type, Integer node_weight, Integer father_node) {
+    public void addNode(Integer node_id, String node_name, Integer node_type, Double node_weight, Integer father_node) {
         Node node = new Node(node_id, node_name, node_type, node_weight, father_node);
         nodeList.add(node);
         insert2tree(node);

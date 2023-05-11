@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.stat.correlation.Covariance;
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 /**
  * 还没写完私密马赛
@@ -27,6 +29,52 @@ public class DataNumpy {
                 data_matrix[i][j] = data.get(i).get(j);
 
         return data_matrix;
+    }
+
+    /**
+     * 标准化
+     * 不用转置好像，直接按照读进来的放到二维数组里，一列是一个指标变量
+     * 那个线性代数的就是求一列的的均值方差啥的
+     * 一会转置一会不转置的，要不还是数组存吧
+     **/
+    public static double[][] normalize(List<List<Double>> data) {
+        int row_num = data.size();       // 行数，就是第一重List的size，未转之前应该是sample_num
+        int col_num;
+        try {
+            col_num = data.get(0).size(); // 列数，就是第二重List中元素的个数，未转置前应该是index_num
+        }
+        catch (IndexOutOfBoundsException e) {
+            row_num = 0;
+            col_num = 0;
+        }
+        double[][] data_matrix = data_matrix(data, row_num, col_num);
+
+        RealMatrix matrix = new Array2DRowRealMatrix(data_matrix);
+        int numRows = matrix.getRowDimension();
+        int numCols = matrix.getColumnDimension();
+
+        /* 计算每个特征列的均值和标准差 */
+        double[] means = new double[numCols];
+        double[] stdDevs = new double[numCols];
+        Mean meanCalculator = new Mean();
+        StandardDeviation stdDevCalculator = new StandardDeviation();
+
+        for (int j = 0; j < numCols; j++) {
+            double[] col = matrix.getColumn(j);
+            means[j] = meanCalculator.evaluate(col);
+            stdDevs[j] = stdDevCalculator.evaluate(col, means[j]);
+        }
+
+        RealMatrix standardizedMatrix = matrix.copy();
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                double val = standardizedMatrix.getEntry(i, j);
+                if(stdDevs[j] == 0) standardizedMatrix.setEntry(i, j, 0);
+                else standardizedMatrix.setEntry(i, j, (val - means[j]) / stdDevs[j]);
+            }
+        }
+
+        return standardizedMatrix.getData();
     }
 
     /* 从数据库里读来的数据List<List>里面一个List是一个样本
@@ -115,7 +163,7 @@ public class DataNumpy {
      **/
     public static Double average(List<Double> valueList) {
         Double sum = 0.0;
-        Integer num = valueList.size();
+        int num = valueList.size();
         for(int j = 0; j <= num; j ++) {
             sum += valueList.get(j);
         }
@@ -128,8 +176,8 @@ public class DataNumpy {
      * 我才知道原来Java里也有vector
      **/
     public static Double distance(List<Double> v1, List<Double> v2) {
-        Double d = 0.0;
-        Integer v_num = v1.size();
+        double d = 0.0;
+        int v_num = v1.size();
         if(v2.size() != v_num) {
             /* 看看在Web怎么处理 */
             System.out.println("Error: 数量不匹配!");
@@ -147,55 +195,31 @@ public class DataNumpy {
      * 这个线性代数库好好用，可以直接做矩阵
      * ！！！！后面可能要考虑改数据结构！！！！！！
      */
-    public static double[][] conv_matrix(List<List<Double>> data) {
-        /* 那个线性代数库处理的是二维数组 */
-        int row_num = data.size();
-        int col_num;
-        try {
-            col_num = data.get(0).size(); // 列数，就是第二重List中元素的个数，未转置前应该是index_num
-        }
-        catch (IndexOutOfBoundsException e) {
-            row_num = 0;
-            col_num = 0;
-        }
-        /* 转化到二维数组 */
-        double[][] data_matrix = data_matrix(data, row_num, col_num);
-
+    public static double[][] conv_matrix(double[][] data) {
         /* 调包算协方差矩阵*/
-        RealMatrix matrix = new Array2DRowRealMatrix(data_matrix);
+        RealMatrix matrix = new Array2DRowRealMatrix(data);
         RealMatrix covarianceMatrix = new Covariance(matrix).getCovarianceMatrix();
 
-        return matrix.getData();
+//        System.out.println(covarianceMatrix);
+        return covarianceMatrix.getData();
     }
 
     /**
-     * 求解了特征值和特诊向量
+     * 求解了特征值和特征向量
      * 只返回了特征值，看后续算法操作再看返回什么
      * 怎么不早跟我说线性代数有库，有库的话List<List>可就不太好用了
      **/
-    public static double[] eigen(List<List<Double>> data) {
-        /* 那个线性代数库处理的是二维数组 */
-        int row_num = data.size();
-        int col_num;
-        try {
-            col_num = data.get(0).size(); // 列数，就是第二重List中元素的个数，未转置前应该是index_num
-        }
-        catch (IndexOutOfBoundsException e) {
-            row_num = 0;
-            col_num = 0;
-        }
-        /* 转化到二维数组 */
-        double[][] data_matrix = data_matrix(data, row_num, col_num);
+    public static EigenDecomposition eigen(double[][] data) {
 
         /* 求解特征值和特征向量 */
-        RealMatrix matrix = new Array2DRowRealMatrix(data_matrix);
+        RealMatrix matrix = new Array2DRowRealMatrix(data);
         EigenDecomposition decomposition = new EigenDecomposition(matrix);
 
         /* 获取特征值和特征向量 */
-        double[] eigenvalues = decomposition.getRealEigenvalues();
-        RealMatrix eigenvectors = decomposition.getV();
+        /*double[] eigenvalues = decomposition.getRealEigenvalues();
+        RealMatrix eigenvectors = decomposition.getV();*/
 
-        return eigenvalues;
+        return decomposition;
     }
 
 }

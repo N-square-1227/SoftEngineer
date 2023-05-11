@@ -8,14 +8,21 @@ public class Node {
     private Integer node_id;
     private String node_name;
     private Integer node_type;
-    private Integer node_weight;
+    private Double node_weight;
     // 先暂时用int, 不知道用id比较好还是用整个节点比较好
     private Integer frnode_id;   // father node id
 
     public Node() {}
 
-    public Node(int id, String name, int type, int weight, int father){
+    public Node(int id, String name, int type, double weight, int father){
         node_id = id;
+        node_name = name;
+        node_type = type;
+        node_weight = weight;
+        frnode_id = father;
+    }
+
+    public Node(String name, int type, double weight, int father){
         node_name = name;
         node_type = type;
         node_weight = weight;
@@ -46,11 +53,11 @@ public class Node {
         this.node_type = node_type;
     }
 
-    public Integer getNode_weight() {
+    public Double getNode_weight() {
         return node_weight;
     }
 
-    public void setNode_weight(Integer node_weight) {
+    public void setNode_weight(Double node_weight) {
         this.node_weight = node_weight;
     }
 
