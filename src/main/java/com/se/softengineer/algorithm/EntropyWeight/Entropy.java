@@ -160,11 +160,11 @@ public class Entropy {
         double score = 0.0;
         int j = 0;
         for (int i = 0; i < pY.size(); i++) {
-            if (i / indexNumber != j) {
+            if (i / idxChild != j) {
                 //todo:为方便观察，这里对 score 做了 100 倍放大处理
                 SList.add(100 * score);
                 score = 0.0;
-                j = i / indexNumber;
+                j = i / idxChild;
                 i -= 1;
             } else {
                 score += WList.get(j) * pY.get(i);
