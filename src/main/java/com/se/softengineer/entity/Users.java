@@ -28,7 +28,10 @@ public class Users implements Serializable {
      * 主键
      */
     // @TableId 用来映射表的主键(主键自增策略,type = IdType.AUTO)
-    @TableId(value = "userName")
+    @TableId(value = "userId",type = IdType.AUTO)
+    private int userid;
+
+    @TableField("userName")
     private String userName;
 
     @TableField("userPassword")
