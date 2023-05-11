@@ -5,6 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+/**
+ * @Author 南希诺
+ * @create 2023.5.10
+ */
 @Data
 @TableName("data")
 public class data {

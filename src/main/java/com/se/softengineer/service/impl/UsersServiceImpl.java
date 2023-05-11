@@ -53,29 +53,44 @@ public class UsersServiceImpl implements UsersService {
     }
 
     /**
+     * @Author 南希诺
+     * @create 2023.5.10
      * 熵权法
-     * @return
+     * @return 成功处理 true，else false
      */
     @Override
     public boolean Entropy() {
         // 初始化算法类
         Entropy entropy = new Entropy();
-
-        List<Double> objList = getXColumns();
-        // 填充数组的值
+        // 获取数据库数据的数组
+        List<Double> objList = getXColumns(entropy);
+        // 填充算法中数组的值
         entropy.setDataList(objList);
         // 调用算法类的熵权法
         entropy.algorithm();
         return true;
     }
 
-    public List<Double> getXColumns() {
-        List<Double> dataList = new ArrayList<>();
-        for (int i = 1; i <= 23; ++i) {
+    /**
+     * @Author 南希诺
+     * @create 2023/5/10
+     * 从数据库里读出数据，按列读，全部存到一个数组里
+     * @return 数组
+     */
+    public List<Double> getXColumns(Entropy entropy) {
+        List<Double> dataList = new ArrayList<>(500);
+        // todo:指标的个数，这个值在以后需要修改
+        int indexNumber = entropy.getIndexNumber();
+        entropy.setIndexNumber(indexNumber);
+        for (int i = 1; i <= indexNumber; ++i) {
+            // 创建新的 data 类型的查询语句
             QueryWrapper<data> queryWrapper = new QueryWrapper<>();
             queryWrapper.select(String.format("X%d", i));
             List<Object> objList = dataMapper.selectObjs(queryWrapper);
+            // 给指标的个数赋值
+            entropy.setIdxChild(objList.size());
             if (objList.size() != 0) {
+                // 存储值
                 for (Object o : objList) {
                     Double val = Double.valueOf(o.toString());
                     dataList.add(val);
