@@ -1,7 +1,6 @@
 package com.se.softengineer.algorithm.EntropyWeight;
 
 import com.se.softengineer.algorithm.indexsym.Node;
-import com.se.softengineer.service.impl.NodeServiceImpl;
 import lombok.Data;
 
 import java.util.*;
@@ -280,11 +279,32 @@ public class Entropy {
      * 数据库持久化，我这里就直接拿原数组改了
      */
     public void save() {
-//        NodeServiceImpl nodeService = new NodeServiceImpl();
-//        setEntropyList(nodeService.queryNodeList());
-        for (int i = 0; i < entropyList.size(); i++) {
-            entropyList.get(i).setNode_weight(WList.get(i));
+        // todo：一级指标个数，到时候修改这个值
+        int oneIndexNum = 3;
+        for (int i = 0; i < WList.size(); i++) {
+            entropyList.get(i + oneIndexNum).setNodeWeight(WList.get(i));
         }
-        System.out.println(entropyList);
+        // System.out.println(entropyList);
+        // 算 3 个一级指标的权重,左闭右开！！！
+        int begin = 3, end = 10;
+        int j = 0;
+        for (int i = begin; i < end; i++) {
+            entropyList.get(j).setNodeWeight(entropyList.get(j).getNodeWeight() +
+                    entropyList.get(i).getNodeWeight());
+        }
+        j = j + 1;
+
+        begin = 10; end = 20;
+        for (int i = begin; i < end; i++) {
+            entropyList.get(j).setNodeWeight(entropyList.get(j).getNodeWeight() +
+                    entropyList.get(i).getNodeWeight());
+        }
+        j = j + 1;
+
+        begin = 20; end = 26;
+        for (int i = begin; i < end; i++) {
+            entropyList.get(j).setNodeWeight(entropyList.get(j).getNodeWeight() +
+                    entropyList.get(i).getNodeWeight());
+        }
     }
 }

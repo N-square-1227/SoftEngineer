@@ -42,7 +42,7 @@ public class IndexSym {
     }
 
     // 2. 使用节点的相关信息创建一个Node实例后加入
-    public void addNode(Integer node_id, String node_name, Integer node_type, Integer node_weight, Integer father_node) {
+    public void addNode(Integer node_id, String node_name, Integer node_type, Double node_weight, Integer father_node) {
         Node node = new Node(node_id, node_name, node_type, node_weight, father_node);
         nodeList.add(node);
         insert2tree(node);
@@ -50,17 +50,17 @@ public class IndexSym {
 
     // 添加节点的父子关系
     public void insert2tree(Node node) {
-        Integer father_id = node.getFrnode_id();
+        Integer father_id = node.getParentID();
         if(nodeTree.containsKey(father_id)) {
             /* 理论上数据库如果是id字段自增，拿进来List的下标应该是对应的(List从0开始, 数据库的从1开始)
              * 不是的话find应该也挺好find
              **/
-            nodeTree.get(father_id).add(node.getNode_id());
+            nodeTree.get(father_id).add(node.getParentID());
         }
         else {
             List<Integer> temp = new ArrayList<>();
-            temp.add(node.getNode_id());
-            nodeTree.put(node.getFrnode_id(), temp);
+            temp.add(node.getNodeId());
+            nodeTree.put(node.getParentID(), temp);
         }
     }
 

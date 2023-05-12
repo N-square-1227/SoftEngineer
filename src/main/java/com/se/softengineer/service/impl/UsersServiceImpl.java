@@ -65,6 +65,7 @@ public class UsersServiceImpl implements UsersService {
     public boolean Entropy() {
         // 初始化算法类
         Entropy entropy = new Entropy();
+
         // 获取数据库数据的数组并填充算法中数组的值
         List<Double> objList = getXColumns(entropy);
 
@@ -74,7 +75,8 @@ public class UsersServiceImpl implements UsersService {
         // 调用算法类的熵权法
         entropy.algorithm();
 
-        return true;
+        // 将新的指标体系存到数据库的新表里
+        return nodeService.insertNodeList("en_indexsym", entropy.getEntropyList());
     }
 
     /**
