@@ -13,10 +13,6 @@ import org.apache.commons.math3.stat.correlation.Covariance;
 
 import java.util.*;
 
-/**
- * wxy
- * 没写完，别动
- */
 public class PCA {
 
     private Data data;
@@ -61,7 +57,7 @@ public class PCA {
         factor_num = 0;
     }
 
-    public void solve() {
+    public boolean solve() {
 
         /**
          * 前面可能应该还要数据中心化（再说）
@@ -104,16 +100,16 @@ public class PCA {
                 eigenMatrix[i][j] *= Math.sqrt(eigenvalued[j]);
         }
 
-        for(int i = 0; i < numCols; i ++) {
+        /*for(int i = 0; i < numCols; i ++) {
             for(int j = 0; j < factor_num; j ++)
                 System.out.print(eigenMatrix[i][j]);
             System.out.println("");
-        }
+        }*/
 
         /* 先把因子加入到指标体系中 */
         int id_no = 1;
         for(int i = 0; i < factor_num; i ++) {
-            Node node = new Node(id_no, "factor" + id_no, 1, 1, 0);
+            Node node = new Node(id_no, "factor" + id_no, 1, 1.0, 0);
             new_sym.addNode(node);
             id_no ++;
         }
@@ -130,6 +126,8 @@ public class PCA {
                 }
             }
         }
+
+        return true;
 
         /**
          * 后面要不要判重啊

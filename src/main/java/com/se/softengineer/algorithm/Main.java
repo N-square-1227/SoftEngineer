@@ -28,15 +28,17 @@ public class Main {
         /* 最后的结果比如什么协方差矩阵啦特征向量啦分类情况啦打算写到PCA类的属性*/
         pca.solve();
         /* pca里的名字是叶子节点序号，替换成对应的指标名字 */
-        /* 输出 */
+//        for(Node node : pca.getNew_sym().getNodeList())
+//            System.out.println(node.getNodeName());
+        /* 输出(缩进格式) */
         for(int i = 0; i < pca.getFactor_num(); i ++) {
-            List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(pca.getNew_sym().getNodeList().get(i).getNode_id());
-            System.out.println(pca.getNew_sym().getNodeList().get(i).getNode_name());
+            List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(pca.getNew_sym().getNodeList().get(i).getNodeId());
+            System.out.println(pca.getNew_sym().getNodeList().get(i).getNodeName());
             for (Integer son_node : son_nodes) {
                 /* 第idx个叶子节点*/
-                int idx = Integer.parseInt(pca.getNew_sym().getNodeList().get(son_node - 1).getNode_name());
-                pca.getNew_sym().getNodeList().get(son_node - 1).setNode_name(leaves.get(idx - 1).getNode_name());
-                System.out.println("\t" + pca.getNew_sym().getNodeList().get(son_node - 1).getNode_name());
+                int idx = Integer.parseInt(pca.getNew_sym().getNodeList().get(son_node - 1).getNodeName());
+                pca.getNew_sym().getNodeList().get(son_node - 1).setNodeName(leaves.get(idx - 1).getNodeName());
+                System.out.println("\t" + pca.getNew_sym().getNodeList().get(son_node - 1).getNodeName());
             }
         }
 

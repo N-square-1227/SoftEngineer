@@ -55,19 +55,19 @@ public class IndexSym {
 
     // 添加节点的父子关系
     public void insert2tree(Node node) {
-        Integer father_id = node.getFrnode_id();
+        Integer father_id = node.getParentID();
         if(nodeTree.containsKey(father_id)) {
             /* 理论上数据库如果是id字段自增，拿进来List的下标应该是对应的(List从0开始, 数据库的从1开始)
              * 不是的话find应该也挺好find
              **/
-            nodeTree.get(father_id).add(node.getNode_id());
+            nodeTree.get(father_id).add(node.getNodeId());
         }
         else {
             List<Integer> temp = new ArrayList<>();
-            temp.add(node.getNode_id());
+            temp.add(node.getNodeId());
             nodeTree.put(father_id, temp);
         }
-        nodeTree.put(node.getNode_id(), new ArrayList<>());
+        nodeTree.put(node.getNodeId(), new ArrayList<>());
     }
 
     public List<Node> get_leaves() {
@@ -76,7 +76,7 @@ public class IndexSym {
         /* 认为在nodeList里的顺序就是在数据表中存测数据 */
         for(Node node : nodeList) {
 //            System.out.println(node.getNode_id());
-            if(nodeTree.get(node.getNode_id()).size() == 0)
+            if(nodeTree.get(node.getNodeId()).size() == 0)
                 leaves.add(node);
         }
 
