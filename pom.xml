@@ -35,7 +35,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <!-- 改了一下这里的版本跑起来了，但是不会 -->
+            <!-- 原来是5.1.多少，但是我本地报错了-->
             <version>8.0.22</version>
         </dependency>
 
