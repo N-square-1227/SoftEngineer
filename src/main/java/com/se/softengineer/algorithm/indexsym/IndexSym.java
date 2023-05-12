@@ -11,13 +11,17 @@ import java.util.Map;
  * 有需要再补充
  **/
 public class IndexSym {
+    /**
+     * 应该是指标体系读进来结点的顺序就是List里的顺序
+     * 然后Map里只记了在List里的序号
+     **/
     // 指标体系中所有指标的信息
     private List<Node> nodeList;
     // 指标之间的父子关系
     private Map<Integer, List<Integer>> nodeTree;
 
     // 叶子节点个数
-    private Integer leaf_num;
+    private int leaf_num;
 
     // 无参构造函数
     public IndexSym() {
@@ -61,9 +65,24 @@ public class IndexSym {
         else {
             List<Integer> temp = new ArrayList<>();
             temp.add(node.getNode_id());
-            nodeTree.put(node.getFrnode_id(), temp);
+            nodeTree.put(father_id, temp);
         }
+        nodeTree.put(node.getNode_id(), new ArrayList<>());
     }
+
+    public List<Node> get_leaves() {
+        List<Node> leaves = new ArrayList<>();
+
+        /* 认为在nodeList里的顺序就是在数据表中存测数据 */
+        for(Node node : nodeList) {
+//            System.out.println(node.getNode_id());
+            if(nodeTree.get(node.getNode_id()).size() == 0)
+                leaves.add(node);
+        }
+
+        return leaves;
+    }
+
 
     public List<Node> getNodeList() {
         return nodeList;
@@ -71,6 +90,12 @@ public class IndexSym {
 
     public void setNodeList(List<Node> nodeList) {
         this.nodeList = nodeList;
+        nodeTree.clear();
+        nodeTree = new HashMap<>();
+        int node_num = nodeList.size();
+        for(int i = 0; i < node_num; i ++) {
+            insert2tree(nodeList.get(i));
+        }
     }
 
     public Map<Integer, List<Integer>> getNodeTree() {
@@ -81,11 +106,11 @@ public class IndexSym {
         this.nodeTree = nodeTree;
     }
 
-    public Integer getLeaf_num() {
+    public int getLeaf_num() {
         return leaf_num;
     }
 
-    public void setLeaf_num(Integer leaf_num) {
+    public void setLeaf_num(int leaf_num) {
         this.leaf_num = leaf_num;
     }
 }
