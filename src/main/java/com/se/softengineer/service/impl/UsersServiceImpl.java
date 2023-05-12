@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.se.softengineer.algorithm.EntropyWeight.Entropy;
 import com.se.softengineer.algorithm.indexsym.Node;
 import com.se.softengineer.dao.DataMapper;
-import com.se.softengineer.dao.NodeMapper;
 import com.se.softengineer.dao.UsersMapper;
 import com.se.softengineer.entity.Users;
 import com.se.softengineer.entity.data;
@@ -43,8 +42,8 @@ public class UsersServiceImpl implements UsersService {
 
     /**
      * 增加一个用户的信息
-     * @param users
-     * @return
+     * @param users 用户实体
+     * @return 插入成功与否
      */
     @Override
     public int addUsersInfo(Users users) {
@@ -76,7 +75,7 @@ public class UsersServiceImpl implements UsersService {
         entropy.algorithm();
 
         // 将新的指标体系存到数据库的新表里
-        return nodeService.insertNodeList("en_indexsym", entropy.getEntropyList());
+        return nodeService.insertIntoEntropy("en_indexsym", entropy.getEntropyList());
     }
 
     /**

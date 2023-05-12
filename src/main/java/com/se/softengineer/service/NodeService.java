@@ -11,14 +11,14 @@ import java.util.List;
 public interface NodeService {
     /**
      * 查询，select *
-     * @return
+     * @return 数据库里的原生列表数据
      */
     List<Node> queryNodeList();
 
     /**
      * 将自己新的表存储在数据库中
-     * @param nodeList 你自己的 indexsym 表
+     * @param nodeList 君の列表
      * @return 成功 T，or F
      */
-    boolean insertNodeList(String tableName, List<Node> nodeList);
+    boolean insertIntoEntropy(String tableName, List<Node> nodeList);
 }
