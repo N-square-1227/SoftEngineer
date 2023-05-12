@@ -115,6 +115,7 @@ public class UsersServiceImpl implements UsersService {
 //        QueryWrapper<Node> queryWrapper = new QueryWrapper<>();
 //        return nodeMapper.selectList(queryWrapper);
         //NodeServiceImpl nodeService = new NodeServiceImpl();
+//        System.out.println(nodeService.queryNodeList());
         return nodeService.queryNodeList();
     }
 

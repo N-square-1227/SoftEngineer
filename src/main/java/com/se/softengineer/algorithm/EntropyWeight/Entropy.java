@@ -288,20 +288,23 @@ public class Entropy {
         // 算 3 个一级指标的权重,左闭右开！！！
         int begin = 3, end = 10;
         int j = 0;
+        entropyList.get(j).setNodeWeight(0.0);
         for (int i = begin; i < end; i++) {
             entropyList.get(j).setNodeWeight(entropyList.get(j).getNodeWeight() +
                     entropyList.get(i).getNodeWeight());
         }
-        j = j + 1;
 
+        j = j + 1;
         begin = 10; end = 20;
+        entropyList.get(j).setNodeWeight(0.0);
         for (int i = begin; i < end; i++) {
             entropyList.get(j).setNodeWeight(entropyList.get(j).getNodeWeight() +
                     entropyList.get(i).getNodeWeight());
         }
-        j = j + 1;
 
+        j = j + 1;
         begin = 20; end = 26;
+        entropyList.get(j).setNodeWeight(0.0);
         for (int i = begin; i < end; i++) {
             entropyList.get(j).setNodeWeight(entropyList.get(j).getNodeWeight() +
                     entropyList.get(i).getNodeWeight());
