@@ -7,6 +7,7 @@ import com.se.softengineer.utils.R;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,8 +19,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-@RestController
-@RequestMapping("users")
+@RestController // RestController 相当于 Controller 和 RestBody
+@Controller
+@RequestMapping("/users")
 public class UsersController {
 
     @Autowired
@@ -126,6 +128,17 @@ public class UsersController {
         }else {
             return new R(Code.WORK_OK,"新增用户信息成功！");
         }
+    }
+
+    /**
+     * @Author 南希诺
+     * @create 2023.5.10
+     * 熵权法
+     * @return
+     */
+    @GetMapping("/en")
+    public boolean entropy(){
+        return usersService.Entropy();
     }
 //
 //    /**
