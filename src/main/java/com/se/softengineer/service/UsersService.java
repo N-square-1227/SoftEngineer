@@ -22,6 +22,13 @@ public interface UsersService {
      */
     int addUsersInfo(Users users);
 
+    /**
+     * @Author 南希诺
+     * @create 2023.5.10
+     * 熵权法
+     * @return 成功处理 true，else false
+     */
+    boolean Entropy();
 //    /**
 //     * 根据 id 获取书本信息
 //     * @param id

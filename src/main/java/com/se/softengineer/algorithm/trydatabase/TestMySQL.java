@@ -30,11 +30,11 @@ public class TestMySQL {
         /* 这部分应该可以直接装配，简单写了一下 */
         while (rs.next()) {
             Node node = new Node();
-            node.setNode_id(rs.getInt("nodeID"));
-            node.setNode_name(rs.getString("nodeName"));
-            node.setNode_type(rs.getInt("nodeType"));
-            node.setNode_weight(rs.getInt("nodeWeight"));
-            node.setFrnode_id(rs.getInt("ParentID"));
+//            node.setNode_id(rs.getInt("nodeID"));
+//            node.setNode_name(rs.getString("nodeName"));
+//            node.setNode_type(rs.getInt("nodeType"));
+//            node.setNode_weight(rs.getDouble("nodeWeight"));
+//            node.setFrnode_id(rs.getInt("ParentID"));
             nodeList.add(node);
         }
         rs.close();
