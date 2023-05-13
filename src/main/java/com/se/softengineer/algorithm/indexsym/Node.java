@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * 南希诺 修改过
  * 指标体系一个节点的信息
  * 有需要再补充或者再改
  **/

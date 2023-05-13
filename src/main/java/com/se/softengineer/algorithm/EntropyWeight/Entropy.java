@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 /**
  * @Author 南希诺
  * @create 2023.5.10
+ * 参考：
+ * https://zhuanlan.zhihu.com/p/448815108
+ * https://zhuanlan.zhihu.com/p/139224482
+ * https://zhuanlan.zhihu.com/p/267259810
  */
 @Data
 public class Entropy {
