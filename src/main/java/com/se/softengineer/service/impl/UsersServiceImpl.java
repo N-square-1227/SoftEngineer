@@ -73,9 +73,12 @@ public class UsersServiceImpl implements UsersService {
 
         // 调用算法类的熵权法
         entropy.algorithm();
-
+        // 建表
+        // todo:修改表名为前端传回来的数据！！！
+        dataMapper.dropExistTable("nxntest");
+        dataMapper.createTable("nxntest");
         // 将新的指标体系存到数据库的新表里
-        return nodeService.insertIntoEntropy("en_indexsym", entropy.getEntropyList());
+        return nodeService.insertIntoSheet("nxntest", entropy.getEntropyList());
     }
 
     /**

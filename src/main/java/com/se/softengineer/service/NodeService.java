@@ -22,5 +22,5 @@ public interface NodeService {
      * @param nodeList 君の列表
      * @return 成功 T，or F
      */
-    boolean insertIntoEntropy(String tableName, List<Node> nodeList);
+    boolean insertIntoSheet(String tableName, List<Node> nodeList);
 }

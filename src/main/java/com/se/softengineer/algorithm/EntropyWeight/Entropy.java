@@ -313,5 +313,7 @@ public class Entropy {
             entropyList.get(j).setNodeWeight(entropyList.get(j).getNodeWeight() +
                     entropyList.get(i).getNodeWeight());
         }
+
+
     }
 }
