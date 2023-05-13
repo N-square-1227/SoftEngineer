@@ -2,7 +2,10 @@ package com.se.softengineer.algorithm.trydatabase;
 
 import com.se.softengineer.algorithm.indexsym.Node;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +61,7 @@ public class TestMySQL {
             List<Double> sample = new ArrayList<>();
             /* 这个地方，数据表里是第一列是主键的ID，但是我不知道rs取是从第几列开始记的，有知道的改一下 */
             /* 还有就是到时候实际应该是自动装配什么的，不知道可不可以去掉第一列，如果不能就在Data里去掉数据表里第一列的No */
-            for (int i = 1; i <= col_num; i++)
+            for (int i = 2; i <= col_num; i++)
                 sample.add(rs.getDouble(i));
             dataList.add(sample);
         }

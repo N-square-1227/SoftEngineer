@@ -27,4 +27,10 @@ public class Implement {
             System.out.println(cluster);
         }
     }
+
+    public static void main(String[] args) throws Exception {
+        Implement implement = new Implement();
+        implement.run();
+
+    }
 }

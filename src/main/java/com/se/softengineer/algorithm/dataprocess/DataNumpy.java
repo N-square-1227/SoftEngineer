@@ -1,11 +1,13 @@
 package com.se.softengineer.algorithm.dataprocess;
 
 import com.se.softengineer.algorithm.indexsym.Data;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.stat.correlation.Covariance;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.math3.linear.*;
-import org.apache.commons.math3.stat.correlation.Covariance;
 
 /**
  * 还没写完私密马赛
@@ -51,16 +53,17 @@ public class DataNumpy {
         data.data_clear();
 
         List<List<Double>> new_data = new ArrayList<>();
-        data.setData(new_data);
+
 
         /* 把data的List<List> 变成里面的List是指标，外面的List是样本 */
         for(int j = 0; j < col_num; j ++) {
             List<Double> sample = new ArrayList<>();
-            for(int i = 0; i < col_num; i ++){
+            for(int i = 0; i < row_num; i ++){
                 sample.add(data_matrix[i][j]);
             }
             new_data.add(sample);
         }
+        data.setData(new_data);
 
         /**
          * 意思就是这个意思，流程就是先把原来的数据存到二维数组里（方便行列转换直接取下标）
