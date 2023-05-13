@@ -1,9 +1,10 @@
 package com.se.softengineer.controller;
 
-import com.se.softengineer.algorithm.indexsym.Data;
 import com.se.softengineer.algorithm.pca.PCA;
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.Node;
+import com.se.softengineer.entity.Sample;
+import com.se.softengineer.service.SampleService;
 import com.se.softengineer.service.IndexSymService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +25,11 @@ public class IndexSymController {
     @Autowired
     private IndexSymService indexSymService;
 
+    @Autowired
+    private SampleService sampleService;
+
     private final IndexSym indexSym = new IndexSym();
-    /*private List<Data> data;
-    // 想试一下这种写法能不能载入数据*/
+    private List<Sample> data;
 
     /**by wxy
      * Just for test
@@ -36,12 +39,22 @@ public class IndexSymController {
         return "Hello World!";
     }
 
-    @GetMapping("/loadData")
-    private List<Node> load_data() {
+
+    /**
+     * 启动项目后，地址栏里输入http://localhost:8877/indexsym/loadIndexSym
+     * 页面和后台会输出加载进来的指标体系
+     **/
+    @GetMapping("/loadIndexSym")
+    private List<Node> load_indexsym() {
         indexSym.setNodeList(indexSymService.getIndex());
         for(int i = 0; i < indexSym.getNodeList().size(); i ++)
             System.out.println(indexSym.getNodeList().get(i));
         return indexSym.getNodeList();
+    }
+
+    @GetMapping("/loadData")
+    private List<Sample> load_data() {
+        return sampleService.getData();
     }
 
     @GetMapping("/usePCA")
