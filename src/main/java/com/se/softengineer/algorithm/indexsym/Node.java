@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("indexsym")
-public class Node {
+public class Node implements Comparable<Node>{
 
     @TableId(value = "node_id",type= IdType.AUTO)
     private Integer nodeId;
@@ -25,6 +25,9 @@ public class Node {
     @TableField("node_name")
     private String nodeName;
 
+    /**
+     *  1 正 0 负
+     */
     @TableField("node_type")
     private Integer nodeType;
 
@@ -34,5 +37,15 @@ public class Node {
     @TableField("parent_id")
     // 先暂时用 int, 不知道用 id 比较好还是用整个节点比较好
     private Integer parentID;
+
+    // 自定义类排序
+    // 实现Comparable接口中的compareTo方法
+    // 本对象大于比较对象则返回 1
+    // 本对象小于比较对象则返回 -1
+    // 本对象等于比较对象则返回 0
+    @Override
+    public int compareTo(Node o) {
+        return this.nodeWeight.compareTo(o.nodeWeight);
+    }
 }
 

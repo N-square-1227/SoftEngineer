@@ -34,11 +34,9 @@ public class NodeServiceImpl implements NodeService {
         }
 
         // 插入数据到指定的表
-        int i = 1;
         for (Node node : nodeList) {
-            nodeMapper.insertIntoSheet(tableName, i, node.getNodeName(),
+            nodeMapper.insertIntoSheet(tableName, node.getNodeId(), node.getNodeName(),
                     node.getNodeType(), node.getNodeWeight(), node.getParentID());
-            i += 1;
         }
         return true;
     }

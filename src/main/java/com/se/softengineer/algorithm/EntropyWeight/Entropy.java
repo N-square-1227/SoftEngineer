@@ -16,16 +16,42 @@ import java.util.stream.Collectors;
  */
 @Data
 public class Entropy {
-
+    /**
+     * 指标的正负性
+     */
+    static int POSITIVE = 1;
+    static int NEGATIVE = 0;
     /**
      * 存放原始数据的数组
      */
     List<Double> dataList;
 
     /**
+     * 二维格式的 data
+     */
+    List<List<Double>> data2D;
+
+    /**
+     * 父节点，以该节点为父节点的指标数目
+     */
+    Map<Integer, Integer> map;
+
+    /**
      * 存放标准化后 Y 值的数组
      */
     List<Double> stdY;
+    /**
+     * node
+     */
+    List<Node> node;
+
+
+    /**
+     * 存放标准化后 Y 值的数组
+     */
+    List<List<Double>> stdY2D;
+
+
     /**
      * 每个指标自己所有数据标准化后的和
      */
@@ -34,6 +60,10 @@ public class Entropy {
      * 存放 P 值的数组
      */
     List<Double> pY;
+    /**
+     * 存放 P 值的数组
+     */
+    List<List<Double>> pY2D;
     /**
      * 存放每一个指标信息熵的数组
      */
@@ -46,6 +76,10 @@ public class Entropy {
      * 评分数组
      */
     List<Double> SList;
+    /**
+     * parentId 集合
+     */
+    Set<Integer> pIdList;
     /**
      * 每个指标的评分 Map
      */
@@ -68,13 +102,13 @@ public class Entropy {
      */
     double sumEj;
     /**
-     * todo: change 指标的个数
+     * 指标的个数
      */
-    int indexNumber = 23;
+    int indexNumber;
     /**
-     * todo: change 每一项指标的值的个数
+     * 每一项指标的值的个数
      */
-    int idxChild = 22;
+    int idxChild;
     public void algorithm() {
 //        System.out.println(dataList);
         // 1.数据标准化
@@ -90,40 +124,62 @@ public class Entropy {
         //score();
 //        System.out.println(SList);
         // 5.验证阶段：取前 15 最大的，和 PDF 比较
-        sortMap();
+        // sortMap();
         // 6.数据库持久化
         save();
     }
 
     /**
-     * 数据标准化，该步正确
+     * 遍历 node 数组，填充 map
+     */
+    public void fillMap(List<Node> node) {
+        map = new HashMap<>();
+        // 如果map中已经存在key，则更新value值为原来的值加1
+        // 否则将value值初始化为1
+        for (Node value : node) {
+            map.compute(value.getParentID(), (k, v) -> (v == null) ? 1 : v + 1);
+        }
+        // 输出结果
+//        System.out.println(map);
+    }
+    /**
+     * 数据标准化
      */
     public void standardize() {
+        // 求实际元素的个数
+        int count = 0;
+        for (List<Double> subList : data2D) {
+            count += subList.size();
+        }
         // 初始化标准化数组，数组的大小就是指标的个数
-        stdY = new ArrayList<>(indexNumber * idxChild);
-        // 列最大最小值
+        stdY = new ArrayList<>(count);
+        // 一个指标内的最大最小值
         double maxXi, minXi;
-        // 有几个指标就需要循环几次
-        for (int times = 0; times < indexNumber; times++) {
+        for (int i = 0; i < data2D.size(); i++) {
             // 初始化
             maxXi = Integer.MIN_VALUE;
             minXi = Integer.MAX_VALUE;
-            // 内循环一个指标的数据个数，求最大值最小值
-            for (int i = 0; i < idxChild; i++) {
-                // 起始值：times * idxChild，逐个增加 i
-                double value = dataList.get(times * idxChild + i);
-                maxXi = Math.max(value, maxXi);
-                minXi = Math.min(value, minXi);
+            for (int j = 0; j < data2D.get(i).size(); j++) {
+                double xValue = data2D.get(i).get(j);
+                maxXi = Math.max(xValue, maxXi);
+                minXi = Math.min(xValue, minXi);
             }
+
             /*
               到这一步，一个指标内的最大值和最小值就算出来了
-              已验证
              */
             // 最小-最大规范化
-            for (int i = 0; i < idxChild; i++) {
-                double value = dataList.get(times * idxChild + i);
-                double Yij = (value - minXi) / (maxXi - minXi);
-                stdY.add(Yij);
+            int diff = node.size() - data2D.size();
+            double Yij;
+            for (int j= 0; j < data2D.get(i).size(); j++) {
+                double xValue = data2D.get(i).get(j);
+                // 正向指标
+                if (node.get(i + diff).getNodeType() == POSITIVE) {
+                    Yij = (xValue - minXi) / (maxXi - minXi);
+                } else { // 负向指标
+                    Yij = (maxXi - xValue) / (maxXi - minXi);
+                }
+                stdY2D.get(i).set(j, Yij);
             }
         }
         // 计算 sumYij
@@ -131,71 +187,50 @@ public class Entropy {
     }
 
     /**
-     * 计算 sumYij
+     * 计算每个指标的 sumYij
      */
     public void calSumYij() {
         sumYij = new ArrayList<>(indexNumber);
         double sum = 0.0;
-        int j = 0;
-        for (int i = 0; i < stdY.size(); i++) {
-            // 下一个轮次
-            if (i / idxChild != j) {
-                sumYij.add(sum);
-                sum = 0.0;
-                j = i / idxChild;
-                i -= 1;
-            } else {
-                sum += stdY.get(i);
+
+        for (List<Double> doubles : stdY2D) {
+            for (Double aDouble : doubles) {
+                sum += aDouble;
             }
+            sumYij.add(sum);
+            sum = 0.0;
         }
-        sumYij.add(sum);
-
-//        // test ok
-//        double s = 0.0;
-//        for (int i = 0; i < 22; i++) {
-//            s += stdY.get(i);
-//        }
-//        System.out.println(s);
-//        s = 0.0;
-//        for (int i = 22; i < 44; i++) {
-//            s += stdY.get(i);
-//        }
-//        System.out.println(s);
-
     }
 
     /**
      * 求各指标的信息熵
      */
     public void infoEntropy() {
-        // 初始化 pY
-        pY = new ArrayList<>(stdY.size());
-        for (int i = 0; i < stdY.size(); i++) {
-            double sum = sumYij.get(i / idxChild);
-            pY.add(stdY.get(i) / sum);
+        // 用是 stdY2D 初始化 pY2D
+        pY2D = stdY2D;
+        for (int i = 0; i < pY2D.size(); i++) {
+            for (int j = 0; j < pY2D.get(i).size(); j++) {
+                double Pij = stdY2D.get(i).get(j) / sumYij.get(i);
+                pY2D.get(i).set(j, Pij);
+            }
         }
         // 初始化 EList,有多少个指标就有多少组信息熵
         // 所以该数组的大小是指标的个数
         EList = new ArrayList<>(indexNumber);
         double sum = 0.0;
-        int j = 0;
-        for (int i = 0; i < pY.size(); i++) {
-            // 下一个轮次
-            if (i / idxChild != j) {
-                double Ej = (-1) * (1 / Math.log(idxChild)) * sum;
-                EList.add(Ej);
-                sumEj += Ej;
-                sum = 0.0;
-                j = i / idxChild;
-                i -= 1;
-            } else {
-                double value = pY.get(i);
-                sum += (value == 0 ? 0 : value * Math.log(value));
+        for (List<Double> doubles : pY2D) {
+            for (double value : doubles) {
+                if (value == 0.0) {
+                    sum = 0.0;
+                } else {
+                    sum += value * Math.log(value);
+                }
             }
+            double Ej = (-1) * (1 / Math.log(doubles.size())) * sum;
+            EList.add(Ej);
+            sumEj += Ej;
+            sum = 0.0;
         }
-        double Ej = (-1) * (1 / Math.log(idxChild)) * sum;
-        EList.add(Ej);
-        sumEj += Ej;
     }
 
 
@@ -205,33 +240,29 @@ public class Entropy {
     public void Weight() {
         // 初始化数组
         WList = new ArrayList<>(indexNumber);
-        resultMap = new HashMap<>();
-        int i = 1;
         for (Double aDouble : EList) {
             // 这里 k 指的是指标个数
-            double Wi = (1 - aDouble) / (indexNumber - sumEj);
-            WList.add(Wi);
-
-            resultMap.put("X" + i, Wi);
-            i++;
-
-            sumWj += Wi;
+            double Wj = (1 - aDouble) / (indexNumber - sumEj);
+            WList.add(Wj);
+            sumWj += Wj;
         }
-
-//        double sum = 0.0;
-//        for (int j = 0; j < WList.size(); j++) {
-//            sum += WList.get(j);
-//            if (j == 6) {
-//                resultMap.put("第一类指标", sum);
-//                sum = 0.0;
-//            } else if (j == 16) {
-//                resultMap.put("第二类指标", sum);
-//                sum = 0.0;
-//            } else if (j == 22) {
-//                resultMap.put("第三类指标", sum);
-//                sum = 0.0;
-//            }
+//
+//        // 初始化数组
+//        WList = new ArrayList<>(indexNumber);
+//        resultMap = new HashMap<>();
+//        int i = 1;
+//        for (Double aDouble : EList) {
+//            // 这里 k 指的是指标个数
+//            double Wi = (1 - aDouble) / (indexNumber - sumEj);
+//            WList.add(Wi);
+//
+//            resultMap.put("X" + i, Wi);
+//            i++;
+//
+//            sumWj += Wi;
 //        }
+
+
     }
 
     /**
@@ -280,39 +311,81 @@ public class Entropy {
     }
 
     /**
-     * 数据库持久化，我这里就直接拿原数组改了
+     * 生成新的数组
      */
     public void save() {
-        // todo：一级指标个数，到时候修改这个值
-        int oneIndexNum = 3;
-        for (int i = 0; i < WList.size(); i++) {
-            entropyList.get(i + oneIndexNum).setNodeWeight(WList.get(i));
+        int diff = node.size() - WList.size();
+        // 赋值权重，注意是倒序
+        for (int i = node.size() - 1; i >= diff; i--) {
+            node.get(i).setNodeWeight(WList.get(i - diff));
         }
-        // System.out.println(entropyList);
-        // 算 3 个一级指标的权重,左闭右开！！！
-        int begin = 3, end = 10;
-        int j = 0;
-        entropyList.get(j).setNodeWeight(0.0);
-        for (int i = begin; i < end; i++) {
-            entropyList.get(j).setNodeWeight(entropyList.get(j).getNodeWeight() +
-                    entropyList.get(i).getNodeWeight());
-        }
-
-        j = j + 1;
-        begin = 10; end = 20;
-        entropyList.get(j).setNodeWeight(0.0);
-        for (int i = begin; i < end; i++) {
-            entropyList.get(j).setNodeWeight(entropyList.get(j).getNodeWeight() +
-                    entropyList.get(i).getNodeWeight());
+        // 排序
+        Collections.sort(node);
+        // 倒序删除部分节点
+        double sum = node.get(0).getNodeWeight();
+        int num = 0;
+        for (int i = 1; i < node.size() - 1; i++) {
+            // 权重有一定意义了,or...
+            if (sum >= node.get(i).getNodeWeight() || num >= node.size() * 0.3) {
+                break;
+            } else {
+                num += 1;
+                sum += node.get(i).getNodeWeight();
+            }
         }
 
-        j = j + 1;
-        begin = 20; end = 26;
-        entropyList.get(j).setNodeWeight(0.0);
-        for (int i = begin; i < end; i++) {
-            entropyList.get(j).setNodeWeight(entropyList.get(j).getNodeWeight() +
-                    entropyList.get(i).getNodeWeight());
+        // del
+        while (num > 0) {
+            node.remove(0);
+            int key = node.get(0).getParentID();
+            map.put(key, map.get(key) - 1);
+            num--;
         }
+
+        // 求各级指标的权重
+        // map:"{0=3,1=6,2=10,3=6}"
+        Map<Integer, Double> weight = new HashMap<>();
+        for (Node value : node) {
+            weight.compute(value.getParentID(), (k, v) -> (v == null) ? value.getNodeWeight() : v + value.getNodeWeight());
+        }
+        for (int key : map.keySet()) {
+            for (Node value : node) {
+                if (value.getNodeId() == key) {
+                    value.setNodeWeight(weight.get(key));
+                }
+            }
+        }
+//        System.out.println("hello");
+//        // todo：一级指标个数，到时候修改这个值
+//        int oneIndexNum = 3;
+//        for (int i = 0; i < WList.size(); i++) {
+//            node.get(i + oneIndexNum).setNodeWeight(WList.get(i));
+//        }
+//        // System.out.println(node);
+//        // 算 3 个一级指标的权重,左闭右开！！！
+//        int begin = 3, end = 10;
+//        int j = 0;
+//        node.get(j).setNodeWeight(0.0);
+//        for (int i = begin; i < end; i++) {
+//            node.get(j).setNodeWeight(node.get(j).getNodeWeight() +
+//                    node.get(i).getNodeWeight());
+//        }
+//
+//        j = j + 1;
+//        begin = 10; end = 20;
+//        node.get(j).setNodeWeight(0.0);
+//        for (int i = begin; i < end; i++) {
+//            node.get(j).setNodeWeight(node.get(j).getNodeWeight() +
+//                    node.get(i).getNodeWeight());
+//        }
+//
+//        j = j + 1;
+//        begin = 20; end = 26;
+//        node.get(j).setNodeWeight(0.0);
+//        for (int i = begin; i < end; i++) {
+//            node.get(j).setNodeWeight(node.get(j).getNodeWeight() +
+//                    node.get(i).getNodeWeight());
+//        }
 
 
     }
