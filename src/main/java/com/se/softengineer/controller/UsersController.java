@@ -140,48 +140,5 @@ public class UsersController {
     public boolean entropy(){
         return usersService.Entropy();
     }
-//
-//    /**
-//     * 根据id获取书本信息
-//     * @param id
-//     * @return
-//     */
-//    @GetMapping("/get-one-book/{id}")
-//    public R getOneBook(@PathVariable("id") Integer id){
-//        Book result = bookService.getOneBook(id);
-//        if (!Strings.isNotEmpty(result.getName())){
-//            return new R(Code.WORK_ERR,"根据id获取书本信息失败！");
-//        }
-//        return new R(Code.WORK_OK,"获取书本信息成功",result);
-//    }
-//
-//    /**
-//     * 修改一本书的信息
-//     * @param book
-//     * @return
-//     */
-//    @PostMapping("/upd-one-book")
-//    public R updOneBook(@RequestBody Book book){
-//        int flag = bookService.updOneBook(book);
-//        if (flag != 1){
-//            return new R(Code.WORK_ERR,"新增书本信息失败！");
-//        }else {
-//            return new R(Code.WORK_OK,"新增书本信息成功！");
-//        }
-//    }
-//
-//    /**
-//     * 删除一本书
-//     * @param book
-//     * @return
-//     */
-//    @PostMapping("/delete-one-book")
-//    public R deleteOneBook(@RequestBody Book book){
-//        int flag = bookService.deleteOneBook(book);
-//        if (flag != 1){
-//            return new R(Code.WORK_ERR,"新增书本信息失败！");
-//        }else {
-//            return new R(Code.WORK_OK,"新增书本信息成功！");
-//        }
-//    }
+
 }
