@@ -32,6 +32,14 @@ public class Node {
     @TableField("parent_id")
     private Integer parentID;
 
-    
+    public Node() {}
+
+    public Node(int nodeId, String nodeName, int nodeType, double nodeWeight, int parentID) {
+        this.nodeId = nodeId;
+        this.nodeName = nodeName;
+        this.nodeType = nodeType;
+        this.nodeWeight = nodeWeight;
+        this.parentID = parentID;
+    }
 }
 

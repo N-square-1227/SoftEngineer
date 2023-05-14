@@ -2,26 +2,38 @@ package com.se.softengineer.algorithm.pca;
 
 
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
-import com.se.softengineer.algorithm.indexsym.Data;
-import com.se.softengineer.algorithm.indexsym.IndexSym;
-import com.se.softengineer.algorithm.indexsym.Node;
+import com.se.softengineer.entity.IndexSym;
+import com.se.softengineer.entity.Node;
+import com.se.softengineer.entity.Sample;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
-import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.stat.correlation.Covariance;
 
 import java.util.*;
 
 public class PCA {
 
-    private Data data;
+    private List<Sample> data;
 
-    public Data getData() {
+    private IndexSym new_sym;
+
+    public List<Sample> getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    /**
+     * 换了xml之后把一条样本数据包装在一个类里了
+     * 原来的算法是按List<List>写的，加一个接口换到List<List>
+     **/
+    public List<List<Double>> getDataList() {
+        List<List<Double>> result = new ArrayList<>();
+        for(Sample sample : data) {
+            result.add(sample.getData());
+        }
+        return result;
+    }
+
+    public void setData(List<Sample> data) {
         this.data = data;
     }
 
@@ -32,8 +44,6 @@ public class PCA {
     public void setNew_sym(IndexSym new_sym) {
         this.new_sym = new_sym;
     }
-
-    private IndexSym new_sym;
 
     public int getFactor_num() {
         return factor_num;
@@ -46,12 +56,12 @@ public class PCA {
     private int factor_num;
 
     public  PCA() {
-        data = new Data();
+        data = new ArrayList<>();
         new_sym = new IndexSym();
         factor_num = 0;
     }
 
-    public PCA(Data data) {
+    public PCA(List<Sample> data) {
         this.data = data;
         this.new_sym = new IndexSym();
         factor_num = 0;
@@ -64,7 +74,7 @@ public class PCA {
          **/
 
         /* 先标准化，标准化那个线性代数的包就是求一列一列的均值和方差，所以不用转置 */
-        RealMatrix normalizedMatrix = new Array2DRowRealMatrix(DataNumpy.normalize(data.getData()));
+        RealMatrix normalizedMatrix = new Array2DRowRealMatrix(DataNumpy.normalize(getDataList()));
 
         /* 协方差矩阵 */
         double[][] conv_matrix = DataNumpy.conv_matrix(normalizedMatrix.getData());
@@ -121,7 +131,8 @@ public class PCA {
                 /* 数据不太好感觉 */
                 if(Math.abs(eigenMatrix[j - 1][i]) >= 0.65) {
                     /* 这里的名字先用编号，然后看在哪里换成名字 */
-                    new_sym.addNode(id_no, String.valueOf(j), 1, eigenMatrix[j - 1][i]/eigenvalued[i], i + 1);
+                    Node node = new Node(id_no, String.valueOf(j), 1, eigenMatrix[j - 1][i]/eigenvalued[i], i + 1);
+                    new_sym.addNode(node);
                     id_no ++;
                 }
             }

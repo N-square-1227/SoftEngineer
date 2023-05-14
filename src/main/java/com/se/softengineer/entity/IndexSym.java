@@ -75,7 +75,7 @@ public class IndexSym {
             if(nodeTree.get(node.getNodeId()).size() == 0)
                 leaves.add(node);
         }
-
+        leaf_num = leaves.size();
         return leaves;
     }
 

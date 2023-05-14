@@ -3,8 +3,6 @@ package com.se.softengineer.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.se.softengineer.entity.Sample;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.session.ResultHandler;
 
 import java.util.HashMap;
 import java.util.List;
