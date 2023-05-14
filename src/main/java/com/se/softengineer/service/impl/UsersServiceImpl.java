@@ -1,18 +1,18 @@
 package com.se.softengineer.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.se.softengineer.algorithm.EntropyWeight.Entropy;
+import com.se.softengineer.algorithm.dataprocess.DataNumpy;
+import com.se.softengineer.algorithm.indexsym.Data;
 import com.se.softengineer.algorithm.indexsym.Node;
+import com.se.softengineer.algorithm.trydatabase.TestMySQL;
 import com.se.softengineer.dao.DataMapper;
 import com.se.softengineer.dao.UsersMapper;
 import com.se.softengineer.entity.Users;
-import com.se.softengineer.entity.data;
 import com.se.softengineer.service.NodeService;
 import com.se.softengineer.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,51 +61,71 @@ public class UsersServiceImpl implements UsersService {
      * @return 成功处理 true，else false
      */
     @Override
-    public boolean Entropy() {
+    public boolean Entropy() throws Exception {
         // 初始化算法类
         Entropy entropy = new Entropy();
+        TestMySQL testMySQL = new TestMySQL();
 
-        // 获取数据库数据的数组并填充算法中数组的值
-        List<Double> objList = getXColumns(entropy);
-
-        entropy.setDataList(objList);
-        entropy.setEntropyList(saveEntropy());
+        // todo: 数据表名
+        // 获取 Node （indexsym）表
+        List<List<Double>> data2D = testMySQL.queryData("data");
+        // 转置数组
+        Data data = new Data(data2D);
+        DataNumpy.transposition(data);
+        /* 处理数据并填充到 entropy 中 */
+        // 把二维的数据表传进去
+        entropy.setData2D(data.getData());
+        entropy.setStdY2D(data.getData());
+        // 指标的个数
+        entropy.setIndexNumber(data.getData().size());
+        // 计算每个指标子指标的个数并填充到 entropy 中
+        List<Node> node = nodeService.queryNodeList();
+        entropy.setNode(node);
+        entropy.fillMap(node);
 
         // 调用算法类的熵权法
         entropy.algorithm();
 
+        // 建表
+        // todo:修改表名为前端传回来的数据！！！
+        dataMapper.dropExistTable("nxntest");
+        dataMapper.createTable("nxntest");
         // 将新的指标体系存到数据库的新表里
-        return nodeService.insertIntoEntropy("en_indexsym", entropy.getEntropyList());
+        return nodeService.insertIntoSheet("nxntest", entropy.getNode());
     }
 
-    /**
-     * @Author 南希诺
-     * @create 2023/5/10
-     * 从数据库里读出数据，按列读，全部存到一个数组里
-     * @return 数组
-     */
-    public List<Double> getXColumns(Entropy entropy) {
-        List<Double> dataList = new ArrayList<>(500);
-        // todo:指标的个数，这个值在以后需要修改
-        int indexNumber = entropy.getIndexNumber();
-        entropy.setIndexNumber(indexNumber);
-        for (int i = 1; i <= indexNumber; ++i) {
-            // 创建新的 data 类型的查询语句
-            QueryWrapper<data> queryWrapper = new QueryWrapper<>();
-            queryWrapper.select(String.format("X%d", i));
-            List<Object> objList = dataMapper.selectObjs(queryWrapper);
-            // 给指标的个数赋值
-            entropy.setIdxChild(objList.size());
-            if (objList.size() != 0) {
-                // 存储值
-                for (Object o : objList) {
-                    Double val = Double.valueOf(o.toString());
-                    dataList.add(val);
-                }
-            }
-        }
-        return dataList;
-    }
+//    /**
+//     * @Author 南希诺
+//     * @create 2023/5/10
+//     * 从数据库里读出数据，按列读，全部存到一个数组里
+//     * @return 数组
+//     */
+//    public List<List<Double>> getXColumns(Entropy entropy) {
+//        List<List<Double>>  dataList = new ArrayList<>(500);
+////        // todo:指标的个数，这个值在以后需要修改
+////        int indexNumber = entropy.getIndexNumber();
+////        entropy.setIndexNumber(indexNumber);
+//        List<data> allData = dataMapper.selectList(null);
+//
+//        for (int i = 0; i < )
+//        for (int i = 1; i <= indexNumber; ++i) {
+//            // 创建新的 data 类型的查询语句
+//            QueryWrapper<data> queryWrapper = new QueryWrapper<>();
+//            List<Object> objList = dataMapper.selectObjs(queryWrapper);
+//            List<Double> temp = new ArrayList<>();
+//            // todo:给指标的个数赋值
+//            // entropy.setIdxChild(objList.size());
+//            if (objList.size() != 0) {
+//                // 存储值
+//                for (Object o : objList) {
+//                    Double val = Double.valueOf(o.toString());
+//                    temp.add(val);
+//                }
+//                dataList.add(temp);
+//            }
+//        }
+//        return dataList;
+//    }
 
     /**
      * 南希诺

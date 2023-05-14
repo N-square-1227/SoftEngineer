@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.se.softengineer.algorithm.indexsym.Node;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -14,9 +13,11 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface NodeMapper extends BaseMapper<Node> {
 
-    @Options(useGeneratedKeys = true, keyColumn = "node_id")
-    @Insert("insert into se.en_indexsym(node_name, node_type, node_weight, parent_id) values (#{nodeName}, #{nodeType}, #{nodeWeight}, #{parentID})")
-    void insertIntoEntropy(String tableName, @Param("nodeName") String nodeName,
+    //@Options(useGeneratedKeys = true, keyColumn = "node_id")
+    @Insert("insert into ${tableName} " +
+            "(node_id, node_name, node_type, node_weight, parent_id) " +
+            "values (#{nodeId}, #{nodeName}, #{nodeType}, #{nodeWeight}, #{parentID})")
+    void insertIntoSheet(String tableName, Integer nodeId, @Param("nodeName") String nodeName,
                            @Param("nodeType") Integer nodeType, @Param("nodeWeight") Double noteWeight,
                            @Param("parentID") Integer parentID);
 }

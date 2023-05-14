@@ -28,7 +28,7 @@ public interface UsersService {
      * 熵权法
      * @return 成功处理 true，else false
      */
-    boolean Entropy();
+    boolean Entropy() throws Exception;
 //    /**
 //     * 根据 id 获取书本信息
 //     * @param id

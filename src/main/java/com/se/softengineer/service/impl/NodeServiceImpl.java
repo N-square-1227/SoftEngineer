@@ -27,14 +27,15 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public boolean insertIntoEntropy(String tableName, List<Node> nodeList) {
+    public boolean insertIntoSheet(String tableName, List<Node> nodeList) {
+        // 鲁棒性
         if (StringUtils.isBlank(tableName) || nodeList == null || nodeList.isEmpty()) {
             return false;
         }
 
         // 插入数据到指定的表
         for (Node node : nodeList) {
-            nodeMapper.insertIntoEntropy("en_indexsym", node.getNodeName(),
+            nodeMapper.insertIntoSheet(tableName, node.getNodeId(), node.getNodeName(),
                     node.getNodeType(), node.getNodeWeight(), node.getParentID());
         }
         return true;

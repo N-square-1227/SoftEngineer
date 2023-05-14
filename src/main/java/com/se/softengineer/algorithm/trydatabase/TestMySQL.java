@@ -1,5 +1,9 @@
 package com.se.softengineer.algorithm.trydatabase;
 
+import com.se.softengineer.algorithm.Kmeans.Cluster;
+import com.se.softengineer.algorithm.Kmeans.ElbowMethod;
+import com.se.softengineer.algorithm.Kmeans.Kmeans;
+import com.se.softengineer.algorithm.indexsym.Data;
 import com.se.softengineer.algorithm.indexsym.Node;
 
 import java.sql.Connection;
@@ -8,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /*
  * 没做数据库部分，简单连一下
@@ -18,7 +23,7 @@ public class TestMySQL {
     public Connection getConnection() throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
         String url = "jdbc:mysql://localhost:3306/se?useUnicode=true&characterEncoding=utf8&useSSL=false";
-        return DriverManager.getConnection(url, "root", "");
+        return DriverManager.getConnection(url, "root", "123456");
     }
 
     /**

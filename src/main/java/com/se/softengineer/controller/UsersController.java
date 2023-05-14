@@ -4,20 +4,12 @@ import com.se.softengineer.entity.Users;
 import com.se.softengineer.service.UsersService;
 import com.se.softengineer.utils.Code;
 import com.se.softengineer.utils.R;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.awt.print.Book;
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.UUID;
 
 @RestController // RestController 相当于 Controller 和 RestBody
 @Controller
@@ -137,7 +129,7 @@ public class UsersController {
      * @return
      */
     @GetMapping("/en")
-    public boolean entropy(){
+    public boolean entropy() throws Exception {
         return usersService.Entropy();
     }
 
