@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * by wxy
@@ -54,11 +55,18 @@ public class IndexSymController {
 
     @GetMapping("/loadData")
     private List<Sample> load_data() {
-        return sampleService.getData();
+        data = sampleService.getData();
+        return data;
+    }
+
+    @GetMapping("/loadColumnNames")
+    private List<String> load_columnNames() {
+        return sampleService.getColName();
     }
 
     @GetMapping("/usePCA")
     public boolean use_PCA() {
+        load_data();
         PCA pca = new PCA();
         return true;
     }
