@@ -23,7 +23,8 @@ public interface IndexSymMapper extends BaseMapper<Indexsym> {
     })
     int createTable(@Param("tableName") String tableName);
 
-    @Insert({"(insert into ${tableName}(node_name,node_type,node_weight,parent_id) " +
-            "values(#{node_name},#{node_type},#{node_weight},#{parent_id});"})
+    @Insert({"insert into ${tableName}(node_name,node_type,node_weight,parent_id) " +
+            "values(#{node_name},${node_type},${node_weight},${parent_id});"
+    })
     int insertIntoTable(@Param("tableName")String tableName,@Param("node_name")String name,@Param("node_type")int type,@Param("node_weight")double weight,@Param("parent_id")int id);
 }
