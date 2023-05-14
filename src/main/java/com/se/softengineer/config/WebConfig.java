@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
          * 就给我映射到本机的“E:/images/”这个文件夹内，去找你要的资源
          * 注意：E:/images/ 后面的 “/”一定要带上
          */
-        registry.addResourceHandler("/images/**")
+        registry.addResourceHandler("/data/**")
                 .addResourceLocations("file:"+fileSavePath);
     }
 }

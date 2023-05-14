@@ -6,13 +6,13 @@
 
 import Login from "./components/Login";
 //import Main from "./components/Main";
-import A from "./components/A";
-import AfterLogin from "./view/afterLogin";
 import afterLogin from "./view/afterLogin";
 import ImportExcel from "./view/ImportExcel";
+import ImportXML from "./view/ImportXML";
+import ImportMysql from "./view/ImportMysql";
 export default {
   name: 'App',
-  components: {ImportExcel, afterLogin, A, Login}
+  components: {ImportExcel, afterLogin,  Login,ImportXML,ImportMysql}
 }
 </script>
 

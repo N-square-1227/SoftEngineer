@@ -173,18 +173,18 @@ public class UsersController {
 //            return new R(Code.WORK_OK,"新增书本信息成功！");
 //        }
 //    }
-    /**
+/*    *//**
      * @author xiaxue
      * 主页面上传数据表
      *excel,xml,mysql
      * @return
-     */
+     *//*
     @RequestMapping("/test")
     public ArrayList<Indexsym> test(){
-        /*ArrayList<String> a=new ArrayList<>();
+        *//*ArrayList<String> a=new ArrayList<>();
         a.add("a");
         a.add("b");
-        a.add("c");*/
+        a.add("c");*//*
         ArrayList<Indexsym> temp= (ArrayList<Indexsym>) indexSymMapper.selectList(null);
         System.out.println(temp);
         return temp;
@@ -195,6 +195,10 @@ public class UsersController {
         List<Indexsym> temp=indexSymService.selectAll();;
 
         return temp;
+    }*/
+    @RequestMapping("/test3")
+    public String test3(){
+        return "temp";
     }
 
 }

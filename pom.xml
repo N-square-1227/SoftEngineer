@@ -51,6 +51,17 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.17</version>
+        </dependency>
+
 
         <!--spring2.X集成redis所需common-pool12-->
         <dependency>
@@ -64,6 +75,15 @@
             <artifactId>httpcore</artifactId>
             <version>4.4.12</version>
         </dependency>
+        <!--上传文件依赖-->
+        <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
