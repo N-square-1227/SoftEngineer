@@ -12,5 +12,5 @@ import java.util.List;
  **/
 @Mapper
 public interface IndexSymMapper extends BaseMapper<Node> {
-    List<Node> getIndex();
+    List<Node> getIndex(String table_name);
 }

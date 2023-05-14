@@ -46,27 +46,27 @@ public class IndexSymController {
      * 页面和后台会输出加载进来的指标体系
      **/
     @GetMapping("/loadIndexSym")
-    private List<Node> load_indexsym() {
-        indexSym.setNodeList(indexSymService.getIndex());
-        for(int i = 0; i < indexSym.getNodeList().size(); i ++)
-            System.out.println(indexSym.getNodeList().get(i));
+    private List<Node> load_indexsym(String table_name) {
+        indexSym.setNodeList(indexSymService.getIndex(table_name));
+//        for(int i = 0; i < indexSym.getNodeList().size(); i ++)
+//            System.out.println(indexSym.getNodeList().get(i));
         return indexSym.getNodeList();
     }
 
     @GetMapping("/loadData")
-    private List<Sample> load_data() {
-        data = sampleService.getData();
+    private List<Sample> load_data(String table_name) {
+        data = sampleService.getData(table_name);
         return data;
     }
 
     @GetMapping("/loadColumnNames")
-    private List<String> load_columnNames() {
-        return sampleService.getColName();
+    private List<String> load_columnNames(String table_name) {
+        return sampleService.getColName(table_name);
     }
 
     @GetMapping("/usePCA")
     public boolean use_PCA() {
-        load_data();
+        load_data("indexsym");
         PCA pca = new PCA();
         return true;
     }

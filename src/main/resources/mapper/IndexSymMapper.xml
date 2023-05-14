@@ -3,7 +3,7 @@
 <mapper namespace="com.se.softengineer.mapper.IndexSymMapper">
 
     <select id="getIndex" resultType="com.se.softengineer.entity.Node">
-        select * from indexsym
+        select * from ${table_name}
     </select>
 
 

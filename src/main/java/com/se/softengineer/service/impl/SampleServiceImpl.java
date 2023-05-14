@@ -23,8 +23,8 @@ public class SampleServiceImpl extends ServiceImpl<SampleMapper, Sample> impleme
     SampleMapper sampleMapper;
 
     @Override
-    public List<Sample> getData() {
-        List<HashMap<String, Double>> list = sampleMapper.getData();
+    public List<Sample> getData(String table_name) {
+        List<HashMap<String, Double>> list = sampleMapper.getData(table_name);
         List<Sample> result = new ArrayList<>();
         for (HashMap<String, Double> map : list) {
 //            System.out.println(map.values());
@@ -36,7 +36,7 @@ public class SampleServiceImpl extends ServiceImpl<SampleMapper, Sample> impleme
     }
 
     @Override
-    public List<String> getColName(){
-        return sampleMapper.getColName();
+    public List<String> getColName(String table_name){
+        return sampleMapper.getColName(table_name);
     }
 }

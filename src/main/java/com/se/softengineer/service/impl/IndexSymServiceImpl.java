@@ -18,10 +18,9 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, Node> imple
     @Resource
     private IndexSymMapper indexSymMapper;
 
-
     @Override
     /* 读取indexsym数据表中的所有指标 */
-    public List<Node> getIndex() {
-        return indexSymMapper.getIndex();
+    public List<Node> getIndex(String table_name) {
+        return indexSymMapper.getIndex(table_name);
     }
 }

@@ -10,5 +10,5 @@ import java.util.List;
  * 试试springBoot
  **/
 public interface IndexSymService extends IService<Node> {
-    List<Node> getIndex();
+    List<Node> getIndex(String table_name);
 }

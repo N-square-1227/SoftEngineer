@@ -11,13 +11,13 @@ import java.util.List;
 
 /**
  * by wxy
- * 试试springboot
+ * 映射数据的文件（一行一个Sample)
  **/
 @Mapper
 public interface SampleMapper extends BaseMapper<Sample> {
 
-    List<HashMap<String, Double>> getData();     // 我也不知道为啥要这样写，反正能获取
+    List<HashMap<String, Double>> getData(String table_name);     // 我也不知道为啥要这样写，反正能获取
 
-    List<String> getColName();
+    List<String> getColName(String table_name);
 
 }

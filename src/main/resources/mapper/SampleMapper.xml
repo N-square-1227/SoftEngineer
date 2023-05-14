@@ -6,14 +6,14 @@
     <select id="getColName" resultType="string">
         SELECT COLUMN_NAME
         FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_NAME = "data"
+        WHERE TABLE_NAME = "${table_name}"
     </select>
 
     <resultMap id="dataMap" type="com.se.softengineer.entity.Sample">
         <collection ofType="java.lang.Double" property="data"/>
     </resultMap>
     <select id="getData" resultType="java.util.LinkedHashMap">
-        SELECT * FROM data
+        SELECT * FROM ${table_name}
     </select>
 
 </mapper>

@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface SampleService extends IService<Sample> {
 
-    List<Sample> getData();
-    List<String> getColName();
+    List<Sample> getData(String table_name);
+    List<String> getColName(String table_name);
 }
