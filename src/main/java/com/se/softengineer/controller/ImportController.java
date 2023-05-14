@@ -11,15 +11,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.naming.ConfigurationException;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -46,15 +48,24 @@ public class ImportController {
     //每个用户都有一个tableName
     public static String indexSymTableName;
 
+    public static String filesName;
     @Autowired
     private IndexSymService indexSymService;
 
     @Autowired
     private IndexSymMapper indexSymMapper;
+
+    /**
+     * @author xiaxue
+     * @param file
+     * @throws IOException
+     */
     @PostMapping(value = "/excel")
     //@RequestParam("file") MultipartFile file
     public void uploadFileByExcel(@RequestParam(value = "file",required = false) MultipartFile file) throws IOException {
         String filename = file.getOriginalFilename();
+        filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
+        System.out.println(filesName);
         //保存到本地
         String filePath = savaFileByNio((FileInputStream) file.getInputStream(), filename);
         List<String[]> l=AnalyExcel.readExcelFile(file,1);
@@ -62,12 +73,18 @@ public class ImportController {
         //keepData(l);
     }
 
+    /**
+     * @author xiaxue
+     * @param fis
+     * @param fileName
+     * @return
+     */
     public static String savaFileByNio(FileInputStream fis, String fileName) {
         // 这个路径最后是在: 你的项目路径/FileSpace  也就是和src同级
         String path = "D:\\seData\\"+fileName;
         // 判断父文件夹是否存在
         File file = new File(path);
-        System.out.println(file.getPath());
+        //System.out.println(file.getPath());
         if (file.getParentFile() != null || !file.getParentFile().isDirectory()) {
             file.getParentFile().mkdirs();
         }
@@ -86,15 +103,67 @@ public class ImportController {
     }
 
 
+    /**
+     * @author xiaxue
+     * @param file
+     */
     @RequestMapping("/xml")
-    public void loadFileByXML(){
+    public void loadFileByXML(@RequestParam(value = "file",required = false) MultipartFile file) throws IOException {
+        String filename = file.getOriginalFilename();
+       // filesName=filename.substring(filename.charAt(','));
+        filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
+        //保存到本地
+        String filePath = savaFileByNio((FileInputStream) file.getInputStream(), filename);
+        try {
+            // 创建解析器工厂
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = factory.newDocumentBuilder();
+            // 创建一个Document对象
+            Document doc = db.parse(filePath);
+            NodeList indexSymList = doc.getElementsByTagName("node");
+            // 获取节点个数
+            System.out.println("一共有" + indexSymList.getLength() + "结点");
+
+            // 遍历每个book节点
+            for (int i = 0; i < indexSymList.getLength(); i++) {
+                //System.out.println("*******************************");
+                // 索引从零开始
+                org.w3c.dom.Node book = indexSymList.item(i);
+                // 获取book节点所有属性集合
+                org.w3c.dom.NamedNodeMap attrs = book.getAttributes();
+
+                //System.out.println("第" + (i + 1) + "本书共有" + attrs.getLength() + "属性");
+                // 遍历book属性，不知道节点属性和属性名情况
+                for (int j = 0; j < attrs.getLength(); j++) {
+                    // 获取某一个属性
+                    org.w3c.dom.Node attr = attrs.item(j);
+                    //System.out.print("属性名:" + attr.getNodeName());
+                    //System.out.println(" --- 属性值:" + attr.getNodeValue());
+                }
+                List<String[]> l=new ArrayList<>();
+                NodeList childNodes = book.getChildNodes();
+                String[] temp=new String[5];
+                int j=0;
+                for (int k = 0; k < childNodes.getLength(); k++) {
+                    // 区分,去掉空格和换行符
+                    if (childNodes.item(k).getNodeType() == Node.ELEMENT_NODE) {
+                        // 获取element类型的节点和节点值
+                        //System.out.print("节点名：" + childNodes.item(k).getNodeName());
+                        //System.out.print(" --- 节点值：" + childNodes.item(k).getFirstChild().getNodeValue());
+                        //System.out.println(" --- 节点值："+childNodes.item(k).getTextContent());
+                        temp[j++]=childNodes.item(k).getTextContent();
+                        //System.out.println(" --- ："+k+" "+temp[j-1]);
+                    }
+                }
+                cells.add(temp);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
-    @RequestMapping("/mysql")
-    public void loadFileByMysql(){
-
-    }
 
     @RequestMapping("/keepExcel")
     public void keep(){
@@ -106,14 +175,10 @@ public class ImportController {
      */
     public void keepData(List<String[]> list){
         Indexsym t=new Indexsym();
-        //indexSymService.createTable("temp");
-        userName="temp";
-        indexSymTableName=userName+"indexSym";
+        indexSymTableName=filesName+"indexSym";
         indexSymMapper.createTable(indexSymTableName);
-        //System.out.println("xxxxxxxxxxxxxxx");
         for(String[] l:list){
             indexSymMapper.insertIntoTable(indexSymTableName,l[0],Integer.parseInt(l[1]),Double.parseDouble(l[2]),Integer.parseInt(l[3]));
-
         }
     }
 }
