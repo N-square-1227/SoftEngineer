@@ -133,4 +133,13 @@ public class UsersController {
         return usersService.Entropy();
     }
 
+    /**
+     * @author xly
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/kmeans")
+    public boolean kmeans() throws Exception {
+        return usersService.kmeans();
+    }
 }

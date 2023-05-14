@@ -23,7 +23,7 @@ public interface DataMapper extends BaseMapper<data> {
             "`node_weight` double NOT NULL," +
             "`parent_id` int(11) NOT NULL," +
             " PRIMARY KEY (`node_id`) USING BTREE" +
-    " ) ENGINE = InnoDB AUTO_INCREMENT = 160 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;"})
+            " ) ENGINE = InnoDB AUTO_INCREMENT = 160 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;"})
     void createTable(@Param("tableName") String tableName);
 
     /**

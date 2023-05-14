@@ -1,6 +1,9 @@
 package com.se.softengineer.service.impl;
 
 import com.se.softengineer.algorithm.EntropyWeight.Entropy;
+import com.se.softengineer.algorithm.Kmeans.Cluster;
+import com.se.softengineer.algorithm.Kmeans.Implement;
+import com.se.softengineer.algorithm.Kmeans.Point;
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.algorithm.indexsym.Data;
 import com.se.softengineer.algorithm.indexsym.Node;
@@ -13,7 +16,9 @@ import com.se.softengineer.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -92,6 +97,38 @@ public class UsersServiceImpl implements UsersService {
         dataMapper.createTable("nxntest");
         // 将新的指标体系存到数据库的新表里
         return nodeService.insertIntoSheet("nxntest", entropy.getNode());
+    }
+
+    /**
+     * kmeans算法调用
+     * @author xly
+     * @return
+     * @throws Exception
+     */
+    public boolean kmeans() throws Exception {
+        Implement implement = new Implement();
+        Set<Cluster> clusterSet = implement.run();
+        List<Node> nodeList = new ArrayList<>();
+        int centerNum = clusterSet.size();
+        for(int i=1;i<=centerNum;i++){
+            Node node = new Node(i,"father"+i,1,1.0,0);
+            nodeList.add(node);
+        }
+        int num = 1,i=1;
+        for(Cluster cluster:clusterSet){
+            List<Point> pointList = cluster.getMembers();
+            for(Point point:pointList){
+                Node node = new Node(centerNum+1,"X"+i,1,1.0,num);
+                nodeList.add(node);
+                centerNum += 1;
+                i += 1;
+            }
+            num += 1;
+        }
+        dataMapper.dropExistTable("xlytest");
+        dataMapper.createTable("xlytest");
+        // 将新的指标体系存到数据库的新表里
+        return nodeService.insertIntoSheet("xlytest", nodeList);
     }
 
 //    /**
