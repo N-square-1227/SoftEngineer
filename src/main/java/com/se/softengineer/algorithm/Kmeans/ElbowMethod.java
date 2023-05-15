@@ -1,15 +1,9 @@
 package com.se.softengineer.algorithm.Kmeans;
 
-import com.se.softengineer.algorithm.indexsym.Data;
-import com.se.softengineer.algorithm.trydatabase.TestMySQL;
 import com.se.softengineer.entity.Sample;
-import org.apache.commons.math3.ml.clustering.CentroidCluster;
-import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -20,7 +14,6 @@ public class ElbowMethod {
 
     public int getOptimalK(int maxK, List<Sample> sampleList) throws Exception {
         double[] wssList = new double[maxK];
-        TestMySQL testMySQL = new TestMySQL();
         for (int k = 2; k <= maxK; k++) {
             Kmeans kRun = new Kmeans(k,sampleList);
             Set<Cluster> clusterSet = kRun.run();

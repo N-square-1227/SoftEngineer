@@ -7,14 +7,6 @@ import com.se.softengineer.entity.Users;
  **/
 public interface UsersService {
 
-//    /**
-//     * 书城条件分页查询
-//     * @param page
-//     * @param wrapper
-//     * @return
-//     */
-//    Page<Book> selectPage(Page<Book> page, QueryWrapper<Book> wrapper);
-
     /**
      * 增加一个用户的信息
      * @param users 用户实体
@@ -22,32 +14,6 @@ public interface UsersService {
      */
     int addUsersInfo(Users users);
 
-    /**
-     * @Author 南希诺
-     * @create 2023.5.10
-     * 熵权法
-     * @return 成功处理 true，else false
-     */
-    boolean Entropy() throws Exception;
-    boolean runkmeans() throws Exception;
-//    /**
-//     * 根据 id 获取书本信息
-//     * @param id
-//     * @return
-//     */
-//    Book getOneBook(Integer id);
 
-//    /**
-//     * 删除一个用户
-//     * @param book
-//     * @return
-//     */
-//    int deleteOneBook(Book book);
-//
-//    /**
-//     * 修改一本书的信息
-//     * @param book
-//     * @return
-//     */
-//    int updOneBook(Book book);
+
 }

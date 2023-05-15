@@ -1,11 +1,14 @@
 package com.se.softengineer.controller;
 
+import com.se.softengineer.algorithm.EntropyWeight.Entropy;
+import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.algorithm.pca.PCA;
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.Node;
 import com.se.softengineer.entity.Sample;
+import com.se.softengineer.service.NodeService;
+import com.se.softengineer.service.OptimizeService;
 import com.se.softengineer.service.SampleService;
-import com.se.softengineer.service.IndexSymService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,13 +27,18 @@ import java.util.List;
 public class IndexSymController {
 
     @Autowired
-    private IndexSymService indexSymService;
+    private NodeService nodeService;
 
     @Autowired
     private SampleService sampleService;
 
+    @Autowired
+    private OptimizeService optimizeService;
+
     private IndexSym indexSym = new IndexSym();
     private List<Sample> data = new ArrayList<>();
+
+    private List<String> columnList = new ArrayList<>();
 
     /**by wxy
      * Just for test
@@ -47,7 +55,7 @@ public class IndexSymController {
      **/
     @GetMapping("/loadIndexSym")
     private List<Node> load_indexsym(String table_name) {
-        indexSym.setNodeList(indexSymService.getIndex(table_name));
+        indexSym.setNodeList(nodeService.getIndex(table_name));
 //        for(int i = 0; i < indexSym.getNodeList().size(); i ++)
 //            System.out.println(indexSym.getNodeList().get(i));
         return indexSym.getNodeList();
@@ -71,7 +79,8 @@ public class IndexSymController {
      **/
     @GetMapping("/loadColumnNames")
     private List<String> load_columnNames(String table_name) {
-        return sampleService.getColName(table_name);
+        columnList = sampleService.getColName(table_name);
+        return columnList;
     }
 
     /**
@@ -81,23 +90,33 @@ public class IndexSymController {
      * http://localhost:8877/indexsym/usePCA?indexsym_name=indexsym&&data_tablename=data
      * 后面也可以改成PostMapping
      **/
-    @GetMapping("/usePCA")
+    @GetMapping("/pca")
     public IndexSym use_PCA(String indexsym_name, String data_tablename) {
-        load_data(data_tablename);
-        load_indexsym(indexsym_name);
-        List<Node> leaves = indexSym.get_leaves();
-        PCA pca = new PCA(data);
-        pca.solve();
-        for(int i = 0; i < pca.getFactor_num(); i ++) {
-            List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(pca.getNew_sym().getNodeList().get(i).getNodeId());
-            System.out.println(pca.getNew_sym().getNodeList().get(i).getNodeName());
-            for (Integer son_node : son_nodes) {
-                /* 第idx个叶子节点*/
-                int idx = Integer.parseInt(pca.getNew_sym().getNodeList().get(son_node - 1).getNodeName());
-                pca.getNew_sym().getNodeList().get(son_node - 1).setNodeName(leaves.get(idx - 1).getNodeName());
-            }
-        }
-        return pca.getNew_sym();
+        return optimizeService.pca(indexsym_name, data_tablename);
+    }
+
+    /**
+     * @Author 南希诺
+     * @create 2023.5.10
+     * 熵权法
+     * http://localhost:8877/indexsym/entropy?indexsym_name=indexsym&&data_tablename=data
+     * @return
+     */
+    @GetMapping("/entropy")
+    public boolean use_entropy(String indexsym_name, String data_tablename) throws Exception {
+        return optimizeService.entropy(indexsym_name, data_tablename);
+    }
+
+    /**
+     * kmeans算法调用
+     * @author xly
+     * @return
+     * http://localhost:8877/indexsym/kmeans?indexsym_name=indexsym&&data_tablename=data
+     * @throws Exception
+     */
+    @GetMapping("/kmeans")
+    public boolean use_kmeans(String indexsym_name, String data_tablename) throws Exception {
+        return optimizeService.kmeans(indexsym_name, data_tablename);
     }
 
 }

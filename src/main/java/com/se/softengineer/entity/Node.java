@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
  **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Node {
+public class Node implements Comparable<Node>{
 
     @TableId(value = "node_id",type= IdType.AUTO)
     private Integer nodeId;
@@ -41,5 +41,12 @@ public class Node {
         this.nodeWeight = nodeWeight;
         this.parentID = parentID;
     }
+
+    @Override
+    //如果该点到原点的距离大于o点到原点的距离，则该点大于o点
+    public int compareTo(Node o) {
+        return (this.nodeWeight > o.nodeWeight) ? 1 : ((this.nodeWeight == o.nodeWeight) ? 0 : -1);
+    }
+
 }
 

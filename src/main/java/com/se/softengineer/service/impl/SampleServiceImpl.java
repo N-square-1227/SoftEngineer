@@ -35,4 +35,5 @@ public class SampleServiceImpl extends ServiceImpl<SampleMapper, Sample> impleme
     public List<String> getColName(String table_name){
         return sampleMapper.getColName(table_name);
     }
+
 }

@@ -1,10 +1,8 @@
 package com.se.softengineer.algorithm.Kmeans;
 
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
-import com.se.softengineer.algorithm.indexsym.Data;
 import com.se.softengineer.entity.Sample;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -14,8 +12,8 @@ public class Kmeans {
     /**
      * data中每一列的值为每个点的坐标
      */
-    private static List<Sample> datas;
-    private static List<Point> pointList;//存放原始数据集构成的点集
+    private List<Sample> datas;
+    private List<Point> pointList;//存放原始数据集构成的点集
     private DistanceCompute disC = new DistanceCompute();
 
     private int kNum;       //簇的数目
@@ -24,14 +22,13 @@ public class Kmeans {
     private int len = 0;    //每个数据点的维度
     private Double disdiff = (Double) 0.01;//单次迭代终止体哦阿健，两次运行中类中心的距离差
     //处理数据的类
-    public DataNumpy dataNumpy;
 
     public Kmeans(int k,List<Sample> datas){
         //首先对数据矩阵专职，每一行数据中的值对应每一个点的坐标
         List<List<Double>> data= new ArrayList<>();
         this.datas = datas;
         data = getDataList();
-        dataNumpy.transposition(data);
+        DataNumpy.transposition(datas);
         this.kNum = k;
         this.len = data.get(0).size();
         Init(data);

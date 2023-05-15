@@ -12,8 +12,13 @@
     <resultMap id="dataMap" type="com.se.softengineer.entity.Sample">
         <collection ofType="java.lang.Double" property="data"/>
     </resultMap>
-    <select id="getData" resultType="java.util.LinkedHashMap">
+    <select id="getData" resultType="java.util.LinkedHashMap" parameterType="String">
         SELECT * FROM ${table_name}
     </select>
+
+
+    <update id="dropExistTable">
+        DROP TABLE IF EXISTS ${tableName}
+    </update>
 
 </mapper>
