@@ -35,7 +35,8 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.47</version>
+            <!-- 原来是5.1.多少，但是我本地报错了-->
+            <version>8.0.22</version>
         </dependency>
 
         <!--lombok-->
@@ -72,13 +73,11 @@
             <version>3.6.1</version>
         </dependency>
 
-        <!--Weka包实现Kmeans算法-->
         <dependency>
-            <groupId>nz.ac.waikato.cms.weka</groupId>
-            <artifactId>weka-stable</artifactId>
-            <version>3.8.5</version>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.1.13</version>
         </dependency>
-
 
     </dependencies>
 
@@ -101,7 +100,6 @@
         <!-- 报错Invalid bound statement (not found): com.se.softengineer.mapper.IndexSymMapper.getIndex-->
         <!-- 应该是方法没有映射我猜 -->
         <!-- by wxy -->
-        <!-- 如果不添加此节点mybatis的mapper.xml文件都会被漏掉。 -->
         <resources>
             <resource>
                 <directory>src/main/java</directory>
@@ -122,4 +120,5 @@
         </resources>
 
     </build>
+
 </project>

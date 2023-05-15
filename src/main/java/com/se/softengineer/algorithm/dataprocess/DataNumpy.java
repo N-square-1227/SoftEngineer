@@ -1,9 +1,9 @@
 package com.se.softengineer.algorithm.dataprocess;
 
-import com.se.softengineer.algorithm.indexsym.Data;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.se.softengineer.entity.Sample;
 import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
@@ -19,14 +19,14 @@ public class DataNumpy {
     /**
      * 单拎出来写了个函数，感觉用的还挺多
      **/
-    public static double[][] data_matrix(List<List<Double>> data, int row_num, int col_num) {
+    public static double[][] data_matrix(List<Sample> data, int row_num, int col_num) {
         /* 二维数组比较好还是List比较好我也不知道 */
         double[][] data_matrix = new double[row_num][col_num];
 
         /* 先放到二维数组里存起来，二维数据方便就方便在可以下标遍历 */
         for(int i = 0; i < row_num; i ++)
             for(int j = 0; j < col_num; j ++)
-                data_matrix[i][j] = data.get(i).get(j);
+                data_matrix[i][j] = data.get(i).getData().get(j);
 
         return data_matrix;
     }
@@ -37,11 +37,11 @@ public class DataNumpy {
      * 那个线性代数的就是求一列的的均值方差啥的
      * 一会转置一会不转置的，要不还是数组存吧
      **/
-    public static double[][] normalize(List<List<Double>> data) {
+    public static double[][] normalize(List<Sample> data) {
         int row_num = data.size();       // 行数，就是第一重List的size，未转之前应该是sample_num
         int col_num;
         try {
-            col_num = data.get(0).size(); // 列数，就是第二重List中元素的个数，未转置前应该是index_num
+            col_num = data.get(0).getData().size(); // 列数，就是第二重List中元素的个数，未转置前应该是index_num
         }
         catch (IndexOutOfBoundsException e) {
             row_num = 0;
@@ -82,7 +82,7 @@ public class DataNumpy {
      * 就是对矩阵做转置(除了遍历好像没什么简单的办法了),只能做O(mn)的
      * 有好的方法跟我说一声
      **/
-    public static void transposition(List<List<Double>> data) {
+    public static void transposition(List<Sample> data) {
         // Java里没有很明显的方法区分值传参还是引用传参
         // 但是据说自定义Object的传参是引用传参, 所以试一下
 
@@ -91,7 +91,7 @@ public class DataNumpy {
         int row_num = data.size();       // 行数，就是第一重List的size，未转之前应该是sample_num
         int col_num;
         try {
-            col_num = data.get(0).size(); // 列数，就是第二重List中元素的个数，未转置前应该是index_num
+            col_num = data.get(0).getData().size(); // 列数，就是第二重List中元素的个数，未转置前应该是index_num
         }
         catch (IndexOutOfBoundsException e) {
             row_num = 0;
@@ -101,26 +101,18 @@ public class DataNumpy {
 
         data.clear();
 
-        List<List<Double>> new_data = new ArrayList<>();
+        RealMatrix transpose = (new Array2DRowRealMatrix(data_matrix).transpose());
 
-        /* 把data的List<List> 变成里面的List是指标，外面的List是样本 */
-        for(int j = 0; j < col_num; j ++) {
-            List<Double> sample = new ArrayList<>();
-            for(int i = 0; i < row_num; i ++){
-                sample.add(data_matrix[i][j]);
+        col_num = transpose.getColumnDimension();
+        row_num = transpose.getRowDimension();
+
+        for(int i = 0; i <row_num; i ++) {
+            List<Double> index_v = new ArrayList<>();
+            for(int j = 0; j <col_num; j ++){
+                index_v.add(transpose.getData()[i][j]);
             }
-            new_data.add(sample);
+            data.add(new Sample(index_v));
         }
-        data.addAll(new_data);
-        /**
-         * 意思就是这个意思，流程就是先把原来的数据存到二维数组里（方便行列转换直接取下标）
-         * 然后把原本的清空
-         * 转置之后再把新的数据set到对象里
-         *
-         * 问题在于：
-         * 1. 希望的是调用这个函数的时候，Data.transposition(data)，这一行运行完之后data里的List<List>就被转置了
-         * 2. 原本的List<List>被清空了, 不知道是不是保存了capacity信息，可能会有点问题
-         */
     }
 
     /**
@@ -133,14 +125,14 @@ public class DataNumpy {
      * 如果data没有经过转置，也就是说List.get(i)获取到的是第i个样本
      * 那aveList.get(i)计算得到第i个样本多个指标值的list
      **/
-    public static List<Double> average_vector(Data data) {
+    public static List<Double> average_vector(List<Sample> data) {
         List<Double> aveList = new ArrayList<>();
 
         /* 反正是求嵌套的内部List的平均值 */
-        int row_num = data.getData().size();
+        int row_num = data.size();
         int col_num;
         try {
-            col_num = data.getData().get(0).size();
+            col_num = data.get(0).getData().size();
         }
         catch (IndexOutOfBoundsException e) {
             row_num = 0;
@@ -149,7 +141,7 @@ public class DataNumpy {
         for(int i = 0; i <= row_num; i ++) {
             Double sum = 0.0;
             for(int j = 0; j <= col_num; j ++) {
-                sum += data.getData().get(i).get(j);
+                sum += data.get(i).getData().get(j);
             }
             if(col_num == 0) aveList.add(0.0);
             else aveList.add(sum/col_num);
@@ -222,3 +214,4 @@ public class DataNumpy {
     }
 
 }
+

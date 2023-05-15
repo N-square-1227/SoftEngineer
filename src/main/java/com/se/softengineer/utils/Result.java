@@ -3,21 +3,21 @@ package com.se.softengineer.utils;
 /**
  *
  **/
-public class R {
+public class Result {
 
     private String code;
     private String message;
     private Object data;
 
-    public R() {
+    public Result() {
     }
 
-    public R(String code, String message) {
+    public Result(String code, String message) {
         this.code = Code.WORK_OK;
         this.message = message;
     }
 
-    public R(String code, String message, Object data) {
+    public Result(String code, String message, Object data) {
         this.code = code;
         this.message = message;
         this.data = data;

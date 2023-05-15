@@ -3,7 +3,7 @@ package com.se.softengineer.controller;
 import com.se.softengineer.entity.Users;
 import com.se.softengineer.service.UsersService;
 import com.se.softengineer.utils.Code;
-import com.se.softengineer.utils.R;
+import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -36,33 +36,13 @@ public class UsersController {
      * @return
      */
     @PostMapping("/add-one-user")
-    public R addBookInfo(@RequestBody Users users){
+    public Result addBookInfo(@RequestBody Users users){
         int flag = usersService.addUsersInfo(users);
         if (flag != 1){
-            return new R(Code.WORK_ERR,"新增用户信息失败！");
+            return new Result(Code.WORK_ERR,"新增用户信息失败！");
         }else {
-            return new R(Code.WORK_OK,"新增用户信息成功！");
+            return new Result(Code.WORK_OK,"新增用户信息成功！");
         }
     }
 
-    /**
-     * @Author 南希诺
-     * @create 2023.5.10
-     * 熵权法
-     * @return
-     */
-    @GetMapping("/en")
-    public boolean entropy() throws Exception {
-        return usersService.Entropy();
-    }
-
-    /**
-     * @author xly
-     * @return
-     * @throws Exception
-     */
-    @GetMapping("/kmeans")
-    public boolean kmeans() throws Exception {
-        return usersService.runkmeans();
-    }
 }

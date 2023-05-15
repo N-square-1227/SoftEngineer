@@ -21,4 +21,11 @@ public interface NodeService {
      * @return 成功 T，or F
      */
     boolean insertIntoSheet(String tableName, List<Node> nodeList);
+
+    List<Node> getIndex(String table_name);
+
+    /* by nxn */
+    void createTable(String table_name);
+    /* by nxn */
+    void dropExistTable(String table_name);
 }

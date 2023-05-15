@@ -74,7 +74,7 @@ public class PCA {
          **/
 
         /* 先标准化，标准化那个线性代数的包就是求一列一列的均值和方差，所以不用转置 */
-        RealMatrix normalizedMatrix = new Array2DRowRealMatrix(DataNumpy.normalize(getDataList()));
+        RealMatrix normalizedMatrix = new Array2DRowRealMatrix(DataNumpy.normalize(data));
 
         /* 协方差矩阵 */
         double[][] conv_matrix = DataNumpy.conv_matrix(normalizedMatrix.getData());
@@ -131,18 +131,21 @@ public class PCA {
                 /* 数据不太好感觉 */
                 if(Math.abs(eigenMatrix[j - 1][i]) >= 0.65) {
                     /* 这里的名字先用编号，然后看在哪里换成名字 */
-                    Node node = new Node(id_no, String.valueOf(j), 1, eigenMatrix[j - 1][i]/eigenvalued[i], i + 1);
+                    Node node = new Node(id_no, String.valueOf(j), 1, eigenMatrix[j - 1][i], i + 1);
                     new_sym.addNode(node);
                     id_no ++;
                 }
             }
         }
 
+        /* 权重实际上要重新算的，还没算，不难，先放一下 */
+
         return true;
 
         /**
          * 后面要不要判重啊
          * 就是有没有可能同一个指标对两个因子来说因子载荷矩阵里的那个值都很大
+         * 一般好像不会，0.65是没有了
          */
     }
 }

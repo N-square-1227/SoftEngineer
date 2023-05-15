@@ -6,17 +6,15 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * 南希诺 修改过
- * 指标体系一个节点的信息
- * 有需要再补充或者再改
+ * by wxy
+ * 试试springboot
  **/
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@TableName("indexsym")
+@EqualsAndHashCode(callSuper = false)
 public class Node implements Comparable<Node>{
 
     @TableId(value = "node_id",type= IdType.AUTO)
@@ -25,9 +23,6 @@ public class Node implements Comparable<Node>{
     @TableField("node_name")
     private String nodeName;
 
-    /**
-     *  1 正 0 负
-     */
     @TableField("node_type")
     private Integer nodeType;
 
@@ -35,17 +30,23 @@ public class Node implements Comparable<Node>{
     private Double nodeWeight;
 
     @TableField("parent_id")
-    // 先暂时用 int, 不知道用 id 比较好还是用整个节点比较好
     private Integer parentID;
 
-    // 自定义类排序
-    // 实现Comparable接口中的compareTo方法
-    // 本对象大于比较对象则返回 1
-    // 本对象小于比较对象则返回 -1
-    // 本对象等于比较对象则返回 0
-    @Override
-    public int compareTo(Node o) {
-        return this.nodeWeight.compareTo(o.nodeWeight);
+    public Node() {}
+
+    public Node(int nodeId, String nodeName, int nodeType, double nodeWeight, int parentID) {
+        this.nodeId = nodeId;
+        this.nodeName = nodeName;
+        this.nodeType = nodeType;
+        this.nodeWeight = nodeWeight;
+        this.parentID = parentID;
     }
+
+    @Override
+    //如果该点到原点的距离大于o点到原点的距离，则该点大于o点
+    public int compareTo(Node o) {
+        return (this.nodeWeight > o.nodeWeight) ? 1 : ((this.nodeWeight == o.nodeWeight) ? 0 : -1);
+    }
+
 }
 

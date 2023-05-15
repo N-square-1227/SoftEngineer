@@ -4,14 +4,12 @@ import com.se.softengineer.algorithm.EntropyWeight.Entropy;
 import com.se.softengineer.algorithm.Kmeans.*;
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.algorithm.indexsym.Data;
-import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.Node;
 import com.se.softengineer.algorithm.trydatabase.TestMySQL;
 import com.se.softengineer.entity.Sample;
 import com.se.softengineer.mapper.DataMapper;
 import com.se.softengineer.mapper.UsersMapper;
 import com.se.softengineer.entity.Users;
-import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.NodeService;
 import com.se.softengineer.service.SampleService;
 import com.se.softengineer.service.UsersService;
@@ -37,9 +35,6 @@ public class UsersServiceImpl implements UsersService {
 
     @Autowired
     private SampleService sampleService;
-
-    @Autowired
-    private IndexSymService indexSymService;
 
 //    /**
 //     * 书城条件分页查询
@@ -132,15 +127,11 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public boolean runkmeans() throws Exception {
         List<Sample> sampleList,testList = new ArrayList<>();
-        List<Node> indexList,leafindex = new ArrayList<>();
         //这里的data需要从前端传回来
         sampleList = sampleService.getData("data");
         testList = sampleService.getData("data");
         List<String> columnList = new ArrayList<>();
         columnList = sampleService.getColName("data");
-        indexList = indexSymService.getIndex("indexsym");
-        IndexSym indexSym = new IndexSym(indexList);
-        leafindex = indexSym.get_leaves();//获取叶子节点
 
         //手肘法获取最优K值
         int maxk = columnList.size()/2;
@@ -158,14 +149,14 @@ public class UsersServiceImpl implements UsersService {
             Node node = new Node(i,"father"+i,1,1.0,0);
             nodeList.add(node);
         }
-        int num = 1;
+        int num = 1,i=1;
         for(Cluster cluster:clusterSet){
             List<Point> pointList = cluster.getMembers();
             for(Point point:pointList){
-                int id = point.getId();
-                Node node = new Node(centerNum+1,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),num);
+                Node node = new Node(centerNum+1,"X"+i,1,1.0,num);
                 nodeList.add(node);
                 centerNum += 1;
+                i += 1;
             }
             num += 1;
         }

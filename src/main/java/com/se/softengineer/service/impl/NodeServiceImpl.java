@@ -40,4 +40,21 @@ public class NodeServiceImpl implements NodeService {
         }
         return true;
     }
+
+
+    @Override
+    public void createTable(String table_name) {
+        nodeMapper.createTable(table_name);
+    }
+
+    @Override
+    public void dropExistTable(String table_name) {
+        nodeMapper.dropExistTable(table_name);
+    }
+
+    @Override
+    /* 读取indexsym数据表中的所有指标 */
+    public List<Node> getIndex(String table_name) {
+        return nodeMapper.getIndex(table_name);
+    }
 }
