@@ -36,12 +36,13 @@ public class OptimizeServiceImpl implements OptimizeService {
      * @return
      */
     @Override
-    public boolean entropy(String indexsym_name, String data_tablename) {
+    public IndexSym entropy(String indexsym_name, String data_tablename) {
         Entropy entropy = new Entropy();
 
         //这里的data需要从前端传回来
         List<Sample> data = sampleService.getData(data_tablename);
         List<String> columnList = sampleService.getColName(data_tablename);
+        IndexSym newIndexSym = new IndexSym();
 
         List<List<Double>> dataList = new ArrayList<>();
 
@@ -69,7 +70,9 @@ public class OptimizeServiceImpl implements OptimizeService {
         nodeService.dropExistTable("nxntest");
         nodeService.createTable("nxntest");
         // 将新的指标体系存到数据库的新表里
-        return nodeService.insertIntoSheet("nxntest", entropy.getNode());
+        nodeService.insertIntoSheet("nxntest", entropy.getNode());
+        newIndexSym.setNodeList(entropy.getNode());
+        return newIndexSym;
     }
 
     @Override
@@ -98,9 +101,10 @@ public class OptimizeServiceImpl implements OptimizeService {
      * @throws Exception
      */
     @Override
-    public boolean kmeans(String indexsym_name, String data_tablename) throws Exception {
+    public IndexSym kmeans(String indexsym_name, String data_tablename) throws Exception {
         List<Sample> sampleList,testList = new ArrayList<>();
         List<Node> indexList,leafindex = new ArrayList<>();
+        IndexSym newIndexSym = new IndexSym();
         //这里的data需要从前端传回来
         sampleList = sampleService.getData(data_tablename);
         testList = sampleService.getData(data_tablename);
@@ -140,6 +144,8 @@ public class OptimizeServiceImpl implements OptimizeService {
         nodeService.dropExistTable("xlytest");
         nodeService.createTable("xlytest");
         // 将新的指标体系存到数据库的新表里
-        return nodeService.insertIntoSheet("xlytest", nodeList);
+        nodeService.insertIntoSheet("xlytest", nodeList);
+        newIndexSym.setNodeList(nodeList);
+        return newIndexSym;
     }
 }

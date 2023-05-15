@@ -120,7 +120,7 @@ public class IndexSymController {
      * @return
      */
     @GetMapping("/entropy")
-    public boolean use_entropy(String indexsym_name, String data_tablename) throws Exception {
+    public IndexSym use_entropy(String indexsym_name, String data_tablename) throws Exception {
         return optimizeService.entropy(indexsym_name, data_tablename);
     }
 
@@ -132,7 +132,7 @@ public class IndexSymController {
      * @throws Exception
      */
     @GetMapping("/kmeans")
-    public boolean use_kmeans(String indexsym_name, String data_tablename) throws Exception {
+    public IndexSym use_kmeans(String indexsym_name, String data_tablename) throws Exception {
         return optimizeService.kmeans(indexsym_name, data_tablename);
     }
 
