@@ -1,7 +1,7 @@
-package com.se.softengineer.dao;
+package com.se.softengineer.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.se.softengineer.algorithm.indexsym.Node;
+import com.se.softengineer.entity.Node;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

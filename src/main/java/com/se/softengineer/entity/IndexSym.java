@@ -1,4 +1,6 @@
-package com.se.softengineer.algorithm.indexsym;
+package com.se.softengineer.entity;
+
+import com.se.softengineer.entity.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -2,6 +2,7 @@ package com.se.softengineer.algorithm.Kmeans;
 
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.algorithm.indexsym.Data;
+import com.se.softengineer.entity.Sample;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -13,7 +14,7 @@ public class Kmeans {
     /**
      * data中每一列的值为每个点的坐标
      */
-    private static Data datas;
+    private static List<Sample> datas;
     private static List<Point> pointList;//存放原始数据集构成的点集
     private DistanceCompute disC = new DistanceCompute();
 
@@ -25,22 +26,30 @@ public class Kmeans {
     //处理数据的类
     public DataNumpy dataNumpy;
 
-    public Kmeans(int k,Data datas){
+    public Kmeans(int k,List<Sample> datas){
         //首先对数据矩阵专职，每一行数据中的值对应每一个点的坐标
-        dataNumpy.transposition(datas);
-        this.kNum = k;
+        List<List<Double>> data= new ArrayList<>();
         this.datas = datas;
-        this.len = datas.getData().get(0).size();
-        Init();
+        data = getDataList();
+        dataNumpy.transposition(data);
+        this.kNum = k;
+        this.len = data.get(0).size();
+        Init(data);
+    }
+
+    public List<List<Double>> getDataList() {
+        List<List<Double>> result = new ArrayList<>();
+        for(Sample sample : datas) {
+            result.add(sample.getData());
+        }
+        return result;
     }
 
     /**
      * 初始化数据集
      */
-    private void Init(){
+    private void Init(List<List<Double>> data){
         List<Point> numpointList = new ArrayList<>();
-        List<List<Double>> data = new ArrayList<>();
-        data = datas.getData();
         for(int i=0;i<data.size();i++){
             double[] list = new double[data.get(i).size()];
             for(int j=0;j<data.get(i).size();j++)

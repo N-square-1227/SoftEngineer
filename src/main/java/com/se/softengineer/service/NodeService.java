@@ -1,6 +1,6 @@
 package com.se.softengineer.service;
 
-import com.se.softengineer.algorithm.indexsym.Node;
+import com.se.softengineer.entity.Node;
 
 import java.util.List;
 

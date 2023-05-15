@@ -2,8 +2,8 @@ package com.se.softengineer.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.se.softengineer.algorithm.indexsym.Node;
-import com.se.softengineer.dao.NodeMapper;
+import com.se.softengineer.entity.Node;
+import com.se.softengineer.mapper.NodeMapper;
 import com.se.softengineer.service.NodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

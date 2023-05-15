@@ -29,7 +29,7 @@ public interface UsersService {
      * @return 成功处理 true，else false
      */
     boolean Entropy() throws Exception;
-    boolean kmeans() throws Exception;
+    boolean runkmeans() throws Exception;
 //    /**
 //     * 根据 id 获取书本信息
 //     * @param id

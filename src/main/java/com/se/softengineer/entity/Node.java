@@ -1,4 +1,4 @@
-package com.se.softengineer.algorithm.indexsym;
+package com.se.softengineer.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

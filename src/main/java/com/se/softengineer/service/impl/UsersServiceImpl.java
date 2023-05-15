@@ -1,17 +1,17 @@
 package com.se.softengineer.service.impl;
 
 import com.se.softengineer.algorithm.EntropyWeight.Entropy;
-import com.se.softengineer.algorithm.Kmeans.Cluster;
-import com.se.softengineer.algorithm.Kmeans.Implement;
-import com.se.softengineer.algorithm.Kmeans.Point;
+import com.se.softengineer.algorithm.Kmeans.*;
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.algorithm.indexsym.Data;
-import com.se.softengineer.algorithm.indexsym.Node;
+import com.se.softengineer.entity.Node;
 import com.se.softengineer.algorithm.trydatabase.TestMySQL;
-import com.se.softengineer.dao.DataMapper;
-import com.se.softengineer.dao.UsersMapper;
+import com.se.softengineer.entity.Sample;
+import com.se.softengineer.mapper.DataMapper;
+import com.se.softengineer.mapper.UsersMapper;
 import com.se.softengineer.entity.Users;
 import com.se.softengineer.service.NodeService;
+import com.se.softengineer.service.SampleService;
 import com.se.softengineer.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +32,9 @@ public class UsersServiceImpl implements UsersService {
     private DataMapper dataMapper;
     @Autowired
     private NodeService nodeService;
+
+    @Autowired
+    private SampleService sampleService;
 
 //    /**
 //     * 书城条件分页查询
@@ -69,20 +72,24 @@ public class UsersServiceImpl implements UsersService {
     public boolean Entropy() throws Exception {
         // 初始化算法类
         Entropy entropy = new Entropy();
-        TestMySQL testMySQL = new TestMySQL();
 
-        // todo: 数据表名
-        // 获取 Node （indexsym）表
-        List<List<Double>> data2D = testMySQL.queryData("data");
-        // 转置数组
-        Data data = new Data(data2D);
+        List<Sample> sampleList = new ArrayList<>();
+        List<List<Double>> data = new ArrayList<>();
+        //这里的data需要从前端传回来
+        sampleList = sampleService.getData("data");
+        List<String> columnList = new ArrayList<>();//指标个数
+        columnList = sampleService.getColName("data");
+        for(Sample sample : sampleList) {
+            data.add(sample.getData());
+        }
+
         DataNumpy.transposition(data);
         /* 处理数据并填充到 entropy 中 */
         // 把二维的数据表传进去
-        entropy.setData2D(data.getData());
-        entropy.setStdY2D(data.getData());
+        entropy.setData2D(data);
+        entropy.setStdY2D(data);
         // 指标的个数
-        entropy.setIndexNumber(data.getData().size());
+        entropy.setIndexNumber(columnList.size());
         // 计算每个指标子指标的个数并填充到 entropy 中
         List<Node> node = nodeService.queryNodeList();
         entropy.setNode(node);
@@ -100,14 +107,42 @@ public class UsersServiceImpl implements UsersService {
     }
 
     /**
+     * 南希诺
+     * 把我新的指标体系存到数据库里
+     */
+    public List<Node> saveEntropy() {
+//        QueryWrapper<Node> queryWrapper = new QueryWrapper<>();
+//        return nodeMapper.selectList(queryWrapper);
+        //NodeServiceImpl nodeService = new NodeServiceImpl();
+//        System.out.println(nodeService.queryNodeList());
+        return nodeService.queryNodeList();
+    }
+
+    /**
      * kmeans算法调用
      * @author xly
      * @return
      * @throws Exception
      */
-    public boolean kmeans() throws Exception {
-        Implement implement = new Implement();
-        Set<Cluster> clusterSet = implement.run();
+    @Override
+    public boolean runkmeans() throws Exception {
+        List<Sample> sampleList,testList = new ArrayList<>();
+        //这里的data需要从前端传回来
+        sampleList = sampleService.getData("data");
+        testList = sampleService.getData("data");
+        List<String> columnList = new ArrayList<>();
+        columnList = sampleService.getColName("data");
+
+        //手肘法获取最优K值
+        int maxk = columnList.size()/2;
+        ElbowMethod elbowMethod = new ElbowMethod();
+        int k =elbowMethod.getOptimalK(maxk,testList);
+        System.out.println(columnList.size());
+        System.out.println(k);
+
+        //执行kmeans算法
+        Kmeans kRun = new Kmeans(k,sampleList);
+        Set<Cluster> clusterSet = kRun.run();
         List<Node> nodeList = new ArrayList<>();
         int centerNum = clusterSet.size();
         for(int i=1;i<=centerNum;i++){
@@ -131,96 +166,4 @@ public class UsersServiceImpl implements UsersService {
         return nodeService.insertIntoSheet("xlytest", nodeList);
     }
 
-//    /**
-//     * @Author 南希诺
-//     * @create 2023/5/10
-//     * 从数据库里读出数据，按列读，全部存到一个数组里
-//     * @return 数组
-//     */
-//    public List<List<Double>> getXColumns(Entropy entropy) {
-//        List<List<Double>>  dataList = new ArrayList<>(500);
-////        // todo:指标的个数，这个值在以后需要修改
-////        int indexNumber = entropy.getIndexNumber();
-////        entropy.setIndexNumber(indexNumber);
-//        List<data> allData = dataMapper.selectList(null);
-//
-//        for (int i = 0; i < )
-//        for (int i = 1; i <= indexNumber; ++i) {
-//            // 创建新的 data 类型的查询语句
-//            QueryWrapper<data> queryWrapper = new QueryWrapper<>();
-//            List<Object> objList = dataMapper.selectObjs(queryWrapper);
-//            List<Double> temp = new ArrayList<>();
-//            // todo:给指标的个数赋值
-//            // entropy.setIdxChild(objList.size());
-//            if (objList.size() != 0) {
-//                // 存储值
-//                for (Object o : objList) {
-//                    Double val = Double.valueOf(o.toString());
-//                    temp.add(val);
-//                }
-//                dataList.add(temp);
-//            }
-//        }
-//        return dataList;
-//    }
-
-    /**
-     * 南希诺
-     * 把我新的指标体系存到数据库里
-     */
-    public List<Node> saveEntropy() {
-//        QueryWrapper<Node> queryWrapper = new QueryWrapper<>();
-//        return nodeMapper.selectList(queryWrapper);
-        //NodeServiceImpl nodeService = new NodeServiceImpl();
-//        System.out.println(nodeService.queryNodeList());
-        return nodeService.queryNodeList();
-    }
-
-
-//    /**
-//     * 根据id获取书本信息
-//     *
-//     * @param id
-//     * @return
-//     */
-//    @Override
-//    public Book getOneBook(Integer id) {
-//        Book book = bookMapper.selectById(id);
-//        return book;
-//    }
-
-//    /**
-//     * 删除一本书
-//     *
-//     * @param book
-//     * @return
-//     */
-//    @Override
-//    public int deleteOneBook(Book book) {
-//        Book entity = new Book();
-//        entity.setId(book.getId());
-//        entity.setIsDeleted(1);
-//        entity.setGmtModified(TimeUtil.getTime());
-//        return bookMapper.updateById(entity);
-//    }
-//
-//    /**
-//     * 修改一本书的信息
-//     *
-//     * @param book
-//     * @return
-//     */
-//    @Override
-//    public int updOneBook(Book book) {
-//        Book entity = new Book();
-//        entity.setId(book.getId());
-//        entity.setPicture(book.getPicture());
-//        entity.setName(book.getName());
-//        entity.setIntroduce(book.getIntroduce());
-//        entity.setPublish(book.getPublish());
-//        entity.setAuth(book.getAuth());
-//        entity.setPrice(book.getPrice());
-//        entity.setGmtModified(TimeUtil.getTime());
-//        return bookMapper.updateById(entity);
-//    }
 }

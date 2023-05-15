@@ -1,6 +1,6 @@
 package com.se.softengineer.algorithm.EntropyWeight;
 
-import com.se.softengineer.algorithm.indexsym.Node;
+import com.se.softengineer.entity.Node;
 import lombok.Data;
 
 import java.util.*;

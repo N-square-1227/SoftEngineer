@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.se.softengineer.mapper.SampleMapper">
+
+    <!-- 获取数据表元数据 -->
+    <select id="getColName" resultType="string">
+        SELECT COLUMN_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_NAME = "${table_name}"
+    </select>
+
+    <resultMap id="dataMap" type="com.se.softengineer.entity.Sample">
+        <collection ofType="java.lang.Double" property="data"/>
+    </resultMap>
+    <select id="getData" resultType="java.util.LinkedHashMap">
+        SELECT * FROM ${table_name}
+    </select>
+
+</mapper>
