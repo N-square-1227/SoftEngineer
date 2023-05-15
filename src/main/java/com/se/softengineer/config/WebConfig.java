@@ -21,11 +21,11 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         /*
          * 配置资源映射
-         * 意思是：如果访问的资源路径是以“/images/”开头的，
-         * 就给我映射到本机的“E:/images/”这个文件夹内，去找你要的资源
-         * 注意：E:/images/ 后面的 “/”一定要带上
+         * 意思是：如果访问的资源路径是以“/upload/”开头的，
+         * 就给我映射到本机的“E:/upload/”这个文件夹内，去找你要的资源
+         * 注意：E:/upload/ 后面的 “/”一定要带上
          */
-        registry.addResourceHandler("/images/**")
+        registry.addResourceHandler("/upload/**")
                 .addResourceLocations("file:"+fileSavePath);
     }
 }

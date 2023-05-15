@@ -9,5 +9,4 @@ public class SoftEngineerApplication {
     public static void main(String[] args) {
         SpringApplication.run(SoftEngineerApplication.class, args);
     }
-
 }
