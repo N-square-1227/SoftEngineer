@@ -30,24 +30,5 @@ public interface UsersService {
      */
     boolean Entropy() throws Exception;
     boolean runkmeans() throws Exception;
-//    /**
-//     * 根据 id 获取书本信息
-//     * @param id
-//     * @return
-//     */
-//    Book getOneBook(Integer id);
 
-//    /**
-//     * 删除一个用户
-//     * @param book
-//     * @return
-//     */
-//    int deleteOneBook(Book book);
-//
-//    /**
-//     * 修改一本书的信息
-//     * @param book
-//     * @return
-//     */
-//    int updOneBook(Book book);
 }

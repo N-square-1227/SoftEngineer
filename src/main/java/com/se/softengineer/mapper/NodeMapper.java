@@ -13,7 +13,6 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface NodeMapper extends BaseMapper<Node> {
 
-    //@Options(useGeneratedKeys = true, keyColumn = "node_id")
     @Insert("insert into ${tableName} " +
             "(node_id, node_name, node_type, node_weight, parent_id) " +
             "values (#{nodeId}, #{nodeName}, #{nodeType}, #{nodeWeight}, #{parentID})")
