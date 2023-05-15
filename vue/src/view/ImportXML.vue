@@ -3,9 +3,10 @@
   <el-main style="text-align: center">
     <a  size="mini" class="el-upload__tip">请先下载模板文件，再按照规定格式上传</a>
     <br><br>
+    <el-button type="primary" plain size="mini" @click="download1" style="text-align: center">节点数据模板下载</el-button><br><br>
     <el-button type="primary" plain size="mini" @click="download2" style="text-align: center">指标数据模板下载</el-button><br><br>
-<!--    <a  size="mini" class="el-upload__tip">请先下载模板文件，再按照规定格式上传</a>
-    <br><br>-->
+    <!--    <a  size="mini" class="el-upload__tip">请先下载模板文件，再按照规定格式上传</a>
+        <br><br>-->
     <!--   上传文件 -->
     <el-upload
       accept=".xml"
@@ -17,6 +18,18 @@
     >
       <el-button size="mini" type="primary"  >点击上传结点数据</el-button><br>
       <div slot="tip" size="mini" class="el-upload__tip">只能上传XML文件</div>
+    </el-upload>
+    <br><br>
+    <el-upload
+      accept=".xlsx,.xls"
+      class="upload-demo"
+      action="localhost:8877/import/excel"
+      :http-request="excelUpload"
+      :on-change="handleChange"
+      style="text-align: center"
+    >
+      <el-button size="small" type="primary" >点击上传指标数据</el-button><br>
+      <div slot="tip" class="el-upload__tip">只能上传EXCEL文件</div>
     </el-upload>
 
 

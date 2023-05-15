@@ -2,8 +2,10 @@ package com.se.softengineer.controller;
 
 import com.se.softengineer.dao.IndexSymMapper;
 import com.se.softengineer.entity.Indexsym;
+import com.se.softengineer.mapper.SampleMapper;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.utils.AnalyExcel;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
@@ -47,23 +49,36 @@ public class ImportController {
     public static List<Indexsym> indexSym=new ArrayList<>();
     //每个用户都有一个tableName
     public static String indexSymTableName;
+    public static String indexDataTableName;
 
     public static String filesName;
+
+    //创建指标数据表的sql语句
+    public static String createSql=new String();
+
+    //标记是指标体系文件还是数据文件
+    public static String fileType=new String();
     @Autowired
     private IndexSymService indexSymService;
 
     @Autowired
     private IndexSymMapper indexSymMapper;
 
+    @Autowired
+    private SampleMapper sampleMapper;
+
+
     /**
      * @author xiaxue
      * @param file
      * @throws IOException
      */
-    @PostMapping(value = "/excel")
+    @PostMapping(value = "/excel/{value}")
     //@RequestParam("file") MultipartFile file
-    public void uploadFileByExcel(@RequestParam(value = "file",required = false) MultipartFile file) throws IOException {
+    public void uploadFileByExcel(@RequestParam(value = "file",required = false) MultipartFile file, @PathVariable("value") String v) throws IOException {
         String filename = file.getOriginalFilename();
+        fileType=v;
+        System.out.println("类型："+fileType);
         filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
         System.out.println(filesName);
         //保存到本地
@@ -108,9 +123,10 @@ public class ImportController {
      * @param file
      */
     @RequestMapping("/xml")
-    public void loadFileByXML(@RequestParam(value = "file",required = false) MultipartFile file) throws IOException {
+    public void loadFileByXML(@RequestParam(value = "file",required = false) MultipartFile file, @PathVariable("value") String v) throws IOException {
         String filename = file.getOriginalFilename();
        // filesName=filename.substring(filename.charAt(','));
+        fileType=v;
         filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
         //保存到本地
         String filePath = savaFileByNio((FileInputStream) file.getInputStream(), filename);
@@ -174,11 +190,28 @@ public class ImportController {
      * @param list
      */
     public void keepData(List<String[]> list){
-        Indexsym t=new Indexsym();
-        indexSymTableName=filesName+"indexSym";
-        indexSymMapper.createTable(indexSymTableName);
-        for(String[] l:list){
-            indexSymMapper.insertIntoTable(indexSymTableName,l[0],Integer.parseInt(l[1]),Double.parseDouble(l[2]),Integer.parseInt(l[3]));
+        if(fileType.equals("indexSym")) {
+            //拼接新表名
+            indexSymTableName = filesName + "indexSym";
+            indexSymMapper.createTable(indexSymTableName);
+            for (String[] l : list) {
+                indexSymMapper.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3]));
+            }
+        }else if(fileType.equals("indexdata")){
+            indexDataTableName=filesName+"indexData";
+            //拼接sql语句，因为指标个数不确定。
+            String[] temp=list.get(1);
+            int column=temp.length-1;//指标个数
+            createSql="create table ${tableName}(`id` int NOT NULL AUTO_INCREMENT," +
+                    "  `name` varchar(50) NOT NULL";
+            for(int i=0;i<column;i++){
+                createSql+=","+"x"+i+" double(50,0) NOT NULL";
+            }
+            createSql+="PRIMARY KEY (`id`)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";
+
         }
+        System.out.println("sql语句aaaaaaaaaaa: "+createSql);
+        sampleMapper.createTable(indexDataTableName);
     }
 }

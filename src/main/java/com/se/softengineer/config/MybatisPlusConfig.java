@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
  **/
 @Configuration
 @MapperScan("com.se.softengineer.dao")
+@MapperScan("com.se.softengineer.mapper")
 public class MybatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {

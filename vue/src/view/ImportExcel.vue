@@ -12,7 +12,7 @@
       accept=".xlsx,.xls"
       class="upload-demo"
       action="111"
-      :http-request="excelUpload"
+      :http-request="excelUpload2"
       :on-change="handleChange"
       style="text-align: center"
     >
@@ -27,7 +27,7 @@
       accept=".xlsx,.xls"
       class="upload-demo"
       action="localhost:8877/import/excel"
-      :http-request="excelUpload"
+      :http-request="excelUpload1"
       :on-change="handleChange"
       style="text-align: center"
     >
@@ -60,24 +60,39 @@ export default {
       this.fileList = fileList.slice(-3);
     },
     /*如果直接在el-upload写这一段url地址会出现跨域的问题，所以直接用表单*/
-    excelUpload(file) {
+    excelUpload1(file) {
       let fn=file.name
       console.log(file.file)
       console.log("xxxxxxxx")
       const formData = new FormData()
       formData.append("file",file.file)
-      //https://jsonplaceholder.typicode.com/posts/
       this.$axios({
         method:'post',
         data:formData,
-        url:'http://localhost:8877/import/excel',
+        url:'http://localhost:8877/import/excel/indexdata',
         headers:{'Content-Type': 'multipart/form-data'}
       }).then(function (resp){
         console.log("1111111111111");
       })
 
     },
-    upload(file) {
+    excelUpload2(file) {
+      let fn=file.name
+      console.log(file.file)
+      console.log("xxxxxxxx")
+      const formData = new FormData()
+      formData.append("file",file.file)
+      this.$axios({
+        method:'post',
+        data:formData,
+        url:'http://localhost:8877/import/excel/indexSym',
+        headers:{'Content-Type': 'multipart/form-data'}
+      }).then(function (resp){
+        console.log("1111111111111");
+      })
+
+    },
+/*    upload(file) {
       console.log(file.file)
       let fd = new FormData()
       fd.append('file', this.mode)
@@ -88,9 +103,7 @@ export default {
       }).then(response => {
         console.log(response.data);
       })
-
-
-    },
+    },*/
     download1() {
       let a = document.createElement('a');
       //跳转到github上的页面，再自行下载
@@ -122,10 +135,6 @@ export default {
   },
 
 }
-
-
-
-
 </script>
 
 <style scoped>

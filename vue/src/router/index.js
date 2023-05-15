@@ -17,9 +17,9 @@ export default new Router({
       component:()=>import("../view/ImportExcel")
     },
     {
-      path: '/ImportMysql',
-      name: 'ImportMysql',
-      component:()=>import("../view/ImportMysql")
+      path: '/ImportFiles',
+      name: 'ImportFiles',
+      component:()=>import("../view/ImportFiles")
     },
     {
       path: '/ImportXML',
