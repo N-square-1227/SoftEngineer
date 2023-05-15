@@ -20,4 +20,6 @@ public interface SampleMapper extends BaseMapper<Sample> {
 
     List<String> getColName(String table_name);
 
+    boolean createDataTable(String tableName, List<String> columnList);
+
 }

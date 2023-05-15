@@ -10,5 +10,5 @@ public interface SampleService extends IService<Sample> {
     List<Sample> getData(String table_name);
     List<String> getColName(String table_name);
 
-
+    boolean createDataTable(String tableName, List<String> columnList);
 }

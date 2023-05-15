@@ -16,6 +16,14 @@
         SELECT * FROM ${table_name}
     </select>
 
+    <update id="createDataTable">
+        CREATE TABLE ${tableName} (
+        <foreach collection="columnList" item="column" separator=",">
+            ${column} DOUBLE NOT NULL
+        </foreach>
+        )
+    </update>
+
 
     <update id="dropExistTable">
         DROP TABLE IF EXISTS ${tableName}

@@ -36,4 +36,9 @@ public class SampleServiceImpl extends ServiceImpl<SampleMapper, Sample> impleme
         return sampleMapper.getColName(table_name);
     }
 
+    @Override
+    public boolean createDataTable(String tableName, List<String> columnList) {
+        return sampleMapper.createDataTable(tableName, columnList);
+    }
+
 }

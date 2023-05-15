@@ -73,8 +73,25 @@ public class IndexSymController {
     }
 
     /**
+     * 根据指标体系生成对应的数据表（叶子节点是表头
+     * @param table_name 指标体系表
+     * @return 是否成功建表（啊？？怎么成功建了表return回来的是false啊
+     * http://localhost:8877/indexsym/create_data_table?table_name=indexsym
+     */
+    @GetMapping("/create_data_table")
+    private boolean create_data_table(String table_name) {
+        load_indexsym(table_name);
+        indexSym.get_leaves();
+        int leaf_num = indexSym.getLeaf_num();
+        List<String> columnNames = new ArrayList<>();
+        for(int i = 1; i <= leaf_num; i ++)
+            columnNames.add("X" + i);
+        return sampleService.createDataTable(table_name+"_data", columnNames);
+    }
+
+    /**
      * 获取指定数据表的列名List
-     * http://localhost:8877/indexsym/usePCA?table_name=index
+     * http://localhost:8877/indexsym/loadColumnNames?table_name=indexsym
      * 后面也可以改成PostMapping
      **/
     @GetMapping("/loadColumnNames")
