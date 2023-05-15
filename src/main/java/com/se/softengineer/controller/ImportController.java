@@ -56,6 +56,16 @@ public class ImportController {
     //创建指标数据表的sql语句
     public static String createSql=new String();
 
+    static{
+        createSql="create table ${tableName}(`id` int NOT NULL AUTO_INCREMENT," +
+                "  `name` varchar(50) NOT NULL";
+        for(int i=0;i<50;i++){
+            createSql+=","+"x"+i+" double(50,0) NOT NULL";
+        }
+        createSql+="PRIMARY KEY (`id`)" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";
+
+    }
     //标记是指标体系文件还是数据文件
     public static String fileType=new String();
     @Autowired
@@ -198,20 +208,21 @@ public class ImportController {
                 indexSymMapper.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3]));
             }
         }else if(fileType.equals("indexdata")){
-            indexDataTableName=filesName+"indexData";
+            indexDataTableName=filesName+"IndexData";
             //拼接sql语句，因为指标个数不确定。
             String[] temp=list.get(1);
             int column=temp.length-1;//指标个数
-            createSql="create table ${tableName}(`id` int NOT NULL AUTO_INCREMENT," +
+            /*createSql="create table ${tableName}(`id` int NOT NULL AUTO_INCREMENT," +
                     "  `name` varchar(50) NOT NULL";
             for(int i=0;i<column;i++){
                 createSql+=","+"x"+i+" double(50,0) NOT NULL";
             }
             createSql+="PRIMARY KEY (`id`)" +
-                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";*/
+
+            System.out.println("sql语句aaaaaaaaaaa: "+createSql);
+            //sampleMapper.createTable(indexDataTableName);
 
         }
-        System.out.println("sql语句aaaaaaaaaaa: "+createSql);
-        sampleMapper.createTable(indexDataTableName);
     }
 }

@@ -12,26 +12,32 @@
       accept=".xml"
       class="upload-demo"
       action="111"
+      ref="clearAll1"
       :http-request="excelUpload"
       :on-change="handleChange"
       style="text-align: center"
     >
-      <el-button size="mini" type="primary"  >点击上传结点数据</el-button><br>
-      <div slot="tip" size="mini" class="el-upload__tip">只能上传XML文件</div>
+      <el-button size="mini" type="primary"  >选择结点数据文件</el-button><br>
     </el-upload>
+    <el-tooltip class="item" effect="dark" content="结点数据仅支持XML导入" placement="top-start">
+      <el-button type="submit" size="mini" @click="jumpBehind">上传</el-button>
+    </el-tooltip>
     <br><br>
     <el-upload
       accept=".xlsx,.xls"
       class="upload-demo"
+      ref="clearAll2"
       action="localhost:8877/import/excel"
       :http-request="excelUpload"
       :on-change="handleChange"
       style="text-align: center"
     >
-      <el-button size="small" type="primary" >点击上传指标数据</el-button><br>
-      <div slot="tip" class="el-upload__tip">只能上传EXCEL文件</div>
+      <el-button size="small" type="primary" >选择指标数据文件</el-button><br>
     </el-upload>
-
+    <el-tooltip class="item" effect="dark" content="指标数据仅支持excel导入" placement="top-start">
+      <el-button type="submit" size="mini" @click="jumpBehind">上传</el-button>
+    </el-tooltip>
+    <el-button type="submit" size="mini" @click="clearAll1();clearAll2()">再次上传(reset)</el-button>
 
     <!--    <el-form-item>-->
 <!--    指标数据不用xml方式上传-->
@@ -129,6 +135,14 @@ export default {
         method:'get',
         url:'http://localhost:8877/import/keepExcel'
       })
+    },
+    clearAll1(){
+      this.$refs.clearAll1.clearFiles();
+      //this.$router.push('/ImportExcel')
+    },
+    clearAll2(){
+      this.$refs.clearAll2.clearFiles();
+      //this.$router.push('/ImportExcel')
     }
 
   },
