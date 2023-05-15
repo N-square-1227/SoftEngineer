@@ -100,11 +100,15 @@ public class OptimizeServiceImpl implements OptimizeService {
     @Override
     public boolean kmeans(String indexsym_name, String data_tablename) throws Exception {
         List<Sample> sampleList,testList = new ArrayList<>();
+        List<Node> indexList,leafindex = new ArrayList<>();
         //这里的data需要从前端传回来
         sampleList = sampleService.getData(data_tablename);
         testList = sampleService.getData(data_tablename);
         List<String> columnList = new ArrayList<>();
         columnList = sampleService.getColName(data_tablename);
+        indexList = nodeService.getIndex(indexsym_name);
+        IndexSym indexSym = new IndexSym(indexList);
+        leafindex = indexSym.get_leaves();//获取叶子节点
 
         //手肘法获取最优K值
         int maxk = columnList.size()/2;
@@ -122,14 +126,14 @@ public class OptimizeServiceImpl implements OptimizeService {
             Node node = new Node(i,"father"+i,1,1.0,0);
             nodeList.add(node);
         }
-        int num = 1,i=1;
+        int num = 1;
         for(Cluster cluster:clusterSet){
             List<Point> pointList = cluster.getMembers();
             for(Point point:pointList){
-                Node node = new Node(centerNum+1,"X"+i,1,1.0,num);
+                int id = point.getId();
+                Node node = new Node(centerNum+1,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),num);
                 nodeList.add(node);
                 centerNum += 1;
-                i += 1;
             }
             num += 1;
         }
