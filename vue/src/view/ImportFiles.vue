@@ -1,4 +1,5 @@
 <template>
+  <div style="position: fixed">
   <el-main style="text-align: center" >
     <el-select v-model="value" placeholder="选择导入指标体系数据方式" @change="getValue" style="text-align: center;width: 250px">
       <el-option
@@ -14,6 +15,7 @@
     </el-tooltip>
 
   </el-main>
+  </div>
 </template>
 
 <script>
@@ -48,6 +50,8 @@ export default {
       if(values=="xml"){
         this.$router.push({name:'ImportXML',params: {values}})
       }
+      if(values=="json"){}
+      this.$router.push({name:'/ImportJson',params: {values}})
     }
   }
 }

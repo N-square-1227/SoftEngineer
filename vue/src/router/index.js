@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import Vue from 'vue'
 import Router from 'vue-router'
 
@@ -7,31 +6,6 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
-    {
-      path: '/afterLogin',
-      name: 'afterLogin',
-      component:()=>import("../view/afterLogin")
-    },
-    {
-      path: '/ImportExcel',
-      name: 'ImportExcel',
-      component:()=>import("../view/ImportExcel")
-    },
-    {
-      path: '/ImportFiles',
-      name: 'ImportFiles',
-      component:()=>import("../view/ImportFiles")
-    },
-    {
-      path: '/ImportXML',
-      name: 'ImportXML',
-      component:()=>import("../view/ImportXML")
-    },
-    {
-      path:'/',
-      name:'Login',
-      component:()=>import('../components/Login')
-    },
     {
       path:'/UserHomePage',
       name:'UserHomePage',
@@ -52,34 +26,44 @@ export default new Router({
           path: '/ImportFiles',
           name: 'ImportFiles',
           component:()=>import("../components/User/ImportFiles.vue")
-        }
+        },{
+          path: '/afterLogin',
+          name: 'afterLogin',
+          component:()=>import("../view/afterLogin")
+        },
+        {
+          path: '/ImportExcel',
+          name: 'ImportExcel',
+          component:()=>import("../view/ImportExcel")
+        },
+        {
+          path: '/ImportFiles',
+          name: 'ImportFiles',
+          component:()=>import("../view/ImportFiles")
+        },
+        {
+          path: '/ImportXML',
+          name: 'ImportXML',
+          component:()=>import("../view/ImportXML")
+        },
+        {
+          path: '/ImportJson',
+          name: 'ImportJson',
+          component:()=>import("../components/User/ImportJson")
+        },
+
       ]
-    },
-    {
-      path:'/AdminHomePage',
-      name:'AdminHomePage',
-      component:()=>import('../components/AdminHomePage')
     },
     {
       path:'/Register',
       name:'Register',
       component:()=>import('../components/Register')
-    },
+    } ,
     {
-      path: '/ImportExcel',
-      name: 'ImportExcel',
-      component:()=>import("../components/User/ImportExcel")
+      path:'/',
+      name:'Login',
+      component:()=>import('../components/Login')
     },
-    {
-      path: '/ImportXML',
-      name: 'ImportXML',
-      component:()=>import("../components/User/ImportXML")
-    },
-    {
-      path: '/ImportJson',
-      name: 'ImportJson',
-      component:()=>import("../components/User/ImportJson")
-    }
 
   ]
 })

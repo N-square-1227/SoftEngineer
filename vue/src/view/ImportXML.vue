@@ -1,5 +1,5 @@
 <template>
-
+<div>
   <el-main style="text-align: center">
     <a  size="mini" class="el-upload__tip">请先下载模板文件，再按照规定格式上传</a>
     <br><br>
@@ -13,11 +13,11 @@
       class="upload-demo"
       action="111"
       ref="clearAll1"
-      :http-request="excelUpload"
+      :http-request="excelUpload1"
       :on-change="handleChange"
       style="text-align: center"
     >
-      <el-button size="mini" type="primary"  >选择结点数据文件</el-button><br>
+      <el-button size="mini" type="primary"  >选择结点数据文件</el-button><br><br>
     </el-upload>
     <el-tooltip class="item" effect="dark" content="结点数据仅支持XML导入" placement="top-start">
       <el-button type="submit" size="mini" @click="jumpBehind">上传</el-button>
@@ -28,37 +28,24 @@
       class="upload-demo"
       ref="clearAll2"
       action="localhost:8877/import/excel"
-      :http-request="excelUpload"
+      :http-request="excelUpload2"
       :on-change="handleChange"
       style="text-align: center"
     >
-      <el-button size="small" type="primary" >选择指标数据文件</el-button><br>
+      <el-button size="small" type="primary" >选择指标数据文件</el-button><br><br>
     </el-upload>
     <el-tooltip class="item" effect="dark" content="指标数据仅支持excel导入" placement="top-start">
       <el-button type="submit" size="mini" @click="jumpBehind">上传</el-button>
     </el-tooltip>
-    <el-button type="submit" size="mini" @click="clearAll1();clearAll2()">再次上传(reset)</el-button>
-
-    <!--    <el-form-item>-->
-<!--    指标数据不用xml方式上传-->
-<!--    <br><br>
-    <el-upload
-      class="upload-demo"
-      action="localhost:8877/import/excel"
-      :http-request="excelUpload"
-      :on-change="handleChange"
-      style="text-align: center"
-    >
-      <el-button size="small" type="primary" >点击上传指标数据</el-button><br>
-      <div slot="tip" class="el-upload__tip">只能上传XML文件</div>
-    </el-upload>-->
     <br><br>
-    <el-button type="submit" size="mini" @click="jumpBehind">上传</el-button>
-    <el-button size="mini">取消</el-button>
+    <el-button type="submit" size="mini" @click="clearAll1();clearAll2()">再次上传(reset)</el-button>
+    <el-button type="submit" size="mini" @click="insertUsersData">确认</el-button>
+    <br><br>
     <!--    </el-form-item>-->
     <!--  </el-form>-->
 
   </el-main>
+</div>
 </template>
 
 <script >
@@ -67,10 +54,11 @@ export default {
   data() {
 
     return{
-      file: {
-        name: 'f1.xlsx',
-        url: 'http://localhost:8080/static'
-      }
+      user:JSON.parse(sessionStorage.getItem('CurUser')),
+      /*      file: {
+              name: 'example.json',
+              url: 'http://localhost:8080/static'
+            }*/
     }
   },
   methods: {
@@ -78,7 +66,7 @@ export default {
       this.fileList = fileList.slice(-3);
     },
     /*如果直接在el-upload写这一段url地址会出现跨域的问题，所以直接用表单*/
-    excelUpload(file) {
+    excelUpload1(file) {
       let fn=file.name
       console.log(file.file)
       console.log("xxxxxxxx")
@@ -88,7 +76,24 @@ export default {
       this.$axios({
         method:'post',
         data:formData,
-        url:'http://localhost:8877/import/xml',
+        url:'http://localhost:8877/import/xml/indexSym',
+        headers:{'Content-Type': 'multipart/form-data'}
+      }).then(function (resp){
+        console.log("1111111111111");
+      })
+
+    },
+    excelUpload2(file) {
+      let fn=file.name
+      console.log(file.file)
+      console.log("xxxxxxxx")
+      const formData = new FormData()
+      formData.append("file",file.file)
+      //https://jsonplaceholder.typicode.com/posts/
+      this.$axios({
+        method:'post',
+        data:formData,
+        url:'http://localhost:8877/import/excel/indexdata',
         headers:{'Content-Type': 'multipart/form-data'}
       }).then(function (resp){
         console.log("1111111111111");
@@ -133,7 +138,7 @@ export default {
       //this.$router.push("/keepExcel")
       this.$axios({
         method:'get',
-        url:'http://localhost:8877/import/keepExcel'
+        url:'http://localhost:8877/import/keepExcel/'+this.user.userName
       })
     },
     clearAll1(){
@@ -143,8 +148,15 @@ export default {
     clearAll2(){
       this.$refs.clearAll2.clearFiles();
       //this.$router.push('/ImportExcel')
-    }
+    },
+    insertUsersData(){
+      //this.$router.push("/keepExcel")
+      this.$axios({
+        method:'get',
+        url:'http://localhost:8877/import/insertUsersData'
+      })
 
+    },
   },
 
 

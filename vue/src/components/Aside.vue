@@ -17,6 +17,7 @@
             <span>指标优化</span>
         </el-menu-item>
     </el-menu>
+
 </template>
 
 <script>

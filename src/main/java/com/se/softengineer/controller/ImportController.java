@@ -1,37 +1,27 @@
 package com.se.softengineer.controller;
 
+import com.mysql.jdbc.exceptions.MySQLDataException;
 import com.se.softengineer.dao.IndexSymMapper;
-<<<<<<< HEAD
+import com.se.softengineer.dao.UsersDataMapper;
 import com.se.softengineer.entity.Indexsym;
 import com.se.softengineer.mapper.SampleMapper;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.utils.AnalyExcel;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.SqlSessionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.ObjectUtils;
-=======
-import com.se.softengineer.dao.SampleMapper;
 import com.se.softengineer.entity.Indexsym;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.utils.Result;
 import com.se.softengineer.utils.AnalyExcel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
->>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-<<<<<<< HEAD
-import javax.naming.ConfigurationException;
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,14 +32,9 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
-=======
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+
 import java.io.*;
-import java.nio.channels.FileChannel;
-import java.util.ArrayList;
->>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
+
 import java.util.List;
 
 /**
@@ -75,28 +60,14 @@ public class ImportController {
     //创建指标数据表的sql语句
     public static String createSql=new String();
 
-<<<<<<< HEAD
-    static{
-        createSql="create table ${tableName}(`id` int NOT NULL AUTO_INCREMENT," +
-                "  `name` varchar(50) NOT NULL";
-        for(int i=0;i<50;i++){
-            createSql+=","+"x"+i+" double(50,0) NOT NULL";
-        }
-        createSql+="PRIMARY KEY (`id`)" +
-                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";
+    //标记是指标体系文件还是数据文件
+    public static String fileType=new String();
 
-    }
-    //标记是指标体系文件还是数据文件
-    public static String fileType=new String();
-=======
-    //标记是指标体系文件还是数据文件
-    public static String fileType=new String();
     //文件存储路径
     @Value("${file-save-path}")
     private String fileSavePath;
     private String filePath;
 
->>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
     @Autowired
     private IndexSymService indexSymService;
 
@@ -104,12 +75,8 @@ public class ImportController {
     private IndexSymMapper indexSymMapper;
 
     @Autowired
-    private SampleMapper sampleMapper;
+    private UsersDataMapper usersDataMapper;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
     /**
      * @author xiaxue
      * @param file
@@ -167,14 +134,10 @@ public class ImportController {
 >>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
      * @param file
      */
-    @RequestMapping("/xml")
+    @RequestMapping("/xml/{value}")
     public void loadFileByXML(@RequestParam(value = "file",required = false) MultipartFile file, @PathVariable("value") String v) throws IOException {
         String filename = file.getOriginalFilename();
-<<<<<<< HEAD
-       // filesName=filename.substring(filename.charAt(','));
-=======
-        // filesName=filename.substring(filename.charAt(','));
->>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
+
         fileType=v;
         filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
         //保存到本地
@@ -212,10 +175,10 @@ public class ImportController {
                 for (int k = 0; k < childNodes.getLength(); k++) {
                     // 区分,去掉空格和换行符
                     if (childNodes.item(k).getNodeType() == Node.ELEMENT_NODE) {
-                        // 获取element类型的节点和节点值
+/*                        // 获取element类型的节点和节点值
                         //System.out.print("节点名：" + childNodes.item(k).getNodeName());
                         //System.out.print(" --- 节点值：" + childNodes.item(k).getFirstChild().getNodeValue());
-                        //System.out.println(" --- 节点值："+childNodes.item(k).getTextContent());
+                        //System.out.println(" --- 节点值："+childNodes.item(k).getTextContent());*/
                         temp[j++]=childNodes.item(k).getTextContent();
                         //System.out.println(" --- ："+k+" "+temp[j-1]);
                     }
@@ -230,8 +193,11 @@ public class ImportController {
     }
 
 
-    @RequestMapping("/keepExcel")
-    public void keep(){
+    @RequestMapping("/keepExcel/{username}")
+    public void keep(@PathVariable("username") String name){
+        //System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        userName=name;
+        System.out.println("用户名：  "+name);
         keepData(cells);
     }
     /**
@@ -239,16 +205,19 @@ public class ImportController {
      * @param list
      */
     public void keepData(List<String[]> list){
+        System.out.println("文件类型:  "+fileType);
         if(fileType.equals("indexSym")) {
             //拼接新表名
-            indexSymTableName = filesName + "indexSym";
+            indexSymTableName = filesName + "IndexSym";
+            System.out.println("指标体系名字： "+indexSymTableName);
             indexSymMapper.createTable(indexSymTableName);
             for (String[] l : list) {
                 indexSymMapper.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3]));
             }
+
         }else if(fileType.equals("indexdata")){
-<<<<<<< HEAD
             indexDataTableName=filesName+"IndexData";
+            System.out.println("指标数据名字: "+indexDataTableName);
             //拼接sql语句，因为指标个数不确定。
             String[] temp=list.get(1);
             int column=temp.length-1;//指标个数
@@ -268,13 +237,9 @@ public class ImportController {
 <<<<<<< HEAD
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";*/
 
-            System.out.println("sql语句aaaaaaaaaaa: "+createSql);
-            //sampleMapper.createTable(indexDataTableName);
-
-=======
-                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";
-
+            //System.out.println("sql语句aaaaaaaaaaa: "+createSql);
         }
+        //usersDataMapper.insertIntoTable(userName+"data",indexDataTableName,indexSymTableName);
         System.out.println("sql语句aaaaaaaaaaa: "+createSql);
         //sampleMapper.createTable(indexDataTableName);
     }
@@ -287,40 +252,11 @@ public class ImportController {
     public Result uploadFileByJson(@RequestParam(value = "file",required = false) MultipartFile file) throws IOException {
         String filename = file.getOriginalFilename();
         System.out.println(filename);
+        filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
         //保存到本地
         String res = savaFileByNio((FileInputStream) file.getInputStream(), filename);
         return res!=null?Result.success():Result.fail();
     }
-
-    /**
-     * @author xiaxue
-     * @param fis
-     * @param fileName
-     * @return
-     */
-    public String savaFileByNio(FileInputStream fis, String fileName) {
-        // 这个路径最后是在: 你的项目路径/FileSpace  也就是和src同级
-        String path = this.fileSavePath+fileName;
-        // 判断父文件夹是否存在
-        File file = new File(path);
-        //System.out.println(file.getPath());
-        if (file.getParentFile() != null || !file.getParentFile().isDirectory()) {
-            file.getParentFile().mkdirs();
-        }
-        // 通过NIO保存文件到本地磁盘
-        try {
-            FileOutputStream fos = new FileOutputStream(path);
-            FileChannel inChannel = fis.getChannel();
-            FileChannel outChannel = fos.getChannel();
-            inChannel.transferTo(0, inChannel.size(), outChannel);
-            inChannel.close();
-            outChannel.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return path;
-    }
-
     /**
      * @author lmy
      */
@@ -328,12 +264,12 @@ public class ImportController {
     @RequestMapping("/keepJson")
     public Result keepJson(@RequestParam String userName){
         Indexsym t=new Indexsym();
-        indexSymTableName=userName+"indexSym";
+        indexSymTableName=filesName+"IndexSym";
         indexSymService.createTable(indexSymTableName);
         //System.out.println("xxxxxxxxxxxxxxx");
         boolean result=true;
         try {
-            result = indexSymService.saveIndexSym(indexSymTableName,filePath);
+            result = indexSymService.saveJson(indexSymTableName,filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -390,7 +326,21 @@ public class ImportController {
                     e.printStackTrace();
                 }
             }
->>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
         }
     }
+
+    @RequestMapping("/insertUsersData")
+    public void insertUsersData()  {
+        int flag=0;
+        try{
+            usersDataMapper.createTable(userName+"Data");
+        }catch (Exception e){
+            flag=-1;
+            usersDataMapper.insertIntoTable(userName+"Data",indexDataTableName,indexSymTableName);
+
+        }
+        if(flag==0){
+            usersDataMapper.insertIntoTable(userName+"Data",indexDataTableName,indexSymTableName);
+        }
+           }
 }

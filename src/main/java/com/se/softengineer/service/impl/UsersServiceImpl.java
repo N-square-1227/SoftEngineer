@@ -63,14 +63,14 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
         user.setUserName(username);
         user.setUserPassword(password);
         user.setUserEmail(email);
-        int i = usersMapper.insert(user);
-        if (i == 1) {
-            Userrole userrole = new Userrole(2);
-            userroleMapper.insert(userrole);
-            return user;
-        }
-        else
-            return null;
+        return usersMapper.insert(user)==1?user:null;
+//        if (i == 1) {
+//            Userrole userrole = new Userrole(2);
+//            userroleMapper.insert(userrole);
+//            return user;
+//        }
+//        else
+//            return null;
     }
 
     public Users updateUser(Users user) {

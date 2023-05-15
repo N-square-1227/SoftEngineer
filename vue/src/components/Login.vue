@@ -64,10 +64,10 @@ export default {
                     type: 'success'
                   });
 
-                  if(res.message=='user')
+                  // if(res.message=='user')
                      this.$router.replace('/UserHomePage');//跳转到用户主
-                  else
-                    this.$router.replace('/AdminHomePage');//跳转到用户主页
+                  // else
+                  //   this.$router.replace('/AdminHomePage');//跳转到用户主页
                 }
                 //失败
                 else{

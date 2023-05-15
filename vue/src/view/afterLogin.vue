@@ -8,15 +8,6 @@
       <el-menu :default-openeds="['1', '3']"
                router
                :default-active="this.$route.path">
-<!--        <el-submenu index="1">
-          <template slot="title"><i class="el-icon-message" ></i>导入数据</template>
-          <el-menu-item-group>
-&lt;!&ndash;            <template slot="title">分组一</template>&ndash;&gt;
-            <el-menu-item index="/ImportExcel" >excel导入</el-menu-item>
-            <el-menu-item index="/ImportXML">xml导入</el-menu-item>
-&lt;!&ndash;            <el-menu-item index="/ImportMysql">mysql导入</el-menu-item>&ndash;&gt;
-          </el-menu-item-group>
-        </el-submenu>-->
           <el-menu-item-group>
             <el-menu-item index="/ImportFiles"><i class="el-icon-menu"></i>导入数据test</el-menu-item>
           </el-menu-item-group>

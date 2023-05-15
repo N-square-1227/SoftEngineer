@@ -1,5 +1,5 @@
 <template>
-
+  <div>
   <el-main style="text-align: center">
     <a  size="mini" class="el-upload__tip">请先下载模板文件，再按照规定格式上传</a>
     <br><br>
@@ -47,12 +47,14 @@
     </el-tooltip>
     <br><br>
     <el-button type="submit" size="mini" @click="clearAll1();clearAll2()">再次上传(reset)</el-button>
+    <el-button type="submit" size="mini" @click="insertUsersData">确认</el-button>
 <!--    <el-button type="submit" size="mini" @click="jumpBehind">上传</el-button>
     <el-button size="mini">取消</el-button>-->
     <!--    </el-form-item>-->
     <!--  </el-form>-->
 
   </el-main>
+  </div>
 </template>
 
 <script >
@@ -61,10 +63,11 @@ export default {
   data() {
 
     return{
-      file: {
-        name: 'f1.xlsx',
+      user:JSON.parse(sessionStorage.getItem('CurUser')),
+/*      file: {
+        name: 'example.json',
         url: 'http://localhost:8080/static'
-      }
+      }*/
     }
   },
   methods: {
@@ -141,8 +144,10 @@ export default {
       //this.$router.push("/keepExcel")
       this.$axios({
         method:'get',
-        url:'http://localhost:8877/import/keepExcel'
+        url:'http://localhost:8877/import/keepExcel/'+this.user.userName
       })
+
+
     },
     clearAll1(){
       this.$refs.clearAll1.clearFiles();
@@ -151,7 +156,15 @@ export default {
     clearAll2(){
       this.$refs.clearAll2.clearFiles();
       //this.$router.push('/ImportExcel')
-    }
+    },
+    insertUsersData(){
+      //this.$router.push("/keepExcel")
+      this.$axios({
+        method:'get',
+        url:'http://localhost:8877/import/insertUsersData'
+      })
+
+    },
   },
 
 }

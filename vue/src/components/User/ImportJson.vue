@@ -3,37 +3,43 @@
     <el-main style="text-align: center">
         <a  size="mini" class="el-upload__tip">请先下载模板文件，再按照规定格式上传</a>
         <br><br>
-        <el-button type="primary" plain @click="download1" style="text-align: center">节点数据模板下载</el-button><br><br>
-        <el-button type="primary" plain size="mini" @click="download2" style="text-align: center">指标数据模板下载</el-button><br><br>
-        <!--   上传文件 -->
-        <el-upload
-                accept=".json"
-                class="upload-demo"
-                action="111"
-                :http-request="jsonUpload"
-                :on-change="handleChange"
-                style="text-align: center"
-        >
-            <el-button type="primary"  >点击上传结点数据</el-button><br>
-            <div slot="tip" class="el-upload__tip">只能上传Json文件</div>
-        </el-upload>
+      <el-button type="primary" plain size="mini" @click="download1" style="text-align: center">节点数据模板下载</el-button><br><br>
+      <el-button type="primary" plain size="mini" @click="download2" style="text-align: center">指标数据模板下载</el-button><br><br>
+<br>
+      <el-upload
+        accept=".json"
+        class="upload-demo"
+        ref="clearAll1"
+        action="111"
+        :http-request="jsonUpload"
+        :on-change="handleChange"
+        style="text-align: center"
+      >
+        <el-button type="primary"  size="mini">选择结点数据文件</el-button><br><br>
+      </el-upload>
+      <el-tooltip class="item" effect="dark" content="结点数据仅支持json导入" placement="top-start">
+        <el-button type="submit" size="mini" @click="jumpBehind">上传</el-button>
+      </el-tooltip>
+      <br><br>
+
+      <el-upload
+        accept=".xlsx,.xls"
+        class="upload-demo"
+        ref="clearAll2"
+        action="localhost:8877/import/excel"
+        :http-request="excelUpload"
+        :on-change="handleChange"
+        style="text-align: center"
+      >
+        <el-button  type="primary" size="mini" >选择指标数据文件</el-button><br><br>
+      </el-upload>
+      <el-tooltip class="item" effect="dark" content="指标数据仅支持excel导入" placement="top-start">
+        <el-button type="submit" size="mini" @click="jumpBehind">上传</el-button>
+      </el-tooltip>
+      <br><br>
         <br>
-        <el-upload
-                accept=".xlsx,.xls"
-                class="upload-demo"
-                action="localhost:8877/import/excel"
-                :http-request="excelUpload"
-                :on-change="handleChange"
-                style="text-align: center"
-        >
-            <el-button size="small" type="primary" >点击上传指标数据</el-button><br>
-            <div slot="tip" class="el-upload__tip">只能上传EXCEL文件</div>
-        </el-upload>
-        <!--    </el-form-item>-->
-        <!--  </el-form>-->
-        <br>
-        <el-button type="submit" @click="jumpBehind">上传</el-button>
-        <el-button>取消</el-button>
+      <el-button type="submit" size="mini" @click="clearAll1();clearAll2()">再次上传(reset)</el-button>
+      <el-button type="submit" size="mini" @click="insertUsersData">确认</el-button>
     </el-main>
 </template>
 
@@ -87,7 +93,7 @@ export default {
             })
         },
         download1() {
-            const config = {
+/*            const config = {
                 method: 'get',
                 url: this.$httpUrl+'/import/downloadJson',
                 headers: {
@@ -103,13 +109,21 @@ export default {
                 link.setAttribute('download', 'example.json');
                 document.body.appendChild(link);
                 link.click();
-            })
+            })*/
+          let a = document.createElement('a');
+          //跳转到github上的页面，再自行下载
+          //a.href = 'https://github.com/staticpublic/SE/blob/xx/data';
+          a.href = 'http://localhost:8080/static/example.json';
+          //路径中'/'为根目录，即index.html所在的目录
+          a.download = "指标数据模板";
+          console.log(a.href);
+          a.click();
         },
         download2() {
             let a = document.createElement('a');
             //跳转到github上的页面，再自行下载
             //a.href = 'https://github.com/staticpublic/SE/blob/xx/data';
-            a.href = 'http://localhost:8080/static/temp.xml';
+            a.href = 'http://localhost:8080/static/index.xlsx';
             //路径中'/'为根目录，即index.html所在的目录
             a.download = "指标数据模板";
             console.log(a.href);
@@ -130,6 +144,23 @@ export default {
                     this.$message.error('上传失败！');
             })
         }
+      ,
+      clearAll1(){
+        this.$refs.clearAll1.clearFiles();
+        //this.$router.push('/ImportExcel')
+      },
+      clearAll2(){
+        this.$refs.clearAll2.clearFiles();
+        //this.$router.push('/ImportExcel')
+      },
+      insertUsersData(){
+        //this.$router.push("/keepExcel")
+        this.$axios({
+          method:'get',
+          url:'http://localhost:8877/import/insertUsersData'
+        })
+
+      },
     },
 }
 </script>

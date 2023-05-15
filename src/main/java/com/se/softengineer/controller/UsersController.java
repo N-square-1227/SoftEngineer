@@ -48,10 +48,10 @@ public class UsersController {
     @PostMapping("/login")
     public Result login(@RequestBody Users user){
         Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
-        String roleName="";
-        if(curUser!=null)
-            roleName = userroleService.getRoleNameByUserID(curUser.getUserID());
-        return curUser!=null?Result.success(roleName,curUser):Result.fail();
+//        String roleName="";
+//        if(curUser!=null)
+//            roleName = userroleService.getRoleNameByUserID(curUser.getUserID());
+        return curUser!=null?Result.success(curUser):Result.fail();
     }
 
     /**
