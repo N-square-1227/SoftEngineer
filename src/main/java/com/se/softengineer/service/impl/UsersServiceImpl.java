@@ -1,14 +1,9 @@
 package com.se.softengineer.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.se.softengineer.dao.UserroleMapper;
-import com.se.softengineer.entity.Userrole;
 import com.se.softengineer.entity.Users;
 import com.se.softengineer.dao.UsersMapper;
 import com.se.softengineer.service.UsersService;
-import com.se.softengineer.utils.Result;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +17,6 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
 
     @Autowired
     private UsersMapper usersMapper;
-    @Autowired
-    private UserroleMapper userroleMapper;
     // 数据加密，在启动类中已经注入进IOC容器中
 //    @Autowired
 //    private BCryptPasswordEncoder encoder;
@@ -39,6 +32,10 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
 //        return bookMapper.selectPage(page,wrapper);
 //    }
 
+    /**
+     * @author lmy
+     */
+
     @Override
     public Users userLogin(String username, String password) {
         List list = lambdaQuery()
@@ -50,9 +47,17 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
         return user;
     }
 
+    /**
+     * @author lmy
+     */
+
     private List<Users> getUserListByName(String name){
         return lambdaQuery().eq(Users::getUserName,name).list();
     }
+
+    /**
+     * @author lmy
+     */
 
     @Override
     public Users userRegister(String username, String password, String email) {
@@ -63,15 +68,14 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
         user.setUserName(username);
         user.setUserPassword(password);
         user.setUserEmail(email);
+        user.setRole("2");
         int i = usersMapper.insert(user);
-        if (i == 1) {
-            Userrole userrole = new Userrole(2);
-            userroleMapper.insert(userrole);
-            return user;
-        }
-        else
-            return null;
+        return i==1?user:null;
     }
+
+    /**
+     * @author lmy
+     */
 
     public Users updateUser(Users user) {
         List<Users> list = getUserListByName(user.getUserName());

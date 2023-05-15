@@ -3,25 +3,42 @@
              text-color="#fff"
              active-text-color="#ffd04b"
              style="height: 100vh"
+             :collapse="isCollapsed"
+             :collapse-transition="false"
              router>
-        <el-menu-item index="userManage">
-            <i class="el-icon-menu"></i>
-            <span>用户管理</span>
+        <el-menu-item :index="'/'+item.menuClick" v-for="(item,i) in menu" :key="i">
+            <i :class="item.menuIcon"></i>
+            <span slot="title">{{item.menuName}}</span>
         </el-menu-item>
-        <el-menu-item index="ImportFiles">
-            <i class="el-icon-menu"></i>
-            <span>导入数据</span>
-        </el-menu-item>
-        <el-menu-item index="3-1">
-            <i class="el-icon-setting"></i>
-            <span>指标优化</span>
-        </el-menu-item>
+<!--        <el-menu-item :index="'/'+item.menuClick" v-for="(item,i) in menu":key="i">-->
+<!--            <i class="item.menuIcon"></i>-->
+<!--            <span>{{ item.menuName }}</span>-->
+<!--        </el-menu-item>-->
+<!--        <el-menu-item index="3-1">-->
+<!--            <i class="el-icon-setting"></i>-->
+<!--            <span>指标优化</span>-->
+<!--        </el-menu-item>-->
     </el-menu>
 </template>
 
 <script>
+
 export default {
-    name: "Aside"
+    name: "Aside",
+    data(){
+        return{
+        }
+    },
+    computed:{
+        "menu":{
+            get(){
+                return this.$store.state.menu
+            }
+        }
+    },
+    props:{
+        isCollapsed:Boolean
+    }
 }
 </script>
 

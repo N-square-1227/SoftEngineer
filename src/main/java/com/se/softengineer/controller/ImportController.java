@@ -232,7 +232,7 @@ public class ImportController {
         //System.out.println("xxxxxxxxxxxxxxx");
         boolean result=true;
         try {
-            result = indexSymService.saveIndexSym(indexSymTableName,filePath);
+            result = indexSymService.saveJsonData(indexSymTableName,filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }

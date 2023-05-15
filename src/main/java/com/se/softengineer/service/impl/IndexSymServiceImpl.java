@@ -16,8 +16,11 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, Indexsym> i
     @Autowired
     IndexSymMapper indexSymMapper;
 
+    /**
+     * @author lmy
+     */
     @Override
-    public Boolean saveIndexSym(String tableName,String filePath) throws IOException {
+    public Boolean saveJsonData(String tableName,String filePath) throws IOException {
         try{
             InputStream inputStream = new FileInputStream(filePath);
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));

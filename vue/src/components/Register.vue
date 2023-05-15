@@ -91,14 +91,15 @@ export default {
             console.log(res)
             //成功
             if (res.code == 200) {
-              //存储
-              sessionStorage.setItem("CurUser", JSON.stringify(res.data))
-              this.$message({
-                message: '注册成功！',
-                type: 'success'
-              });
-              //跳转到主页
-              this.$router.replace('/afterLogin');
+                //存储当前用户
+                sessionStorage.setItem("CurUser",JSON.stringify(res.data.user))
+                console.log(res.data.menu)
+                this.$store.commit("setMenu",res.data.menu)
+                this.$message({
+                    message: '登录成功！',
+                    type: 'success'
+                });
+                this.$router.replace('/UserHomePage');//跳转到用户主页
             }
             //失败
             else {

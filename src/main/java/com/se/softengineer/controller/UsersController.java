@@ -1,17 +1,15 @@
 package com.se.softengineer.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.se.softengineer.entity.Menu;
 import com.se.softengineer.entity.Users;
-import com.se.softengineer.service.UserroleService;
+import com.se.softengineer.service.MenuService;
 import com.se.softengineer.service.UsersService;
-import com.se.softengineer.utils.Code;
 import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +26,7 @@ public class UsersController {
     @Autowired
     private UsersService usersService;
     @Autowired
-    private UserroleService userroleService;
+    private MenuService menuService;
 
     /**
      * 时间格式化
@@ -48,10 +46,14 @@ public class UsersController {
     @PostMapping("/login")
     public Result login(@RequestBody Users user){
         Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
-        String roleName="";
-        if(curUser!=null)
-            roleName = userroleService.getRoleNameByUserID(curUser.getUserID());
-        return curUser!=null?Result.success(roleName,curUser):Result.fail();
+        if(curUser!=null){
+            List menuList = menuService.lambdaQuery().like(Menu::getMenuRight,curUser.getRole()).list();
+            HashMap res = new HashMap();
+            res.put("user",curUser);
+            res.put("menu",menuList);
+            return Result.success(res);
+        }
+        return Result.fail();
     }
 
     /**
@@ -61,8 +63,14 @@ public class UsersController {
     @PostMapping("/register")
     public Result register(@RequestBody Users user){
         Users curUser = usersService.userRegister(user.getUserName(),user.getUserPassword(),user.getUserEmail());
-        String roleName = userroleService.getRoleNameByUserID(curUser.getUserID());
-        return curUser!=null?Result.success(roleName,curUser):Result.fail();
+        if(curUser!=null){
+            List menuList = menuService.lambdaQuery().like(Menu::getMenuRight,curUser.getRole()).list();
+            HashMap res = new HashMap();
+            res.put("user",curUser);
+            res.put("menu",menuList);
+            return Result.success(res);
+        }
+        return Result.fail();
     }
 
     /**
@@ -110,9 +118,7 @@ public class UsersController {
      */
     @GetMapping("/delete")
     public Result delete(@RequestParam Integer userID){
-        if(usersService.removeById(userID))
-            return userroleService.removeById(userID) ? Result.success():Result.fail();
-        return Result.fail();
+        return usersService.removeById(userID) ? Result.success():Result.fail();
     }
 
     /**

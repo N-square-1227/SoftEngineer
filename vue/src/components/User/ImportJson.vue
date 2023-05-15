@@ -1,40 +1,28 @@
 <template>
-
-    <el-main style="text-align: center">
-        <a  size="mini" class="el-upload__tip">请先下载模板文件，再按照规定格式上传</a>
-        <br><br>
-        <el-button type="primary" plain @click="download1" style="text-align: center">节点数据模板下载</el-button><br><br>
-        <el-button type="primary" plain size="mini" @click="download2" style="text-align: center">指标数据模板下载</el-button><br><br>
-        <!--   上传文件 -->
-        <el-upload
-                accept=".json"
-                class="upload-demo"
-                action="111"
-                :http-request="jsonUpload"
-                :on-change="handleChange"
-                style="text-align: center"
-        >
-            <el-button type="primary"  >点击上传结点数据</el-button><br>
-            <div slot="tip" class="el-upload__tip">只能上传Json文件</div>
-        </el-upload>
-        <br>
-        <el-upload
-                accept=".xlsx,.xls"
-                class="upload-demo"
-                action="localhost:8877/import/excel"
-                :http-request="excelUpload"
-                :on-change="handleChange"
-                style="text-align: center"
-        >
-            <el-button size="small" type="primary" >点击上传指标数据</el-button><br>
-            <div slot="tip" class="el-upload__tip">只能上传EXCEL文件</div>
-        </el-upload>
-        <!--    </el-form-item>-->
-        <!--  </el-form>-->
-        <br>
-        <el-button type="submit" @click="jumpBehind">上传</el-button>
-        <el-button>取消</el-button>
-    </el-main>
+    <div>
+        <el-main style="text-align: center">
+            <a  size="mini" class="el-upload__tip">请先下载模板文件，再按照规定格式上传</a>
+            <br><br>
+            <el-button type="primary" plain @click="download1" style="text-align: center">节点数据模板下载</el-button><br><br>
+            <!--   上传文件 -->
+            <el-upload
+                    accept=".json"
+                    class="upload-demo"
+                    action="111"
+                    :http-request="jsonUpload"
+                    :on-change="handleChange"
+                    style="text-align: center"
+            >
+                <el-button type="primary"  >点击上传结点数据</el-button><br>
+                <div slot="tip" class="el-upload__tip">只能上传Json文件</div>
+            </el-upload>
+            <!--    </el-form-item>-->
+            <!--  </el-form>-->
+            <br>
+            <el-button type="submit" @click="jumpBehind">上传</el-button>
+            <el-button>取消</el-button>
+        </el-main>
+    </div>
 </template>
 
 <script >
@@ -68,23 +56,6 @@ export default {
             }).then(function (resp){
                 console.log("1111111111111");
             })
-
-        },
-        excelUpload(file) {
-            let fn=file.name
-            console.log(file.file)
-            console.log("excelUpload")
-            const formData = new FormData()
-            formData.append("file",file.file)
-            //https://jsonplaceholder.typicode.com/posts/
-            this.$axios({
-                method:'post',
-                data:formData,
-                url:this.$httpUrl+'/import/xml',
-                headers:{'Content-Type': 'multipart/form-data'}
-            }).then(function (resp){
-                console.log("1111111111111");
-            })
         },
         download1() {
             const config = {
@@ -104,16 +75,6 @@ export default {
                 document.body.appendChild(link);
                 link.click();
             })
-        },
-        download2() {
-            let a = document.createElement('a');
-            //跳转到github上的页面，再自行下载
-            //a.href = 'https://github.com/staticpublic/SE/blob/xx/data';
-            a.href = 'http://localhost:8080/static/temp.xml';
-            //路径中'/'为根目录，即index.html所在的目录
-            a.download = "指标数据模板";
-            console.log(a.href);
-            a.click();
         },
         //点击上传跳转后端
         jumpBehind(){
