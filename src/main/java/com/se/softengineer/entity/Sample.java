@@ -1,8 +1,12 @@
 package com.se.softengineer.entity;
 
+<<<<<<< HEAD
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+=======
+import com.baomidou.mybatisplus.annotation.TableField;
+>>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

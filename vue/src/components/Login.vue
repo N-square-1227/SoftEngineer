@@ -1,67 +1,92 @@
+/**
+ * @author lmy
+ */
+
 <template>
   <div class="login-page">
-    <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <span class="login-title">🔐后台管理系统</span>
-      </div>
-      <div class="login-form">
-        <el-form :model="form" :rules="loginRules" ref="loginForm">
-          <el-form-item prop="userName">
-            <el-input type="text" v-model="form.userName" auto-complete="off" placeholder="请输入用户名">
-              <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="passWord">
-            <el-input type="text" v-model="form.passWord" auto-complete="off" placeholder="请输入密码">
-              <template slot="prepend"><i style="font-size:20px" class="el-icon-key"></i></template>
-            </el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button style="width:100%;" type="primary" @click="handleLogin" :loading="loading">登录</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-    </el-card>
+    <el-form :model="form" :rules="loginRules" ref="loginForm" class="login-container">
+      <h1 class="title">🔐后台管理系统</h1>
+      <el-form-item prop="userName">
+        <el-input type="text" v-model="form.userName" auto-complete="off" placeholder="请输入用户名">
+          <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="userPassword">
+        <el-input type="text" v-model="form.userPassword" auto-complete="off" placeholder="请输入密码" show-password>
+          <template slot="prepend"><i style="font-size:20px" class="el-icon-key"></i></template>
+        </el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button style="width:100%;" type="primary" @click="doLogin" :disabled="disabled">登录</el-button>
+      </el-form-item>
+      <el-row style="text-align: right;margin-top: -10px;">
+        <el-link type="primary" @click="toRegister">用户注册</el-link>
+      </el-row>
+    </el-form>
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'Login',
   data(){
     return {
-      loading: false,
+      //让登录按钮失效
+      disabled: false,
       form:{
         userName: '',
-        passWord: ''
+        userPassword: ''
       },
       loginRules:{
         userName: [
-          { required: true, message: '请输入账户', trigger: 'blur' },
+          { required: true, message: '请输入账户', trigger: 'blur' }
         ],
-        passWord: [
+        userPassword: [
           { required: true, message: '请输入密码', trigger: 'blur'}
         ]
       }
     }
   },
   methods:{
-    handleLogin(){
-      this.$refs.loginForm.validate().then(()=>{
-        this.loading = true;
+    doLogin(){
+      this.disabled=true;
+      this.$refs.loginForm.validate((valid)=>{
+            if(valid){    //valid成功为true 失败为false
+              //后端验证用户名密码
+              this.$axios.post(this.$httpUrl+'/user/login',this.form).then(res=>res.data).then(res=>{
+                console.log(res)
+                //成功
+                if(res.code==200){
+                  //存储
+                  sessionStorage.setItem("CurUser",JSON.stringify(res.data))
+                  this.$message({
+                    message: '登录成功！',
+                    type: 'success'
+                  });
 
-        //模拟异步请求后台接口 登录操作
-        setTimeout(()=>{
-          this.$router.push('/home');
-          this.loading = false;
-        }, 1000)
-      }).catch((error=>{
-        this.$message({
-          message: '输入错误！',
-          type: 'warning'
-        });
-      }))
+                  if(res.message=='user')
+                     this.$router.replace('/UserHomePage');//跳转到用户主
+                  else
+                    this.$router.replace('/AdminHomePage');//跳转到用户主页
+                }
+                //失败
+                else{
+                  this.disabled=false;
+                  this.$message.error('用户名或密码错误！');
+                  return false;
+                }
+              });
+            }
+            else{
+              this.disabled=false;
+              console.log('校验失败');
+              return false;
+            }
+          });
+    },
+
+    toRegister(){
+      this.$router.replace('/Register');
     }
   }
 }
@@ -75,14 +100,22 @@ export default {
   justify-content: center;
   align-items: center;
 }
+.login-container {
+  border-radius: 10px;
+  margin: 0px auto;
+  width: 350px;
+  padding: 30px 35px 15px 35px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+  text-align: left;
+  box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.1);
+}
 
-.login-title{
+.title {
+  margin: 0px auto 40px auto;
+  text-align: center;
+  color: #505458;
   font-size: 20px;
 }
-
-.box-card {
-  width: 375px;
-}
-
 </style>
 

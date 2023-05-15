@@ -1,31 +1,34 @@
 package com.se.softengineer.controller;
 
-import com.se.softengineer.dao.IndexSymMapper;
-import com.se.softengineer.entity.Indexsym;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.se.softengineer.entity.Users;
-import com.se.softengineer.service.IndexSymService;
+import com.se.softengineer.service.UserroleService;
 import com.se.softengineer.service.UsersService;
 import com.se.softengineer.utils.Code;
-import com.se.softengineer.utils.R;
+import com.se.softengineer.utils.QueryPageParam;
+import com.se.softengineer.utils.Result;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-//@CrossOrigin(origins = {"*","null"})
+
 @RestController
-@RequestMapping("users")
+@RequestMapping("/user")
 public class UsersController {
-    @Autowired
-    private IndexSymService indexSymService;
-    @Autowired
-    private IndexSymMapper indexSymMapper;
 
     @Autowired
     private UsersService usersService;
+    @Autowired
+    private UserroleService userroleService;
 
     /**
      * 时间格式化
@@ -33,10 +36,126 @@ public class UsersController {
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd/");
 
     /**
-     * 图片保存路径
+     * 文件保存路径
      */
     @Value("${file-save-path}")
     private String fileSavePath;
+
+    /**
+     * 登录
+     * @author lmy
+     */
+    @PostMapping("/login")
+    public Result login(@RequestBody Users user){
+        Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
+        String roleName="";
+        if(curUser!=null)
+            roleName = userroleService.getRoleNameByUserID(curUser.getUserID());
+        return curUser!=null?Result.success(roleName,curUser):Result.fail();
+    }
+
+    /**
+     * 注册：新增一个用户
+     * @author lmy
+     */
+    @PostMapping("/register")
+    public Result register(@RequestBody Users user){
+        Users curUser = usersService.userRegister(user.getUserName(),user.getUserPassword(),user.getUserEmail());
+        String roleName = userroleService.getRoleNameByUserID(curUser.getUserID());
+        return curUser!=null?Result.success(roleName,curUser):Result.fail();
+    }
+
+    /**
+     * 修改用户信息
+     * @author lmy
+     */
+    @PostMapping("/update")
+    public Result update(@RequestBody Users user){
+        return usersService.updateUser(user)!=null ? Result.success():Result.fail();
+    }
+
+    /**
+     * 修改用户信息
+     * @author lmy
+     */
+    @PostMapping("/updateInfo")
+    public Result updateInfo(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+        String name = (String)param.get("userName");
+        String email = (String) param.get("userEmail");
+        Integer id = (Integer) param.get("userID");
+        Users newUser = usersService.getById(id);
+        newUser.setUserName(name);
+        newUser.setUserEmail(email);
+        return usersService.updateUser(newUser)!=null ? Result.success() : Result.fail();
+    }
+
+    /**
+     * 修改用户密码
+     * @author lmy
+     */
+    @PostMapping("/updatePwd")
+    public Result update(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+        String newPwd = (String)param.get("newPwd");
+        Integer id = (Integer) param.get("userID");
+
+        return usersService.lambdaUpdate().set(Users::getUserPassword, newPwd)
+                .eq(Users::getUserID,id).update(new Users()) ? Result.success() : Result.fail();
+    }
+
+    /**
+     * 删除用户(用户表以及用户角色表都要删除)
+     * @author lmy
+     */
+    @GetMapping("/delete")
+    public Result delete(@RequestParam Integer userID){
+        if(usersService.removeById(userID))
+            return userroleService.removeById(userID) ? Result.success():Result.fail();
+        return Result.fail();
+    }
+
+    /**
+     * 查询一个用户的信息
+     * @author lmy
+     */
+    @GetMapping("/userDetail")
+    public Result userDetail(@RequestParam Integer userID){
+        Users user = usersService.getById(userID);
+        return user!=null ?  Result.success(user):Result.fail();
+    }
+
+    /**
+     * 返回用户列表
+     * @author lmy
+     */
+    @PostMapping("/userList")
+    public Result list(){
+        List list = usersService.list();
+        return list.size()>0 ? Result.success(list):Result.fail();
+    }
+
+    /**
+     * 分页返回用户列表
+     * @author lmy
+     */
+    @PostMapping("/userListPage")
+    public Result listPage(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+        String name = (String) param.get("name");
+
+        Page<Users> page = new Page();
+        page.setCurrent(query.getPageNum());
+        page.setSize(query.getPageSize());
+
+        LambdaQueryWrapper<Users> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if(StringUtils.isNotBlank(name) && !"null".equals(name))
+            lambdaQueryWrapper.like(Users::getUserName,name);
+        IPage result = usersService.page(page,lambdaQueryWrapper);
+        return Result.success(result.getRecords(),result.getTotal());
+    }
+
+
 
 //    /**
 //     * 图片上传
@@ -115,20 +234,6 @@ public class UsersController {
 //        return new R(Code.WORK_OK,"操作成功",result);
 //    }
 
-    /**
-     * 新增一个用户
-     * @param users
-     * @return
-     */
-    @PostMapping("/add-one-user")
-    public R addBookInfo(@RequestBody Users users){
-        int flag = usersService.addUsersInfo(users);
-        if (flag != 1){
-            return new R(Code.WORK_ERR,"新增用户信息失败！");
-        }else {
-            return new R(Code.WORK_OK,"新增用户信息成功！");
-        }
-    }
 //
 //    /**
 //     * 根据id获取书本信息
@@ -173,32 +278,4 @@ public class UsersController {
 //            return new R(Code.WORK_OK,"新增书本信息成功！");
 //        }
 //    }
-/*    *//**
-     * @author xiaxue
-     * 主页面上传数据表
-     *excel,xml,mysql
-     * @return
-     *//*
-    @RequestMapping("/test")
-    public ArrayList<Indexsym> test(){
-        *//*ArrayList<String> a=new ArrayList<>();
-        a.add("a");
-        a.add("b");
-        a.add("c");*//*
-        ArrayList<Indexsym> temp= (ArrayList<Indexsym>) indexSymMapper.selectList(null);
-        System.out.println(temp);
-        return temp;
-        //return a;
-    }
-    @RequestMapping("/test2")
-    public List<Indexsym> test2(){
-        List<Indexsym> temp=indexSymService.selectAll();;
-
-        return temp;
-    }*/
-    @RequestMapping("/test3")
-    public String test3(){
-        return "temp";
-    }
-
 }

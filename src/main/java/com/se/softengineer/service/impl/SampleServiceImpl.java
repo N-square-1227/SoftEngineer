@@ -1,6 +1,7 @@
 package com.se.softengineer.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+<<<<<<< HEAD
 import com.se.softengineer.entity.Sample;
 import com.se.softengineer.mapper.SampleMapper;
 import com.se.softengineer.service.SampleService;
@@ -12,6 +13,17 @@ import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
+=======
+import com.se.softengineer.dao.SampleMapper;
+import com.se.softengineer.entity.Sample;
+import com.se.softengineer.service.SampleService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+>>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
 
 /**
  * by wxy

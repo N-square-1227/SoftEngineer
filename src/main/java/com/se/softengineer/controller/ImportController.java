@@ -1,6 +1,7 @@
 package com.se.softengineer.controller;
 
 import com.se.softengineer.dao.IndexSymMapper;
+<<<<<<< HEAD
 import com.se.softengineer.entity.Indexsym;
 import com.se.softengineer.mapper.SampleMapper;
 import com.se.softengineer.service.IndexSymService;
@@ -11,12 +12,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
+=======
+import com.se.softengineer.dao.SampleMapper;
+import com.se.softengineer.entity.Indexsym;
+import com.se.softengineer.service.IndexSymService;
+import com.se.softengineer.utils.Result;
+import com.se.softengineer.utils.AnalyExcel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+>>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+<<<<<<< HEAD
 import javax.naming.ConfigurationException;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.HttpServlet;
@@ -31,6 +42,14 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
+=======
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.*;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+>>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
 import java.util.List;
 
 /**
@@ -56,6 +75,7 @@ public class ImportController {
     //创建指标数据表的sql语句
     public static String createSql=new String();
 
+<<<<<<< HEAD
     static{
         createSql="create table ${tableName}(`id` int NOT NULL AUTO_INCREMENT," +
                 "  `name` varchar(50) NOT NULL";
@@ -68,6 +88,15 @@ public class ImportController {
     }
     //标记是指标体系文件还是数据文件
     public static String fileType=new String();
+=======
+    //标记是指标体系文件还是数据文件
+    public static String fileType=new String();
+    //文件存储路径
+    @Value("${file-save-path}")
+    private String fileSavePath;
+    private String filePath;
+
+>>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
     @Autowired
     private IndexSymService indexSymService;
 
@@ -77,7 +106,10 @@ public class ImportController {
     @Autowired
     private SampleMapper sampleMapper;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
     /**
      * @author xiaxue
      * @param file
@@ -100,6 +132,7 @@ public class ImportController {
 
     /**
      * @author xiaxue
+<<<<<<< HEAD
      * @param fis
      * @param fileName
      * @return
@@ -130,12 +163,18 @@ public class ImportController {
 
     /**
      * @author xiaxue
+=======
+>>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
      * @param file
      */
     @RequestMapping("/xml")
     public void loadFileByXML(@RequestParam(value = "file",required = false) MultipartFile file, @PathVariable("value") String v) throws IOException {
         String filename = file.getOriginalFilename();
+<<<<<<< HEAD
        // filesName=filename.substring(filename.charAt(','));
+=======
+        // filesName=filename.substring(filename.charAt(','));
+>>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
         fileType=v;
         filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
         //保存到本地
@@ -208,21 +247,150 @@ public class ImportController {
                 indexSymMapper.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3]));
             }
         }else if(fileType.equals("indexdata")){
+<<<<<<< HEAD
             indexDataTableName=filesName+"IndexData";
             //拼接sql语句，因为指标个数不确定。
             String[] temp=list.get(1);
             int column=temp.length-1;//指标个数
             /*createSql="create table ${tableName}(`id` int NOT NULL AUTO_INCREMENT," +
+=======
+            indexDataTableName=filesName+"indexData";
+            //拼接sql语句，因为指标个数不确定。
+            String[] temp=list.get(1);
+            int column=temp.length-1;//指标个数
+            createSql="create table ${tableName}(`id` int NOT NULL AUTO_INCREMENT," +
+>>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
                     "  `name` varchar(50) NOT NULL";
             for(int i=0;i<column;i++){
                 createSql+=","+"x"+i+" double(50,0) NOT NULL";
             }
             createSql+="PRIMARY KEY (`id`)" +
+<<<<<<< HEAD
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";*/
 
             System.out.println("sql语句aaaaaaaaaaa: "+createSql);
             //sampleMapper.createTable(indexDataTableName);
 
+=======
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";
+
+        }
+        System.out.println("sql语句aaaaaaaaaaa: "+createSql);
+        //sampleMapper.createTable(indexDataTableName);
+    }
+
+    /**
+     * @author lmy
+     */
+    @PostMapping(value = "/json")
+    //@RequestParam("file") MultipartFile file
+    public Result uploadFileByJson(@RequestParam(value = "file",required = false) MultipartFile file) throws IOException {
+        String filename = file.getOriginalFilename();
+        System.out.println(filename);
+        //保存到本地
+        String res = savaFileByNio((FileInputStream) file.getInputStream(), filename);
+        return res!=null?Result.success():Result.fail();
+    }
+
+    /**
+     * @author xiaxue
+     * @param fis
+     * @param fileName
+     * @return
+     */
+    public String savaFileByNio(FileInputStream fis, String fileName) {
+        // 这个路径最后是在: 你的项目路径/FileSpace  也就是和src同级
+        String path = this.fileSavePath+fileName;
+        // 判断父文件夹是否存在
+        File file = new File(path);
+        //System.out.println(file.getPath());
+        if (file.getParentFile() != null || !file.getParentFile().isDirectory()) {
+            file.getParentFile().mkdirs();
+        }
+        // 通过NIO保存文件到本地磁盘
+        try {
+            FileOutputStream fos = new FileOutputStream(path);
+            FileChannel inChannel = fis.getChannel();
+            FileChannel outChannel = fos.getChannel();
+            inChannel.transferTo(0, inChannel.size(), outChannel);
+            inChannel.close();
+            outChannel.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
+
+    /**
+     * @author lmy
+     */
+
+    @RequestMapping("/keepJson")
+    public Result keepJson(@RequestParam String userName){
+        Indexsym t=new Indexsym();
+        indexSymTableName=userName+"indexSym";
+        indexSymService.createTable(indexSymTableName);
+        //System.out.println("xxxxxxxxxxxxxxx");
+        boolean result=true;
+        try {
+            result = indexSymService.saveIndexSym(indexSymTableName,filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result==true?Result.success():Result.fail();
+    }
+
+    /**
+     * @author lmy
+     */
+
+    @RequestMapping("/downloadJson")
+    public void downloadJson(HttpServletResponse response) throws Exception {
+        //这里写要让前端下载的文件的路径
+        File file = new File(this.fileSavePath + "example.json");
+        //设置编码格式，防止下载的文件内乱码
+        response.setCharacterEncoding("UTF-8");
+        //获取路径文件对象
+        String realFileName = file.getName();
+        //设置响应头类型，这里可以根据文件类型设置，text/plain、application/vnd.ms-excel等
+        response.setHeader("content-type", "application/octet-stream;charset=UTF-8");
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        //如果不设置响应头大小，可能报错：“Excel 已完成文件级验证和修复。此工作簿的某些部分可能已被修复或丢弃”
+        response.addHeader("Content-Length", String.valueOf(file.length()));
+        try {
+            //Content-Disposition的作用：告知浏览器以何种方式显示响应返回的文件，用浏览器打开还是以附件的形式下载到本地保存
+            //attachment表示以附件方式下载   inline表示在线打开   "Content-Disposition: inline; filename=文件名.mp3"
+            // filename表示文件的默认名称，因为网络传输只支持URL编码的相关支付，因此需要将文件名URL编码后进行传输,前端收到后需要反编码才能获取到真正的名称
+            response.setHeader("Content-Disposition", "attachment;filename=" + java.net.URLEncoder.encode(realFileName.trim(), "UTF-8"));
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        //初始化文件流字节缓存
+        byte[] buff = new byte[1024];
+        //开始写入
+        OutputStream os = response.getOutputStream();
+        //写入完成，创建文件流
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+        try {
+            // bis.read(data)：将字符读入数组。在某个输入可用、发生I/O错误或者已到达流的末尾前，此方法一直阻塞。
+            // 读取的字符数，如果已到达流的末尾，则返回 -1
+            int i = bis.read(buff);
+            while (i != -1) {
+                os.write(buff, 0, buff.length);
+                os.flush();
+                i = bis.read(buff);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+>>>>>>> ae64deceea9317932cffef9f3ca9df382eda48db
         }
     }
 }
