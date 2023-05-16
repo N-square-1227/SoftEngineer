@@ -19,7 +19,7 @@
             <!--    </el-form-item>-->
             <!--  </el-form>-->
             <br>
-            <el-button type="submit" @click="jumpBehind">上传</el-button>
+            <el-button type="submit" @click="jumpBehind">录入</el-button>
             <el-button>取消</el-button>
         </el-main>
     </div>
@@ -32,8 +32,7 @@ export default {
         return{
             user:JSON.parse(sessionStorage.getItem('CurUser')),
             file: {
-                name: 'example.json',
-                url: 'http://localhost:8080/static'
+                name: 'example.json'
             }
         }
     },
@@ -43,7 +42,6 @@ export default {
         },
         /*如果直接在el-upload写这一段url地址会出现跨域的问题，所以直接用表单*/
         jsonUpload(file) {
-            let fn=file.name
             console.log(file.file)
             console.log("jsonUpload")
             const formData = new FormData()

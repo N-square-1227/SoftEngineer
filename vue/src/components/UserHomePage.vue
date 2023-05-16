@@ -7,7 +7,7 @@
             <el-header style="text-align: right;font-size: 12px;height: 100%;border-bottom: rgb(168,168,168,0.5) 1px solid;">
                 <Header></Header>
             </el-header>
-            <el-main>
+            <el-main style="height: 100%;">
                <!-- <Main></Main> -->
                 <router-view/>
             </el-main>
@@ -18,7 +18,6 @@
 <script>
 import Aside from "@/components/Aside";
 import Header from "@/components/Header";
-//import Main from "@/components/Main";
 export default {
     name: 'UserHomePage',
     components: { Header, Aside},

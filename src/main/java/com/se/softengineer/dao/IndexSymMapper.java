@@ -2,12 +2,10 @@ package com.se.softengineer.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.se.softengineer.entity.Indexsym;
-import com.se.softengineer.entity.Users;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Update;
-import org.mybatis.spring.annotation.MapperScan;
+import org.apache.ibatis.annotations.*;
+
+
+import java.util.List;
 
 @Mapper
 public interface IndexSymMapper extends BaseMapper<Indexsym> {
@@ -27,4 +25,7 @@ public interface IndexSymMapper extends BaseMapper<Indexsym> {
             "values(#{node_name},${node_type},${node_weight},${parent_id});"
     })
     int insertIntoTable(@Param("tableName")String tableName,@Param("node_name")String name,@Param("node_type")int type,@Param("node_weight")double weight,@Param("parent_id")int id);
+
+    @Select({"select * from ${tableName}"})
+    List<Indexsym> selectAllData(@Param("tableName")String tableName);
 }

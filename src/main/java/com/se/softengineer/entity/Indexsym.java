@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 指标体系一个节点的信息
  * 有需要再补充或者再改
@@ -32,6 +35,10 @@ public class Indexsym {
     @TableField("parent_id")
     // 先暂时用 int, 不知道用 id 比较好还是用整个节点比较好
     private Integer parentID;
+
+    private List<Indexsym> children = new ArrayList<>();
+
+
 }
 
 

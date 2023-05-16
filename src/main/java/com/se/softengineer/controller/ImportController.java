@@ -1,7 +1,7 @@
 package com.se.softengineer.controller;
 
 import com.se.softengineer.dao.IndexSymMapper;
-import com.se.softengineer.dao.SampleMapper;
+import com.se.softengineer.dao.UsersDataMapper;
 import com.se.softengineer.entity.Indexsym;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.utils.Result;
@@ -40,6 +40,7 @@ public class ImportController {
     public static String indexSymTableName;
     public static String indexDataTableName;
 
+    //文件名称（不含后缀名）
     public static String filesName;
 
     //创建指标数据表的sql语句
@@ -59,7 +60,7 @@ public class ImportController {
     private IndexSymMapper indexSymMapper;
 
     @Autowired
-    private SampleMapper sampleMapper;
+    private UsersDataMapper usersDataMapper;
 
     /**
      * @author xiaxue
@@ -186,6 +187,8 @@ public class ImportController {
     public Result uploadFileByJson(@RequestParam(value = "file",required = false) MultipartFile file) throws IOException {
         String filename = file.getOriginalFilename();
         System.out.println(filename);
+        //文件名称（不含后缀名）
+        filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
         //保存到本地
         String res = savaFileByNio((FileInputStream) file.getInputStream(), filename);
         return res!=null?Result.success():Result.fail();
@@ -198,17 +201,17 @@ public class ImportController {
      * @return
      */
     public String savaFileByNio(FileInputStream fis, String fileName) {
-        // 这个路径最后是在: 你的项目路径/FileSpace  也就是和src同级
-        String path = this.fileSavePath+fileName;
+        // 这个路径最后是在: 你的项目路径/upload  也就是和src同级
+        this.filePath = this.fileSavePath+fileName;
         // 判断父文件夹是否存在
-        File file = new File(path);
+        File file = new File(this.filePath);
         //System.out.println(file.getPath());
         if (file.getParentFile() != null || !file.getParentFile().isDirectory()) {
             file.getParentFile().mkdirs();
         }
         // 通过NIO保存文件到本地磁盘
         try {
-            FileOutputStream fos = new FileOutputStream(path);
+            FileOutputStream fos = new FileOutputStream(this.filePath);
             FileChannel inChannel = fis.getChannel();
             FileChannel outChannel = fos.getChannel();
             inChannel.transferTo(0, inChannel.size(), outChannel);
@@ -217,7 +220,7 @@ public class ImportController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return path;
+        return this.filePath;
     }
 
     /**
@@ -232,7 +235,7 @@ public class ImportController {
         //System.out.println("xxxxxxxxxxxxxxx");
         boolean result=true;
         try {
-            result = indexSymService.saveJsonData(indexSymTableName,filePath);
+            result = indexSymService.saveJsonData(indexSymTableName,this.filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -289,6 +292,21 @@ public class ImportController {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    @RequestMapping("/insertUsersData")
+    public void insertUsersData()  {
+        int flag=0;
+        try{
+            usersDataMapper.createTable(userName+"Data");
+        }catch (Exception e){
+            flag=-1;
+            usersDataMapper.insertIntoTable(userName+"Data",indexDataTableName,indexSymTableName);
+
+        }
+        if(flag==0){
+            usersDataMapper.insertIntoTable(userName+"Data",indexDataTableName,indexSymTableName);
         }
     }
 }

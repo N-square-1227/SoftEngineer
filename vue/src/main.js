@@ -7,8 +7,11 @@ import VueRouter from "vue-router";
 import router from "./router";
 import store from "./store";
 import './assets/global.css'
+import * as echarts from 'echarts'
+
 Vue.prototype.$axios =axios;
 Vue.config.productionTip = false
+Vue.prototype.$echarts=echarts
 Vue.prototype.$httpUrl='http://localhost:8877'
 
 Vue.use(VueRouter);

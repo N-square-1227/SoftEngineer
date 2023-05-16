@@ -17,20 +17,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
 
     @Autowired
     private UsersMapper usersMapper;
-    // 数据加密，在启动类中已经注入进IOC容器中
-//    @Autowired
-//    private BCryptPasswordEncoder encoder;
-//    /**
-//     * 书城条件分页查询
-//     *
-//     * @param page
-//     * @param wrapper
-//     * @return
-//     */
-//    @Override
-//    public Page<Book> selectPage(Page<Book> page, QueryWrapper<Book> wrapper) {
-//        return bookMapper.selectPage(page,wrapper);
-//    }
+
 
     /**
      * @author lmy
@@ -68,7 +55,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
         user.setUserName(username);
         user.setUserPassword(password);
         user.setUserEmail(email);
-        user.setRole("2");
+        user.setRole(2);
         int i = usersMapper.insert(user);
         return i==1?user:null;
     }
@@ -87,51 +74,4 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
             return user;
         return null;
     }
-
-//    /**
-//     * 根据id获取书本信息
-//     *
-//     * @param id
-//     * @return
-//     */
-//    @Override
-//    public Book getOneBook(Integer id) {
-//        Book book = bookMapper.selectById(id);
-//        return book;
-//    }
-
-//    /**
-//     * 删除一本书
-//     *
-//     * @param book
-//     * @return
-//     */
-//    @Override
-//    public int deleteOneBook(Book book) {
-//        Book entity = new Book();
-//        entity.setId(book.getId());
-//        entity.setIsDeleted(1);
-//        entity.setGmtModified(TimeUtil.getTime());
-//        return bookMapper.updateById(entity);
-//    }
-//
-//    /**
-//     * 修改一本书的信息
-//     *
-//     * @param book
-//     * @return
-//     */
-//    @Override
-//    public int updOneBook(Book book) {
-//        Book entity = new Book();
-//        entity.setId(book.getId());
-//        entity.setPicture(book.getPicture());
-//        entity.setName(book.getName());
-//        entity.setIntroduce(book.getIntroduce());
-//        entity.setPublish(book.getPublish());
-//        entity.setAuth(book.getAuth());
-//        entity.setPrice(book.getPrice());
-//        entity.setGmtModified(TimeUtil.getTime());
-//        return bookMapper.updateById(entity);
-//    }
 }

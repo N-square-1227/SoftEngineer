@@ -110,7 +110,7 @@ export default {
       //a.href = 'https://github.com/staticpublic/SE/blob/xx/data';
       a.href = 'http://localhost:8080/static/indexSym.xlsx';
       //路径中'/'为根目录，即index.html所在的目录
-      a.download = "节点数据模板.xlsx";
+      a.download = "节点数据模板";
       console.log(a.href);
       a.click();
     },

@@ -5,7 +5,7 @@
 <template>
   <div class="login-page">
     <el-form :model="form" :rules="loginRules" ref="loginForm" class="login-container" @keyup.enter.native="doLogin">
-      <h1 class="title">🔐后台管理系统</h1>
+      <h1 class="title">🔐指标优化系统</h1>
       <el-form-item prop="userName">
         <el-input type="text" v-model="form.userName" auto-complete="off" placeholder="请输入用户名">
           <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>
