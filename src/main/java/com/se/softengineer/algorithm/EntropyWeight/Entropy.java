@@ -1,6 +1,6 @@
 package com.se.softengineer.algorithm.EntropyWeight;
 
-import com.se.softengineer.entity.Node;
+import com.se.softengineer.entity.IndexSymNode;
 import lombok.Data;
 
 import java.util.*;
@@ -43,7 +43,7 @@ public class Entropy {
     /**
      * node
      */
-    List<Node> node;
+    List<IndexSymNode> node;
 
 
     /**
@@ -92,7 +92,7 @@ public class Entropy {
     /**
      * 我的新指标体系！
      */
-    List<Node> entropyList;
+    List<IndexSymNode> entropyList;
     /**
      * 权重数组的总和
      */
@@ -132,11 +132,11 @@ public class Entropy {
     /**
      * 遍历 node 数组，填充 map
      */
-    public void fillMap(List<Node> node) {
+    public void fillMap(List<IndexSymNode> node) {
         map = new HashMap<>();
         // 如果map中已经存在key，则更新value值为原来的值加1
         // 否则将value值初始化为1
-        for (Node value : node) {
+        for (IndexSymNode value : node) {
             map.compute(value.getParentID(), (k, v) -> (v == null) ? 1 : v + 1);
         }
         // 输出结果
@@ -345,12 +345,12 @@ public class Entropy {
         // 求各级指标的权重
         // map:"{0=3,1=6,2=10,3=6}"
         Map<Integer, Double> weight = new HashMap<>();
-        for (Node value : node) {
+        for (IndexSymNode value : node) {
             weight.compute(value.getParentID(), (k, v) -> (v == null) ? value.getNodeWeight() : v + value.getNodeWeight());
         }
         for (int key : map.keySet()) {
-            for (Node value : node) {
-                if (value.getNodeId() == key) {
+            for (IndexSymNode value : node) {
+                if (value.getNodeID() == key) {
                     value.setNodeWeight(weight.get(key));
                 }
             }

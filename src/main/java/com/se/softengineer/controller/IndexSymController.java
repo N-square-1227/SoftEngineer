@@ -1,12 +1,9 @@
 package com.se.softengineer.controller;
 
-import com.se.softengineer.algorithm.EntropyWeight.Entropy;
-import com.se.softengineer.algorithm.dataprocess.DataNumpy;
-import com.se.softengineer.algorithm.pca.PCA;
 import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.entity.Node;
+import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
-import com.se.softengineer.service.NodeService;
+import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.OptimizeService;
 import com.se.softengineer.service.SampleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +24,7 @@ import java.util.List;
 public class IndexSymController {
 
     @Autowired
-    private NodeService nodeService;
+    private IndexSymService indexSymService;
 
     @Autowired
     private SampleService sampleService;
@@ -54,8 +51,8 @@ public class IndexSymController {
      * http://localhost:8877/indexsym/loadIndexSym=indexsym
      **/
     @GetMapping("/loadIndexSym")
-    private List<Node> load_indexsym(String table_name) {
-        indexSym.setNodeList(nodeService.getIndex(table_name));
+    private List<IndexSymNode> load_indexsym(String table_name) {
+        indexSym.setNodeList(indexSymService.getIndex(table_name));
 //        for(int i = 0; i < indexSym.getNodeList().size(); i ++)
 //            System.out.println(indexSym.getNodeList().get(i));
         return indexSym.getNodeList();

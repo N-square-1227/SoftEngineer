@@ -3,7 +3,7 @@ package com.se.softengineer.algorithm.pca;
 
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.entity.Node;
+import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
@@ -119,7 +119,7 @@ public class PCA {
         /* 先把因子加入到指标体系中 */
         int id_no = 1;
         for(int i = 0; i < factor_num; i ++) {
-            Node node = new Node(id_no, "factor" + id_no, 1, 1.0, 0);
+            IndexSymNode node = new IndexSymNode(id_no, "factor" + id_no, 1, 1.0, 0);
             new_sym.addNode(node);
             id_no ++;
         }
@@ -131,7 +131,7 @@ public class PCA {
                 /* 数据不太好感觉 */
                 if(Math.abs(eigenMatrix[j - 1][i]) >= 0.65) {
                     /* 这里的名字先用编号，然后看在哪里换成名字 */
-                    Node node = new Node(id_no, String.valueOf(j), 1, eigenMatrix[j - 1][i], i + 1);
+                    IndexSymNode node = new IndexSymNode(id_no, String.valueOf(j), 1, eigenMatrix[j - 1][i], i + 1);
                     new_sym.addNode(node);
                     id_no ++;
                 }

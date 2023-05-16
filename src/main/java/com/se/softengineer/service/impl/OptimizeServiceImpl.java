@@ -8,9 +8,9 @@ import com.se.softengineer.algorithm.Kmeans.Point;
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.algorithm.pca.PCA;
 import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.entity.Node;
+import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
-import com.se.softengineer.service.NodeService;
+import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.OptimizeService;
 import com.se.softengineer.service.SampleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.Set;
 public class OptimizeServiceImpl implements OptimizeService {
 
     @Autowired
-    private NodeService nodeService;
+    private IndexSymService indexSymService;
 
     @Autowired
     private SampleService sampleService;
@@ -57,7 +57,7 @@ public class OptimizeServiceImpl implements OptimizeService {
         entropy.setIndexNumber(columnList.size());
         // 计算每个指标子指标的个数并填充到 entropy 中
 
-        List<Node> node = nodeService.getIndex(indexsym_name);
+        List<IndexSymNode> node = indexSymService.getIndex(indexsym_name);
         entropy.setNode(node);
         entropy.fillMap(node);
 
@@ -66,21 +66,21 @@ public class OptimizeServiceImpl implements OptimizeService {
 
         // 建表
         // todo:修改表名为前端传回来的数据！！！
-        nodeService.dropExistTable("nxntest");
-        nodeService.createTable("nxntest");
+        indexSymService.dropExistTable("nxntest");
+        indexSymService.createTable("nxntest");
         // 将新的指标体系存到数据库的新表里
-        return nodeService.insertIntoSheet("nxntest", entropy.getNode());
+        return indexSymService.insertIntoSheet("nxntest", entropy.getNode());
     }
 
     @Override
     public IndexSym pca(String indexsym_name, String data_tablename) {
         List<Sample> data = sampleService.getData(data_tablename);
-        IndexSym indexSym = new IndexSym(nodeService.getIndex(indexsym_name));
-        List<Node> leaves = indexSym.get_leaves();
+        IndexSym indexSym = new IndexSym(indexSymService.getIndex(indexsym_name));
+        List<IndexSymNode> leaves = indexSym.get_leaves();
         PCA pca = new PCA(data);
         pca.solve();
         for(int i = 0; i < pca.getFactor_num(); i ++) {
-            List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(pca.getNew_sym().getNodeList().get(i).getNodeId());
+            List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(pca.getNew_sym().getNodeList().get(i).getNodeID());
             System.out.println(pca.getNew_sym().getNodeList().get(i).getNodeName());
             for (Integer son_node : son_nodes) {
                 /* 第idx个叶子节点*/
@@ -100,13 +100,13 @@ public class OptimizeServiceImpl implements OptimizeService {
     @Override
     public boolean kmeans(String indexsym_name, String data_tablename) throws Exception {
         List<Sample> sampleList,testList = new ArrayList<>();
-        List<Node> indexList,leafindex = new ArrayList<>();
+        List<IndexSymNode> indexList,leafindex = new ArrayList<>();
         //这里的data需要从前端传回来
         sampleList = sampleService.getData(data_tablename);
         testList = sampleService.getData(data_tablename);
         List<String> columnList = new ArrayList<>();
         columnList = sampleService.getColName(data_tablename);
-        indexList = nodeService.getIndex(indexsym_name);
+        indexList = indexSymService.getIndex(indexsym_name);
         IndexSym indexSym = new IndexSym(indexList);
         leafindex = indexSym.get_leaves();//获取叶子节点
 
@@ -120,10 +120,10 @@ public class OptimizeServiceImpl implements OptimizeService {
         //执行kmeans算法
         Kmeans kRun = new Kmeans(k,sampleList);
         Set<Cluster> clusterSet = kRun.run();
-        List<Node> nodeList = new ArrayList<>();
+        List<IndexSymNode> nodeList = new ArrayList<>();
         int centerNum = clusterSet.size();
         for(int i=1;i<=centerNum;i++){
-            Node node = new Node(i,"father"+i,1,1.0,0);
+            IndexSymNode node = new IndexSymNode(i,"father"+i,1,1.0,0);
             nodeList.add(node);
         }
         int num = 1;
@@ -131,15 +131,15 @@ public class OptimizeServiceImpl implements OptimizeService {
             List<Point> pointList = cluster.getMembers();
             for(Point point:pointList){
                 int id = point.getId();
-                Node node = new Node(centerNum+1,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),num);
+                IndexSymNode node = new IndexSymNode(centerNum+1,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),num);
                 nodeList.add(node);
                 centerNum += 1;
             }
             num += 1;
         }
-        nodeService.dropExistTable("xlytest");
-        nodeService.createTable("xlytest");
+        indexSymService.dropExistTable("xlytest");
+        indexSymService.createTable("xlytest");
         // 将新的指标体系存到数据库的新表里
-        return nodeService.insertIntoSheet("xlytest", nodeList);
+        return indexSymService.insertIntoSheet("xlytest", nodeList);
     }
 }

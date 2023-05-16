@@ -1,0 +1,14 @@
+[
+    {
+        "nodeName": "城市旅游竞争业绩1",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 0
+    }, 
+    {
+        "nodeName": "城市旅游竞争潜力1",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 0
+    }
+]

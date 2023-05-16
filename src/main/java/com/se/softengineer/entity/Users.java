@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serial;
@@ -28,8 +29,8 @@ public class Users implements Serializable {
      * 主键
      */
     // @TableId 用来映射表的主键(主键自增策略,type = IdType.AUTO)
-    @TableId(value = "userId",type = IdType.AUTO)
-    private int userid;
+    @TableId(value = "userID")
+    private Integer userID;
 
     @TableField("userName")
     private String userName;
@@ -39,4 +40,17 @@ public class Users implements Serializable {
 
     @TableField("userEmail")
     private String userEmail;
+
+    @TableField("role")
+    private String role;
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "userID='" + userID + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                '}';
+    }
 }

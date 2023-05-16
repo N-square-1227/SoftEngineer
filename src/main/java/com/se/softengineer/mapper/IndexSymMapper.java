@@ -1,7 +1,7 @@
 package com.se.softengineer.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.se.softengineer.entity.Node;
+import com.se.softengineer.entity.IndexSymNode;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -13,17 +13,17 @@ import java.util.List;
  * @create 2023/5/11 20:42
  */
 @Mapper
-public interface NodeMapper extends BaseMapper<Node> {
+public interface IndexSymMapper extends BaseMapper<IndexSymNode> {
 
     //@Options(useGeneratedKeys = true, keyColumn = "node_id")
     @Insert("insert into ${tableName} " +
-            "(node_id, node_name, node_type, node_weight, parent_id) " +
-            "values (#{nodeId}, #{nodeName}, #{nodeType}, #{nodeWeight}, #{parentID})")
-    void insertIntoSheet(String tableName, Integer nodeId, @Param("nodeName") String nodeName,
+            "( node_name, node_type, node_weight, parent_id) " +
+            "values ( #{nodeName}, #{nodeType}, #{nodeWeight}, #{parentID})")
+    boolean insertIntoTable(String tableName, @Param("nodeName") String nodeName,
                            @Param("nodeType") Integer nodeType, @Param("nodeWeight") Double noteWeight,
                            @Param("parentID") Integer parentID);
 
-    List<Node> getIndex(String table_name);
+    List<IndexSymNode> getIndex(String table_name);
 
     /**
      * 南希诺
