@@ -1,4 +1,9 @@
 # SoftEngineer
+
+
+
+配置文件中的fileSavePath是用于配置json模板的上传地址，记得修改自己的地址。 在importController中的savaFileByNio类中 String path用来保存用户上传的文件，也需要修改(保存在哪不重要，后续用不到)
+
 pom.xml
 
 项目拉下来之后可能需要更改 JDK，我的是 Oracle 17.0.2，在该文件中表现为
