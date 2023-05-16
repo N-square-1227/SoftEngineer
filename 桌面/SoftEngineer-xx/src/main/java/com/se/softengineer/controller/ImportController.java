@@ -318,7 +318,7 @@ public class ImportController {
         //System.out.println("xxxxxxxxxxxxxxx");
         boolean result=true;
         try {
-            result = indexSymService.saveJson(indexSymTableName,filePath);
+            result = indexSymService.saveJson(indexSymTableName,"D:\\seData\\"+filesName+".json");
         } catch (IOException e) {
             e.printStackTrace();
         }

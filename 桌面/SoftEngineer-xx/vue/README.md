@@ -3,6 +3,8 @@
 <<<<<<< HEAD
 > A Vue.js project
 
+配置文件中的fileSavePath是用于配置json模板的上传地址，记得修改自己的地址。
+在importController中的savaFileByNio类中 String path用来保存用户上传的文件，也需要修改(保存在哪不重要，后续用不到)。
 ## Build Setup
 
 ``` bash

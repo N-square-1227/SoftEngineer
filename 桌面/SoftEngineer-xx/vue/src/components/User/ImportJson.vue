@@ -93,7 +93,7 @@ export default {
             })
         },
         download1() {
-/*            const config = {
+            const config = {
                 method: 'get',
                 url: this.$httpUrl+'/import/downloadJson',
                 headers: {
@@ -109,15 +109,15 @@ export default {
                 link.setAttribute('download', 'example.json');
                 document.body.appendChild(link);
                 link.click();
-            })*/
-          let a = document.createElement('a');
+            })
+          /*let a = document.createElement('a');
           //跳转到github上的页面，再自行下载
           //a.href = 'https://github.com/staticpublic/SE/blob/xx/data';
           a.href = 'http://localhost:8080/static/example.json';
           //路径中'/'为根目录，即index.html所在的目录
           a.download = "指标数据模板";
           console.log(a.href);
-          a.click();
+          a.click();*/
         },
         download2() {
             let a = document.createElement('a');
