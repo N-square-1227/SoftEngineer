@@ -24,6 +24,8 @@ public interface IndexSymService {
     boolean insertIntoSheet(String tableName, List<IndexSymNode> nodeList);
     boolean insertIntoTable(String tableName, String nodeName, int nodeType, double nodeWeight, int parentID);
 
+    boolean insertIntoTable(String tableName, Integer nodeID, String nodeName, int nodeType, double nodeWeight, int parentID);
+
 
     List<IndexSymNode> getIndex(String table_name);
 

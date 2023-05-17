@@ -49,7 +49,7 @@ public class IndexSymController {
 
     /**
      * 获取指定数据表中存储的指标体系
-     * http://localhost:8877/indexsym/loadIndexSym=indexsym
+     * http://localhost:8877/indexsym/loadIndexSym?table_name=indexsym
      **/
     @GetMapping("/loadIndexSym")
     private Result load_indexsym(String table_name) {

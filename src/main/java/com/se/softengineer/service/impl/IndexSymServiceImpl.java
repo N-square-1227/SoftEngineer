@@ -38,7 +38,7 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, IndexSymNod
 
         // 插入数据到指定的表
         for (IndexSymNode node : nodeList) {
-            indexSymMapper.insertIntoTable(tableName, node.getNodeName(),
+            indexSymMapper.insertIntoTable_noauto(tableName, node.getNodeID(), node.getNodeName(),
                     node.getNodeType(), node.getNodeWeight(), node.getParentID());
         }
         return true;
@@ -47,6 +47,11 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, IndexSymNod
     public boolean insertIntoTable(String tableName, String nodeName, int nodeType, double nodeWeight, int parentID){
         return indexSymMapper.insertIntoTable(tableName, nodeName,
                 nodeType, nodeWeight, parentID);
+    }
+
+    @Override
+    public boolean insertIntoTable(String tableName, Integer nodeID, String nodeName, int nodeType, double nodeWeight, int parentID) {
+        return indexSymMapper.insertIntoTable_noauto(tableName, nodeID, nodeName, nodeType, nodeWeight, parentID);
     }
 
     @Override

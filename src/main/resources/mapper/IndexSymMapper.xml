@@ -21,8 +21,4 @@
         DROP TABLE IF EXISTS ${tableName}
     </update>
 
-    <insert id="insertIntoTable">
-        INSERT
-    </insert>
-
 </mapper>

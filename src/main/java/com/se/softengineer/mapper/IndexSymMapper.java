@@ -23,6 +23,13 @@ public interface IndexSymMapper extends BaseMapper<IndexSymNode> {
                            @Param("nodeType") Integer nodeType, @Param("nodeWeight") Double noteWeight,
                            @Param("parentID") Integer parentID);
 
+    @Insert("insert into ${tableName} " +
+            "(node_id, node_name, node_type, node_weight, parent_id) " +
+            "values ( #{nodeID}, #{nodeName}, #{nodeType}, #{nodeWeight}, #{parentID})")
+    boolean insertIntoTable_noauto(String tableName,  @Param("nodeID") Integer nodeID, @Param("nodeName") String nodeName,
+                            @Param("nodeType") Integer nodeType, @Param("nodeWeight") Double noteWeight,
+                            @Param("parentID") Integer parentID);
+
     List<IndexSymNode> getIndex(String table_name);
 
     /**

@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.se.softengineer.utils.EncryptHandler;
+//import com.se.softengineer.utils.EncryptHandler;
+//import io.github.encrypt.annotation.FieldEncrypt;
+//import io.github.encrypt.bean.Encrypted;
 import lombok.Data;
 
 import java.io.Serial;
@@ -15,8 +17,8 @@ import java.io.Serializable;
 // lombok 注解
 @Data
 // 用来标注你映射的是哪张表
-@TableName(value = "users", autoResultMap = true)
-public class Users implements Serializable {
+@TableName(value = "users"/*, autoResultMap = true*/)
+public class Users implements Serializable/*, Encrypted */{
     /*
     1、将对象的内容进行流化。对流化后的对象进行读写操作，也可以在网络之间传输，需要实现 Serializable 接口.
 
@@ -34,13 +36,16 @@ public class Users implements Serializable {
     @TableId(value = "userID", type = IdType.AUTO)
     private Integer userID;
 
-    @TableField(value = "userName", typeHandler = EncryptHandler.class)
+    @TableField(value = "userName"/*, typeHandler = EncryptHandler.class*/)
+//    @FieldEncrypt
     private String userName;
 
-    @TableField(value = "userPassword", typeHandler = EncryptHandler.class)
+    @TableField(value = "userPassword"/*, typeHandler = EncryptHandler.class*/)
+//    @FieldEncrypt
     private String userPassword;
 
-    @TableField(value = "userEmail", typeHandler = EncryptHandler.class)
+    @TableField(value = "userEmail"/*, typeHandler = EncryptHandler.class*/)
+//    @FieldEncrypt
     private String userEmail;
 
     @TableField("role")
