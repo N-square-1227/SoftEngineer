@@ -1,9 +1,11 @@
 package com.se.softengineer.controller;
 
-import com.se.softengineer.dao.IndexSymMapper;
-import com.se.softengineer.dao.UsersDataMapper;
-import com.se.softengineer.entity.Indexsym;
-import com.se.softengineer.service.IndexSymService;
+import com.se.softengineer.entity.IndexSym;
+import com.se.softengineer.mapper.IndexSymNodeMapper;
+import com.se.softengineer.mapper.UsersDataMapper;
+import com.se.softengineer.entity.IndexSymNode;
+import com.se.softengineer.service.IndexSymNodeService;
+import com.se.softengineer.service.SampleService;
 import com.se.softengineer.utils.Result;
 import com.se.softengineer.utils.AnalyExcel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +35,6 @@ public class ImportController {
     public String userName;
     //从excel中读到的临时数据
     public static List<String[]> cells=new ArrayList<>();
-    //用户导入的indexSym数据，除了在数据库中保存，在此全局变量中也保存了
-    public static List<Indexsym> indexSym=new ArrayList<>();
     //每个用户都有一个tableName
     public static String indexSymTableName;
     public static String indexDataTableName;
@@ -53,13 +53,19 @@ public class ImportController {
     private String filePath;
 
     @Autowired
-    private IndexSymService indexSymService;
+    private IndexSymNodeService nodeService;
 
     @Autowired
-    private IndexSymMapper indexSymMapper;
+    private IndexSymNodeMapper nodeMapper;
 
     @Autowired
     private UsersDataMapper usersDataMapper;
+
+    @Autowired
+    private SampleService sampleService;
+
+
+    private IndexSym indexSym = new IndexSym();
 
     /**
      * @author xiaxue
@@ -69,6 +75,7 @@ public class ImportController {
     @PostMapping(value = "/excel/{value}")
     //@RequestParam("file") MultipartFile file
     public void uploadFileByExcel(@RequestParam(value = "file",required = false) MultipartFile file, @PathVariable("value") String v) throws IOException {
+        cells.clear();
         String filename = file.getOriginalFilename();
         fileType=v;
         System.out.println("类型："+fileType);
@@ -85,10 +92,12 @@ public class ImportController {
      * @author xiaxue
      * @param file
      */
-    @RequestMapping("/xml")
+    @RequestMapping("/xml/{value}")
     public void loadFileByXML(@RequestParam(value = "file",required = false) MultipartFile file, @PathVariable("value") String v) throws IOException {
+        //清空数组
+        cells.clear();
         String filename = file.getOriginalFilename();
-        // filesName=filename.substring(filename.charAt(','));
+
         fileType=v;
         filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
         //保存到本地
@@ -126,10 +135,10 @@ public class ImportController {
                 for (int k = 0; k < childNodes.getLength(); k++) {
                     // 区分,去掉空格和换行符
                     if (childNodes.item(k).getNodeType() == Node.ELEMENT_NODE) {
-                        // 获取element类型的节点和节点值
+/*                        // 获取element类型的节点和节点值
                         //System.out.print("节点名：" + childNodes.item(k).getNodeName());
                         //System.out.print(" --- 节点值：" + childNodes.item(k).getFirstChild().getNodeValue());
-                        //System.out.println(" --- 节点值："+childNodes.item(k).getTextContent());
+                        //System.out.println(" --- 节点值："+childNodes.item(k).getTextContent());*/
                         temp[j++]=childNodes.item(k).getTextContent();
                         //System.out.println(" --- ："+k+" "+temp[j-1]);
                     }
@@ -144,38 +153,62 @@ public class ImportController {
     }
 
 
-    @RequestMapping("/keepExcel")
-    public void keep(){
-        keepData(cells);
+    @RequestMapping("/keepExcel/{username}")
+    public Result keep(@PathVariable("username") String name){
+        //System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        userName=name;
+        System.out.println("用户名：  "+name);
+        return keepData(cells);
     }
     /**
      * 保存读取的indexSym,保存到List和数据库
      * @param list
      */
-    public void keepData(List<String[]> list){
+    public Result keepData(List<String[]> list){
+        System.out.println("文件类型:  "+fileType);
         if(fileType.equals("indexSym")) {
             //拼接新表名
-            indexSymTableName = filesName + "indexSym";
-            indexSymMapper.createTable(indexSymTableName);
+            indexSymTableName = filesName + "IndexSym";
+            System.out.println("指标体系名字： "+indexSymTableName);
+            nodeService.createIndexSymTable(indexSymTableName);
             for (String[] l : list) {
-                indexSymMapper.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3]));
+                nodeMapper.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3]));
             }
         }else if(fileType.equals("indexdata")){
-            indexDataTableName=filesName+"indexData";
+            indexDataTableName=filesName+"IndexData";
+            System.out.println("指标数据名字: "+indexDataTableName);
             //拼接sql语句，因为指标个数不确定。
             String[] temp=list.get(1);
             int column=temp.length-1;//指标个数
-            createSql="create table ${tableName}(`id` int NOT NULL AUTO_INCREMENT," +
-                    "  `name` varchar(50) NOT NULL";
-            for(int i=0;i<column;i++){
-                createSql+=","+"x"+i+" double(50,0) NOT NULL";
-            }
-            createSql+="PRIMARY KEY (`id`)" +
-                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";
+            System.out.println("indexSymTableName："+indexSymTableName);
+            create_data_table(indexSymTableName);
 
+            String name = null;
+            int i=0;
+            for (String[] l : list) {
+                List<String> ins=new ArrayList<>();
+                i=0;
+                for(String t:l){
+                    if(i==0){
+                        name=t;
+                    }else{
+                        ins.add(t);
+                    }
+                    i++;
+                }
+                try{
+                    sampleService.insertDataTable(indexDataTableName,name,ins);
+                }catch(Exception e){
+                    System.out.println("数据文件和节点文件不对应！");
+                    return Result.fail();
+                }
+
+            }
         }
-        System.out.println("sql语句aaaaaaaaaaa: "+createSql);
+        //usersDataMapper.insertIntoTable(userName+"data",indexDataTableName,indexSymTableName);
+        System.out.println("sql语句aaaaaaaaaaa: "+indexDataTableName);
         //sampleMapper.createTable(indexDataTableName);
+        return Result.success();
     }
 
     /**
@@ -227,13 +260,13 @@ public class ImportController {
      */
     @RequestMapping("/keepJson")
     public Result keepJson(@RequestParam String userName){
-        Indexsym t=new Indexsym();
+        IndexSymNode t=new IndexSymNode();
         indexSymTableName=userName+"indexSym";
-        indexSymService.createTable(indexSymTableName);
+        nodeService.createIndexSymTable(indexSymTableName);
         //System.out.println("xxxxxxxxxxxxxxx");
         boolean result=true;
         try {
-            result = indexSymService.saveJsonData(indexSymTableName,this.filePath);
+            result = nodeService.saveJsonData(indexSymTableName,this.filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -241,26 +274,54 @@ public class ImportController {
     }
 
     /**
+     * 获取指定数据表中存储的指标体系
+     * http://localhost:8877/indexsym/loadIndexSym=indexsym
+     **/
+    @GetMapping("/loadIndexSym")
+    public List<IndexSymNode> load_indexsym(String table_name) {
+        indexSym.setNodeList(nodeService.getIndex(table_name));
+        return indexSym.getNodeList();
+    }
+
+    /**
+     * 根据指标体系生成对应的数据表（叶子节点是表头
+     * @param table_name 指标体系表
+     * @return 是否成功建表（啊？？怎么成功建了表return回来的是false啊
+     * http://localhost:8877/indexsym/create_data_table?table_name=indexsym
+     */
+    @GetMapping("/create_data_table")
+    public boolean create_data_table(String table_name) {
+        load_indexsym(table_name);
+        indexSym.get_leaves();
+        int leaf_num = indexSym.getLeaf_num();
+        List<String> columnNames = new ArrayList<>();
+        for(int i = 1; i <= leaf_num; i ++)
+            columnNames.add("X" + i);
+        indexDataTableName=table_name+"_data";
+        return sampleService.createDataTable(table_name+"_data", columnNames);
+    }
+
+    /**
      * @author lmy
      */
     @RequestMapping("/downloadJson")
     public void downloadJson(HttpServletResponse response) throws Exception {
-        this.download("example.json",response);
+        this.download("example\\example.json",response);
     }
 
     @RequestMapping("/downloadExcel1")
     public void downloadExcel1(HttpServletResponse response) throws Exception {
-        this.download("indexSym.xlsx",response);
+        this.download("example\\indexSym.xlsx",response);
     }
 
     @RequestMapping("/downloadExcel2")
     public void downloadExcel2(HttpServletResponse response) throws Exception {
-        this.download("index.xlsx",response);
+        this.download("example\\index.xlsx",response);
     }
 
     @RequestMapping("/downloadXml")
     public void downloadXml(HttpServletResponse response) throws Exception {
-        this.download("example.json",response);
+        this.download("example\\temp.xml",response);
     }
 
     public void download(String fileName,HttpServletResponse response) throws Exception{

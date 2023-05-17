@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("indexsym")
-public class Indexsym {
+public class IndexSymNode {
 
     @TableId(value = "node_id")
     private Integer nodeId;
@@ -36,9 +36,7 @@ public class Indexsym {
     // 先暂时用 int, 不知道用 id 比较好还是用整个节点比较好
     private Integer parentID;
 
-    private List<Indexsym> children = new ArrayList<>();
-
-
+    private List<IndexSymNode> children = new ArrayList<>();
 }
 
 

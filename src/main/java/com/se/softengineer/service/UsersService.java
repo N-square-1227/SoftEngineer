@@ -1,9 +1,7 @@
 package com.se.softengineer.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.se.softengineer.dao.UsersMapper;
 import com.se.softengineer.entity.Users;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *

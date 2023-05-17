@@ -2,9 +2,9 @@ package com.se.softengineer.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
-import com.se.softengineer.entity.Indexsym;
+import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.TreeData;
-import com.se.softengineer.service.IndexSymService;
+import com.se.softengineer.service.IndexSymNodeService;
 import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/indexSym")
 public class IndexSymController {
     @Autowired
-    private IndexSymService indexSymService;
+    private IndexSymNodeService indexSymNodeService;
 
     /**
      * @author lmy
@@ -27,9 +27,9 @@ public class IndexSymController {
     public Result getTreeData(@RequestParam String tableName)
     {
         // 先查出来表中的所有数据
-        List<Indexsym> indexSym = indexSymService.getAllData(tableName);
+        List<IndexSymNode> indexSym = indexSymNodeService.getIndex(tableName);
         // 转换成画树需要的类
-        List<TreeData> treeData=indexSymService.getIndexSymData(indexSym);
+        List<TreeData> treeData=indexSymNodeService.getIndexSymData(indexSym);
         JSONArray jsonArray=getJsonList(treeData);
         // 返回构建好的数据
         return jsonArray.size()>0?Result.success(jsonArray):Result.fail();

@@ -2,8 +2,9 @@ package com.se.softengineer.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.se.softengineer.entity.Users;
-import com.se.softengineer.dao.UsersMapper;
+import com.se.softengineer.mapper.UsersMapper;
 import com.se.softengineer.service.UsersService;
+import com.se.softengineer.utils.EncryptHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,8 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
 
     @Autowired
     private UsersMapper usersMapper;
-
+    /* 用于数据加密和解密 */
+    EncryptHandler handler = new EncryptHandler();
 
     /**
      * @author lmy
@@ -26,8 +28,8 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
     @Override
     public Users userLogin(String username, String password) {
         List list = lambdaQuery()
-                .eq(Users::getUserName,username)
-                .eq(Users::getUserPassword,password).list();
+                .eq(Users::getUserName,handler.encrypt(username))
+                .eq(Users::getUserPassword,handler.encrypt(password)).list();
         Users user = null;
         if(list.size()>0)
             user = (Users)list.get(0);
@@ -39,7 +41,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
      */
 
     private List<Users> getUserListByName(String name){
-        return lambdaQuery().eq(Users::getUserName,name).list();
+        return lambdaQuery().eq(Users::getUserName,handler.encrypt(name)).list();
     }
 
     /**

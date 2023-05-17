@@ -1,7 +1,7 @@
 package com.se.softengineer.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.se.softengineer.dao.SampleMapper;
+import com.se.softengineer.mapper.SampleMapper;
 import com.se.softengineer.entity.Sample;
 import com.se.softengineer.service.SampleService;
 import org.springframework.stereotype.Service;
@@ -36,5 +36,14 @@ public class SampleServiceImpl extends ServiceImpl<SampleMapper, Sample> impleme
     @Override
     public List<String> getColName(String table_name){
         return sampleMapper.getColName(table_name);
+    }
+    @Override
+    public boolean createDataTable(String tableName, List<String> columnList) {
+        return sampleMapper.createDataTable(tableName, columnList);
+    }
+
+    @Override
+    public boolean insertDataTable(String tableName,String dataName, List<String> dataList) {
+        return sampleMapper.insertDataTable(tableName,dataName,dataList);
     }
 }

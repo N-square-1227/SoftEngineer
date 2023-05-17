@@ -26,7 +26,7 @@ public class TreeData implements Serializable {
 
     }
 
-    public TreeData(Indexsym indexsym) {
+    public TreeData(IndexSymNode indexsym) {
         this.id = indexsym.getNodeId();
         this.name = indexsym.getNodeName();
         this.children = indexsym.getChildren().stream().map(TreeData::new).collect(Collectors.toList());

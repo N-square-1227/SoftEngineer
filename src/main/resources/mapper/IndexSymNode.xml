@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.se.softengineer.mapper.IndexSymNodeMapper">
+
+    <select id="getIndex" parameterType="String" resultType="com.se.softengineer.entity.IndexSymNode">
+        select * from ${tableName}
+    </select>
+
+    <update id="createTable" parameterType="String">
+        CREATE TABLE ${tableName} (
+                                      `node_id` int(11) NOT NULL,
+                                      `node_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+                                      `node_type` int(11) NOT NULL,
+                                      `node_weight` double NOT NULL,
+                                      `parent_id` int(11) NOT NULL,
+                                      PRIMARY KEY (`node_id`) USING BTREE
+        ) ENGINE = InnoDB AUTO_INCREMENT = 160 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+    </update>
+
+    <update id="dropExistTable">
+        DROP TABLE IF EXISTS ${tableName}
+    </update>
+
+</mapper>

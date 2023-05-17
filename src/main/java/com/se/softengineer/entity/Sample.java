@@ -1,9 +1,7 @@
 package com.se.softengineer.entity;
-
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +9,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class Sample {
 
-    //    @TableId(value = "id",type= IdType.AUTO)
-//    Integer id;
-    @SuppressWarnings("unchecked")
     @TableField("data")
     List data = new ArrayList<>();
 

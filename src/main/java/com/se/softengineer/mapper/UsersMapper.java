@@ -1,4 +1,4 @@
-package com.se.softengineer.dao;
+package com.se.softengineer.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.se.softengineer.entity.Users;

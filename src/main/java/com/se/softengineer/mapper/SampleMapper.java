@@ -1,11 +1,15 @@
-package com.se.softengineer.dao;
+package com.se.softengineer.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.se.softengineer.entity.Sample;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
 import java.util.List;
+
+import static com.se.softengineer.controller.ImportController.createSql;
 
 /**
  * by wxy
@@ -21,6 +25,9 @@ public interface SampleMapper extends BaseMapper<Sample> {
 
     List<String> getColName(String table_name);
 
+    boolean createDataTable(String tableName, List<String> columnList);
+
+    boolean insertDataTable(@Param("tableName") String tableName, @Param("dataName") String dataName, List<String> dataList);
     //mybatisplus不支持非常量注入
 /*    @Update({createSql})
     int createTable(String tableName);*/

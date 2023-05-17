@@ -10,14 +10,6 @@
             <i :class="item.menuIcon"></i>
             <span slot="title">{{item.menuName}}</span>
         </el-menu-item>
-<!--        <el-menu-item :index="'/'+item.menuClick" v-for="(item,i) in menu":key="i">-->
-<!--            <i class="item.menuIcon"></i>-->
-<!--            <span>{{ item.menuName }}</span>-->
-<!--        </el-menu-item>-->
-<!--        <el-menu-item index="3-1">-->
-<!--            <i class="el-icon-setting"></i>-->
-<!--            <span>指标优化</span>-->
-<!--        </el-menu-item>-->
     </el-menu>
 </template>
 
