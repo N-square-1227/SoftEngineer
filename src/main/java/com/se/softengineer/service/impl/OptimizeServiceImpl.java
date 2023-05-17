@@ -90,6 +90,13 @@ public class OptimizeServiceImpl implements OptimizeService {
                 pca.getNew_sym().getNodeList().get(son_node - 1).setNodeName(leaves.get(idx - 1).getNodeName());
             }
         }
+        String newIndexSymName = indexsym_name + "_new_pca";
+
+        indexSymService.dropExistTable(newIndexSymName);
+        indexSymService.createTable(newIndexSymName);
+        // 将新的指标体系存到数据库的新表里
+        indexSymService.insertIntoSheet(newIndexSymName, pca.getNew_sym().getNodeList());
+
         return pca.getNew_sym();
     }
 
@@ -140,10 +147,13 @@ public class OptimizeServiceImpl implements OptimizeService {
             }
             num += 1;
         }
-        indexSymService.dropExistTable("xlytest");
-        indexSymService.createTable("xlytest");
+
+        String newIndexSymName = indexsym_name + "_new_kmeans";
+
+        indexSymService.dropExistTable(newIndexSymName);
+        indexSymService.createTable(newIndexSymName);
         // 将新的指标体系存到数据库的新表里
-        indexSymService.insertIntoSheet("xlytest", nodeList);
+        indexSymService.insertIntoSheet(newIndexSymName, nodeList);
         newIndexSym.setNodeList(nodeList);
         return newIndexSym;
     }

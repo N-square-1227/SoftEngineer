@@ -17,13 +17,6 @@
         <java.version>17</java.version>
         <fastjson.version>2.0.15</fastjson.version>
     </properties>
-    <!-- 用户信息加密 -->
-<!--    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>-->
     <dependencies>
 
         <!--spring web-->
@@ -123,11 +116,6 @@
             <version>5.8.3</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.gitee.china-zhz</groupId>-->
-<!--            <artifactId>privacy-spring-boot-starter</artifactId>-->
-<!--            <version>1.0.0.RELEASE</version>-->
-<!--        </dependency>-->
 
     </dependencies>
 
