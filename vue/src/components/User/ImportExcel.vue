@@ -105,25 +105,43 @@ export default {
       })
     },*/
     download1() {
-      let a = document.createElement('a');
-      //跳转到github上的页面，再自行下载
-      //a.href = 'https://github.com/staticpublic/SE/blob/xx/data';
-      a.href = 'http://localhost:8080/static/indexSym.xlsx';
-      //路径中'/'为根目录，即index.html所在的目录
-      a.download = "节点数据模板";
-      console.log(a.href);
-      a.click();
+        const config = {
+            method: 'get',
+            url: this.$httpUrl+'/import/downloadExcel1',
+            headers: {
+                //和后端设置的一样
+                'Content-Type': 'application/octet-stream;charset=UTF-8'
+            },
+            responseType: 'blob'
+        };
+        this.$axios(config).then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'indexSym.xlsx');
+            document.body.appendChild(link);
+            link.click();
+        })
     },
-    download2() {
-      let a = document.createElement('a');
-      //跳转到github上的页面，再自行下载
-      //a.href = 'https://github.com/staticpublic/SE/blob/xx/data';
-      a.href = 'http://localhost:8080/static/index.xlsx';
-      //路径中'/'为根目录，即index.html所在的目录
-      a.download = "指标数据模板";
-      console.log(a.href);
-      a.click();
-    },
+      download2() {
+          const config = {
+              method: 'get',
+              url: this.$httpUrl+'/import/downloadExcel2',
+              headers: {
+                  //和后端设置的一样
+                  'Content-Type': 'application/octet-stream;charset=UTF-8'
+              },
+              responseType: 'blob'
+          };
+          this.$axios(config).then(response => {
+              const url = window.URL.createObjectURL(new Blob([response.data]));
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', 'index.xlsx');
+              document.body.appendChild(link);
+              link.click();
+          })
+      },
     //点击上传跳转后端
     jumpBehind(){
       //this.$router.push("/keepExcel")

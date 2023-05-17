@@ -29,7 +29,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/import")
 public class ImportController {
-
     //获取当前用户名
     public String userName;
     //从excel中读到的临时数据
@@ -226,7 +225,6 @@ public class ImportController {
     /**
      * @author lmy
      */
-
     @RequestMapping("/keepJson")
     public Result keepJson(@RequestParam String userName){
         Indexsym t=new Indexsym();
@@ -245,11 +243,29 @@ public class ImportController {
     /**
      * @author lmy
      */
-
     @RequestMapping("/downloadJson")
     public void downloadJson(HttpServletResponse response) throws Exception {
+        this.download("example.json",response);
+    }
+
+    @RequestMapping("/downloadExcel1")
+    public void downloadExcel1(HttpServletResponse response) throws Exception {
+        this.download("indexSym.xlsx",response);
+    }
+
+    @RequestMapping("/downloadExcel2")
+    public void downloadExcel2(HttpServletResponse response) throws Exception {
+        this.download("index.xlsx",response);
+    }
+
+    @RequestMapping("/downloadXml")
+    public void downloadXml(HttpServletResponse response) throws Exception {
+        this.download("example.json",response);
+    }
+
+    public void download(String fileName,HttpServletResponse response) throws Exception{
         //这里写要让前端下载的文件的路径
-        File file = new File(this.fileSavePath + "example.json");
+        File file = new File(this.fileSavePath + fileName);
         //设置编码格式，防止下载的文件内乱码
         response.setCharacterEncoding("UTF-8");
         //获取路径文件对象

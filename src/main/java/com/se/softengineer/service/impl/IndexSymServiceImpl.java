@@ -43,16 +43,25 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, Indexsym> i
         return true;
     }
 
+    /**
+     * @author lmy
+     */
     @Override
     public Boolean createTable(String tableName) {
         return indexSymMapper.createTable(tableName)>0?true:false;
     }
 
+    /**
+     * @author lmy
+     */
     @Override
     public List<Indexsym> getAllData(String tableName) {
         return indexSymMapper.selectAllData(tableName);
     }
 
+    /**
+     * @author lmy
+     */
     @Override
     public List<TreeData> getIndexSymData(List<Indexsym> indexSym) {
         // 经过 buildIndexSym 处理过的 nodeList 中的 children 属性就都有数据了
@@ -61,6 +70,9 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, Indexsym> i
         return nodeList.stream().map(TreeData::new).collect(Collectors.toList());
     }
 
+    /**
+     * @author lmy
+     */
     private List<Indexsym> buildIndexSym(List<Indexsym> nodes) {
         // 初步处理好的数据 即：添加childrenList
         List<Indexsym> returnList = new ArrayList<>();
@@ -94,6 +106,7 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, Indexsym> i
 
     /**
      * 递归列表
+     * @author lmy
      */
     private void recursionFn(List<Indexsym> nodeList, Indexsym curNode)
     {
@@ -120,6 +133,7 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, Indexsym> i
 
     /**
      * 获取子节点列表
+     * @author lmy
      */
     private List<Indexsym> getChildList(List<Indexsym> list, Indexsym curNode)
     {
@@ -139,6 +153,7 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, Indexsym> i
 
     /**
      * 判断是否有子节点
+     * @author lmy
      */
     private boolean hasChild(List<Indexsym> list, Indexsym t)
     {
