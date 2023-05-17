@@ -15,6 +15,7 @@ public interface UsersService extends IService<Users> {
      * @author lmy
      */
     public Users userLogin(String username,String password);
+//    public Users userLogin(Users user);
 
     /**
      * 注册

@@ -48,6 +48,7 @@ public class UsersController {
     @PostMapping("/login")
     public Result login(@RequestBody Users user){
         Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
+//        Users curUser = usersService.userLogin(user);
 //        String roleName="";
 //        if(curUser!=null)
 //            roleName = userroleService.getRoleNameByUserID(curUser.getUserID());

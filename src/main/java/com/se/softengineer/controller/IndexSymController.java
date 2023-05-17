@@ -102,7 +102,7 @@ public class IndexSymController {
      * 调用PCA算法对指定的指标体系做优化
      * indexsym_name表示存储指定指标体系的数据表的名字
      * data_tablename表示对应的数据的数据表的名字
-     * http://localhost:8877/indexsym/usePCA?indexsym_name=indexsym&&data_tablename=data
+     * http://localhost:8877/indexsym/pca?indexsym_name=indexsym&&data_tablename=data
      * 后面也可以改成PostMapping
      **/
     @GetMapping("/pca")
