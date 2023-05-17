@@ -5,7 +5,7 @@
 <template>
   <div class="register-page">
     <el-form :model="form" :rules="registerRules" ref="registerForm" class="register-container">
-      <h1 class="title">🔐后台管理系统</h1>
+      <h1 class="title">🔐指标体系优化系统</h1>
       <el-form-item prop="userName">
         <el-input type="text" v-model="form.userName" auto-complete="off" placeholder="用户名">
           <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>

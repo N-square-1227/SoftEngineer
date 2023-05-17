@@ -6,6 +6,7 @@ import com.se.softengineer.entity.Sample;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.OptimizeService;
 import com.se.softengineer.service.SampleService;
+import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,8 +42,8 @@ public class IndexSymController {
      * Just for test
      **/
     @GetMapping("/test")
-    private String test() {
-        return "Hello World!";
+    private Result test() {
+        return Result.success("Hello World!");
     }
 
 
@@ -51,11 +52,11 @@ public class IndexSymController {
      * http://localhost:8877/indexsym/loadIndexSym=indexsym
      **/
     @GetMapping("/loadIndexSym")
-    private List<IndexSymNode> load_indexsym(String table_name) {
+    private Result load_indexsym(String table_name) {
         indexSym.setNodeList(indexSymService.getIndex(table_name));
 //        for(int i = 0; i < indexSym.getNodeList().size(); i ++)
 //            System.out.println(indexSym.getNodeList().get(i));
-        return indexSym.getNodeList();
+        return indexSym.getNodeList().size() != 0 ? Result.success(indexSym.getNodeList()) : Result.fail();
     }
 
     /**
@@ -64,9 +65,9 @@ public class IndexSymController {
      * 后面也可以改成PostMapping
      **/
     @GetMapping("/loadData")
-    private List<Sample> load_data(String table_name) {
+    private Result load_data(String table_name) {
         data = sampleService.getData(table_name);
-        return data;
+        return data.size() != 0 ? Result.success(data) : Result.fail() ;
     }
 
     /**
@@ -76,14 +77,14 @@ public class IndexSymController {
      * http://localhost:8877/indexsym/create_data_table?table_name=indexsym
      */
     @GetMapping("/create_data_table")
-    private boolean create_data_table(String table_name) {
+    private Result create_data_table(String table_name) {
         load_indexsym(table_name);
         indexSym.get_leaves();
         int leaf_num = indexSym.getLeaf_num();
         List<String> columnNames = new ArrayList<>();
         for(int i = 1; i <= leaf_num; i ++)
             columnNames.add("X" + i);
-        return sampleService.createDataTable(table_name+"_data", columnNames);
+        return !sampleService.createDataTable(table_name+"_data", columnNames) ? Result.success() : Result.fail();
     }
 
     /**
@@ -92,9 +93,9 @@ public class IndexSymController {
      * 后面也可以改成PostMapping
      **/
     @GetMapping("/loadColumnNames")
-    private List<String> load_columnNames(String table_name) {
+    private Result load_columnNames(String table_name) {
         columnList = sampleService.getColName(table_name);
-        return columnList;
+        return columnList.size() != 0 ?Result.success(columnList):Result.fail();
     }
 
     /**
@@ -105,8 +106,9 @@ public class IndexSymController {
      * 后面也可以改成PostMapping
      **/
     @GetMapping("/pca")
-    public IndexSym use_PCA(String indexsym_name, String data_tablename) {
-        return optimizeService.pca(indexsym_name, data_tablename);
+    public Result use_PCA(String indexsym_name, String data_tablename) {
+        IndexSym newIndexSym = optimizeService.pca(indexsym_name, data_tablename);
+        return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 
     /**
@@ -117,8 +119,9 @@ public class IndexSymController {
      * @return
      */
     @GetMapping("/entropy")
-    public boolean use_entropy(String indexsym_name, String data_tablename) throws Exception {
-        return optimizeService.entropy(indexsym_name, data_tablename);
+    public Result use_entropy(String indexsym_name, String data_tablename) throws Exception {
+        IndexSym newIndexSym = optimizeService.entropy(indexsym_name, data_tablename);
+        return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 
     /**
@@ -129,8 +132,9 @@ public class IndexSymController {
      * @throws Exception
      */
     @GetMapping("/kmeans")
-    public boolean use_kmeans(String indexsym_name, String data_tablename) throws Exception {
-        return optimizeService.kmeans(indexsym_name, data_tablename);
+    public Result use_kmeans(String indexsym_name, String data_tablename) throws Exception {
+        IndexSym newIndexSym = optimizeService.kmeans(indexsym_name, data_tablename);
+        return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 
 }

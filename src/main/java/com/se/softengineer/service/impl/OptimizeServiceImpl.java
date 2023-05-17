@@ -36,12 +36,13 @@ public class OptimizeServiceImpl implements OptimizeService {
      * @return
      */
     @Override
-    public boolean entropy(String indexsym_name, String data_tablename) {
+    public IndexSym entropy(String indexsym_name, String data_tablename) {
         Entropy entropy = new Entropy();
 
         //这里的data需要从前端传回来
         List<Sample> data = sampleService.getData(data_tablename);
         List<String> columnList = sampleService.getColName(data_tablename);
+        IndexSym newIndexSym = new IndexSym();
 
         List<List<Double>> dataList = new ArrayList<>();
 
@@ -64,12 +65,13 @@ public class OptimizeServiceImpl implements OptimizeService {
         // 调用算法类的熵权法
         entropy.algorithm();
 
-        // 建表
-        // todo:修改表名为前端传回来的数据！！！
-        indexSymService.dropExistTable("nxntest");
-        indexSymService.createTable("nxntest");
+        String newIndexSymName = indexsym_name + "_new_entropy";
+        indexSymService.dropExistTable(newIndexSymName);
+        indexSymService.createTable(newIndexSymName);
         // 将新的指标体系存到数据库的新表里
-        return indexSymService.insertIntoSheet("nxntest", entropy.getNode());
+        indexSymService.insertIntoSheet(newIndexSymName, entropy.getNode());
+        newIndexSym.setNodeList(entropy.getNode());
+        return newIndexSym;
     }
 
     @Override
@@ -98,9 +100,10 @@ public class OptimizeServiceImpl implements OptimizeService {
      * @throws Exception
      */
     @Override
-    public boolean kmeans(String indexsym_name, String data_tablename) throws Exception {
+    public IndexSym kmeans(String indexsym_name, String data_tablename) throws Exception {
         List<Sample> sampleList,testList = new ArrayList<>();
         List<IndexSymNode> indexList,leafindex = new ArrayList<>();
+        IndexSym newIndexSym = new IndexSym();
         //这里的data需要从前端传回来
         sampleList = sampleService.getData(data_tablename);
         testList = sampleService.getData(data_tablename);
@@ -140,6 +143,8 @@ public class OptimizeServiceImpl implements OptimizeService {
         indexSymService.dropExistTable("xlytest");
         indexSymService.createTable("xlytest");
         // 将新的指标体系存到数据库的新表里
-        return indexSymService.insertIntoSheet("xlytest", nodeList);
+        indexSymService.insertIntoSheet("xlytest", nodeList);
+        newIndexSym.setNodeList(nodeList);
+        return newIndexSym;
     }
 }

@@ -42,7 +42,7 @@ public class Users implements Serializable {
     private String userEmail;
 
     @TableField("role")
-    private String role;
+    private Integer role;
 
     @Override
     public String toString() {
