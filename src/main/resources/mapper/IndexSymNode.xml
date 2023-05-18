@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.se.softengineer.mapper.IndexSymNodeMapper">
 
-    <select id="getIndex" parameterType="String" resultType="com.se.softengineer.entity.IndexSymNode">
-        select * from ${tableName}
+    <select id="getIndex" resultType="com.se.softengineer.entity.IndexSymNode">
+        select * from ${table_name}
     </select>
 
     <update id="createTable" parameterType="String">
@@ -20,5 +20,9 @@
     <update id="dropExistTable">
         DROP TABLE IF EXISTS ${tableName}
     </update>
+
+    <select id="getHeadID" resultType="int">
+        select node_id from table_name where node_name=${name}
+    </select>
 
 </mapper>

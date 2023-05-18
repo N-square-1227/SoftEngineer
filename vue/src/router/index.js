@@ -41,6 +41,11 @@ const routes = [
                 path: '/ImportJson',
                 name: 'ImportJson',
                 component:()=>import("../components/User/ImportJson")
+            },
+            {
+                path: '/DrawTree',
+                name: 'DrawTree',
+                component:()=>import("../components/User/DrawTree")
             }
         ]
     },

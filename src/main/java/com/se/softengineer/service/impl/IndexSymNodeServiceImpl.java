@@ -92,17 +92,9 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
      * @author lmy
      */
     @Override
-    public Boolean createIndexSymTable(String tableName) {
-        return nodeMapper.createIndexSymTable(tableName)>0?true:false;
+    public int createIndexSymTable(String tableName) {
+        return nodeMapper.createIndexSymTable(tableName);
     }
-
-//    /**
-//     * @author lmy
-//     */
-//    @Override
-//    public List<IndexSymNode> getAllData(String tableName) {
-//        return nodeMapper.selectAllData(tableName);
-//    }
 
     /**
      * @author lmy
@@ -113,6 +105,11 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
         List<IndexSymNode> nodeList = buildIndexSym(indexSym);
         // 然后就是将 nodeList 处理成最终格式的数据
         return nodeList.stream().map(TreeData::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public int insertIntoTable(String tableName, String name, int type, double weight, int id) {
+        return nodeMapper.insertIntoTable(tableName,name,type,weight,id);
     }
 
     /**

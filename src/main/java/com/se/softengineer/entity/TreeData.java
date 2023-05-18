@@ -1,5 +1,7 @@
 package com.se.softengineer.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +19,12 @@ public class TreeData implements Serializable {
      */
     private String name;
 
+    private Integer type;
+
+    private Double weight;
+
+    private Integer parentID;
+
     /**
      * 子节点
      */
@@ -29,6 +37,9 @@ public class TreeData implements Serializable {
     public TreeData(IndexSymNode indexsym) {
         this.id = indexsym.getNodeId();
         this.name = indexsym.getNodeName();
+        this.type = indexsym.getNodeType();
+        this.weight = indexsym.getNodeWeight();
+        this.parentID = indexsym.getParentID();
         this.children = indexsym.getChildren().stream().map(TreeData::new).collect(Collectors.toList());
     }
 
@@ -46,6 +57,30 @@ public class TreeData implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public Integer getParentID() {
+        return parentID;
+    }
+
+    public void setParentID(Integer parentID) {
+        this.parentID = parentID;
     }
 
     public List<TreeData> getChildren() {

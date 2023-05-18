@@ -18,7 +18,6 @@
 
     <update id="createDataTable">
         CREATE TABLE ${tableName} (
-            name varchar(50),
         <foreach collection="columnList" item="column" separator=",">
             ${column} DOUBLE NOT NULL
         </foreach>
@@ -27,11 +26,10 @@
 
     <insert id="insertDataTable">
         insert into ${tableName} values (
-        #{dataName},
         <foreach collection="dataList" item="column" separator=",">
             ${column}
         </foreach>
-    )
+        )
     </insert>
 
 

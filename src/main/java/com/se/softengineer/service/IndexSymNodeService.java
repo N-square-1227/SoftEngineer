@@ -4,6 +4,7 @@ package com.se.softengineer.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.TreeData;
+import org.apache.ibatis.annotations.Param;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,10 +41,13 @@ public interface IndexSymNodeService extends IService<IndexSymNode> {
     /**
      * @author xy
      */
-    Boolean createIndexSymTable(String tableName);
+    int createIndexSymTable(String tableName);
 
     /**
      * @author lmy
      */
     public List<TreeData> getIndexSymData(List<IndexSymNode> indexSym);
+
+    int insertIntoTable(String tableName, String name, int type, double weight, int id);
+
 }

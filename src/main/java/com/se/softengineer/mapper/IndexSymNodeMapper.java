@@ -21,8 +21,7 @@ public interface IndexSymNodeMapper extends BaseMapper<IndexSymNode> {
                          @Param("nodeType") Integer nodeType, @Param("nodeWeight") Double noteWeight,
                          @Param("parentID") Integer parentID);
 
-
-    List<IndexSymNode> getIndex(@Param("tableName")String tableName);
+    List< IndexSymNode> getIndex(String table_name);
 
     /**
      * 南希诺
@@ -39,6 +38,9 @@ public interface IndexSymNodeMapper extends BaseMapper<IndexSymNode> {
      * @param tableName 后端修改后的表名
      */
     void dropExistTable(@Param("tableName") String tableName);
+
+
+    int getHeadID(@Param("table_name")String table_name, @Param("name") String name);
 
     /**
      * @author xy
@@ -62,11 +64,4 @@ public interface IndexSymNodeMapper extends BaseMapper<IndexSymNode> {
             "values(#{node_name},${node_type},${node_weight},${parent_id});"
     })
     int insertIntoTable(@Param("tableName")String tableName,@Param("node_name")String name,@Param("node_type")int type,@Param("node_weight")double weight,@Param("parent_id")int id);
-
-    /**
-     * @author lmy
-     */
-//    和nxn的getIndex重合了
-//    @Select({"select * from ${tableName}"})
-//    List<IndexSymNode> selectAllData(@Param("tableName")String tableName);
 }

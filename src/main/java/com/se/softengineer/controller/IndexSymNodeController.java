@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/indexSym")
-public class IndexSymController {
+@RequestMapping("/indexSymNode")
+public class IndexSymNodeController {
     @Autowired
     private IndexSymNodeService indexSymNodeService;
 

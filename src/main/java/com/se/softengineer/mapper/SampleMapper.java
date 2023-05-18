@@ -27,8 +27,5 @@ public interface SampleMapper extends BaseMapper<Sample> {
 
     boolean createDataTable(String tableName, List<String> columnList);
 
-    boolean insertDataTable(@Param("tableName") String tableName, @Param("dataName") String dataName, List<String> dataList);
-    //mybatisplus不支持非常量注入
-/*    @Update({createSql})
-    int createTable(String tableName);*/
+    boolean insertDataTable(@Param("tableName") String tableName, List<String> dataList);
 }

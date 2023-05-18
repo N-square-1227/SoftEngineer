@@ -50,13 +50,10 @@ public class ImportController {
     //文件存储路径
     @Value("${file-save-path}")
     private String fileSavePath;
-    private String filePath;
+    private String file_Path;
 
     @Autowired
     private IndexSymNodeService nodeService;
-
-    @Autowired
-    private IndexSymNodeMapper nodeMapper;
 
     @Autowired
     private UsersDataMapper usersDataMapper;
@@ -100,6 +97,7 @@ public class ImportController {
 
         fileType=v;
         filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
+        System.out.println("文件名："+filesName);
         //保存到本地
         String filePath = savaFileByNio((FileInputStream) file.getInputStream(), filename);
         try {
@@ -108,7 +106,7 @@ public class ImportController {
             DocumentBuilder db = factory.newDocumentBuilder();
             // 创建一个Document对象
             Document doc = db.parse(filePath);
-            NodeList indexSymList = doc.getElementsByTagName("node");
+            NodeList indexSymList = doc.getElementsByTagName("nodeGroups");
             // 获取节点个数
             System.out.println("一共有" + indexSymList.getLength() + "结点");
 
@@ -133,14 +131,18 @@ public class ImportController {
                 String[] temp=new String[5];
                 int j=0;
                 for (int k = 0; k < childNodes.getLength(); k++) {
-                    // 区分,去掉空格和换行符
-                    if (childNodes.item(k).getNodeType() == Node.ELEMENT_NODE) {
-/*                        // 获取element类型的节点和节点值
-                        //System.out.print("节点名：" + childNodes.item(k).getNodeName());
+                    // 区分,去掉空格和换行
+                    if(childNodes.item(k).getNodeName().equals("node")){
+                        NodeList childNode=childNodes.item(k).getChildNodes();
+                        moreNode(childNode);
+                    }
+
+                    else if (childNodes.item(k).getNodeType() == Node.ELEMENT_NODE) {
+                        // 获取element类型的节点和节点值
+                        System.out.print("节点名：" + childNodes.item(k).getNodeName());
                         //System.out.print(" --- 节点值：" + childNodes.item(k).getFirstChild().getNodeValue());
-                        //System.out.println(" --- 节点值："+childNodes.item(k).getTextContent());*/
+                        System.out.println(" --- 节点值："+childNodes.item(k).getTextContent());
                         temp[j++]=childNodes.item(k).getTextContent();
-                        //System.out.println(" --- ："+k+" "+temp[j-1]);
                     }
                 }
                 cells.add(temp);
@@ -152,10 +154,8 @@ public class ImportController {
 
     }
 
-
     @RequestMapping("/keepExcel/{username}")
     public Result keep(@PathVariable("username") String name){
-        //System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         userName=name;
         System.out.println("用户名：  "+name);
         return keepData(cells);
@@ -165,112 +165,90 @@ public class ImportController {
      * @param list
      */
     public Result keepData(List<String[]> list){
+        if(fileType.equals(""))
+            return Result.fail();
         System.out.println("文件类型:  "+fileType);
         if(fileType.equals("indexSym")) {
+            //头结点
+            List<String> headNode=new ArrayList<>();
+            headNode.add(filesName);
+            headNode.add("0");
+            headNode.add("0");
+            headNode.add("0");
+            //int headNodeID=nodeService.getHeadID(indexSymTableName,filesName);
             //拼接新表名
-            indexSymTableName = filesName + "IndexSym";
+            indexSymTableName = userName+"_"+filesName + "_IndexSym";
             System.out.println("指标体系名字： "+indexSymTableName);
             nodeService.createIndexSymTable(indexSymTableName);
+            if(nodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
+                return Result.fail();
             for (String[] l : list) {
-                nodeMapper.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3]));
+                System.out.println(l[0]+"  "+ Integer.parseInt(l[1])+"  "+ Double.parseDouble(l[2])+"  "+ Integer.parseInt(l[3])+1);
+                if(nodeService.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3])+1)<=0)
+                    return Result.fail();
             }
         }else if(fileType.equals("indexdata")){
-            indexDataTableName=filesName+"IndexData";
+            indexDataTableName=userName+"_"+filesName+"_IndexData";
             System.out.println("指标数据名字: "+indexDataTableName);
             //拼接sql语句，因为指标个数不确定。
             String[] temp=list.get(1);
             int column=temp.length-1;//指标个数
-            System.out.println("indexSymTableName："+indexSymTableName);
             create_data_table(indexSymTableName);
-
             String name = null;
             int i=0;
             for (String[] l : list) {
                 List<String> ins=new ArrayList<>();
                 i=0;
                 for(String t:l){
+                    System.out.println(t);
                     if(i==0){
                         name=t;
+
                     }else{
                         ins.add(t);
                     }
                     i++;
                 }
                 try{
-                    sampleService.insertDataTable(indexDataTableName,name,ins);
+                    for(String s:ins){
+                        System.out.println(s);
+                    }
+                    if(!sampleService.insertDataTable(indexDataTableName,ins))
+                        return Result.fail();
                 }catch(Exception e){
                     System.out.println("数据文件和节点文件不对应！");
                     return Result.fail();
                 }
-
             }
         }
-        //usersDataMapper.insertIntoTable(userName+"data",indexDataTableName,indexSymTableName);
-        System.out.println("sql语句aaaaaaaaaaa: "+indexDataTableName);
-        //sampleMapper.createTable(indexDataTableName);
         return Result.success();
     }
 
     /**
-     * @author lmy
-     */
-    @PostMapping(value = "/json")
-    //@RequestParam("file") MultipartFile file
-    public Result uploadFileByJson(@RequestParam(value = "file",required = false) MultipartFile file) throws IOException {
-        String filename = file.getOriginalFilename();
-        System.out.println(filename);
-        //文件名称（不含后缀名）
-        filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
-        //保存到本地
-        String res = savaFileByNio((FileInputStream) file.getInputStream(), filename);
-        return res!=null?Result.success():Result.fail();
-    }
-
-    /**
      * @author xiaxue
-     * @param fis
-     * @param fileName
-     * @return
+     * 递归调用处理嵌套的node
      */
-    public String savaFileByNio(FileInputStream fis, String fileName) {
-        // 这个路径最后是在: 你的项目路径/upload  也就是和src同级
-        this.filePath = this.fileSavePath+fileName;
-        // 判断父文件夹是否存在
-        File file = new File(this.filePath);
-        //System.out.println(file.getPath());
-        if (file.getParentFile() != null || !file.getParentFile().isDirectory()) {
-            file.getParentFile().mkdirs();
+    public void moreNode(NodeList childNodes){
+        String[] temp=new String[5];
+        int j=0;
+        for (int k = 0; k < childNodes.getLength(); k++) {
+            // 区分,去掉空格和换行符
+            if (childNodes.item(k).getNodeType() == Node.ELEMENT_NODE) {
+                // 获取element类型的节点和节点值
+                if(!childNodes.item(k).getNodeName().equals("node")) {
+                    //System.out.print("节点名：" + childNodes.item(k).getNodeName());
+                    //System.out.print(" --- 节点值：" + childNodes.item(k).getFirstChild().getNodeValue());
+                    //System.out.println(" --- 节点值：" + childNodes.item(k).getTextContent());
+                }
+                //出现了嵌套node
+                if(childNodes.item(k).getNodeName().equals("node")){
+                    NodeList childNode=childNodes.item(k).getChildNodes();
+                    moreNode(childNode);
+                }
+                temp[j++]=childNodes.item(k).getTextContent();
+            }
         }
-        // 通过NIO保存文件到本地磁盘
-        try {
-            FileOutputStream fos = new FileOutputStream(this.filePath);
-            FileChannel inChannel = fis.getChannel();
-            FileChannel outChannel = fos.getChannel();
-            inChannel.transferTo(0, inChannel.size(), outChannel);
-            inChannel.close();
-            outChannel.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return this.filePath;
-    }
-
-    /**
-     * @author lmy
-     */
-    @RequestMapping("/keepJson")
-    public Result keepJson(@RequestParam String userName){
-        IndexSymNode t=new IndexSymNode();
-        indexSymTableName=userName+"indexSym";
-        nodeService.createIndexSymTable(indexSymTableName);
-        //System.out.println("xxxxxxxxxxxxxxx");
-        boolean result=true;
-        try {
-            result = nodeService.saveJsonData(indexSymTableName,this.filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result==true?Result.success():Result.fail();
+        cells.add(temp);
     }
 
     /**
@@ -297,8 +275,86 @@ public class ImportController {
         List<String> columnNames = new ArrayList<>();
         for(int i = 1; i <= leaf_num; i ++)
             columnNames.add("X" + i);
-        indexDataTableName=table_name+"_data";
-        return sampleService.createDataTable(table_name+"_data", columnNames);
+        indexDataTableName=table_name+"_IndexData";
+        return sampleService.createDataTable(table_name+"_IndexData", columnNames);
+    }
+
+    /**
+     * @author lmy
+     */
+    @PostMapping(value = "/json")
+    //@RequestParam("file") MultipartFile file
+    public Result uploadFileByJson(@RequestParam(value = "file",required = false) MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        System.out.println(filename);
+        //文件名称（不含后缀名）
+        filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
+        //保存到本地
+        String res = null;
+        try {
+            res = savaFileByNio((FileInputStream) file.getInputStream(), filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Result.fail();
+        }
+        return res!=null?Result.success():Result.fail();
+    }
+
+    /**
+     * @author xiaxue
+     * @param fis
+     * @param fileName
+     * @return
+     */
+    public String savaFileByNio(FileInputStream fis, String fileName) {
+        // 这个路径最后是在: 你的项目路径/upload  也就是和src同级
+        this.file_Path = this.fileSavePath+fileName;
+        // 判断父文件夹是否存在
+        File file = new File(this.file_Path);
+        //System.out.println(file.getPath());
+        if (file.getParentFile() != null || !file.getParentFile().isDirectory()) {
+            file.getParentFile().mkdirs();
+        }
+        // 通过NIO保存文件到本地磁盘
+        try {
+            FileOutputStream fos = new FileOutputStream(this.file_Path);
+            FileChannel inChannel = fis.getChannel();
+            FileChannel outChannel = fos.getChannel();
+            inChannel.transferTo(0, inChannel.size(), outChannel);
+            inChannel.close();
+            outChannel.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this.file_Path;
+    }
+
+    /**
+     * @author lmy
+     */
+    @RequestMapping("/keepJson")
+    public Result keepJson(@RequestParam String userName){
+        if(this.file_Path==null)
+            return Result.fail();
+        List<String> headNode=new ArrayList<>();
+        headNode.add(filesName);
+        headNode.add("0");
+        headNode.add("0");
+        headNode.add("0");
+        IndexSymNode t=new IndexSymNode();
+        indexSymTableName = userName+"_"+filesName + "_IndexSym";
+        nodeService.createIndexSymTable(indexSymTableName);
+        if(nodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
+            return Result.fail();
+        boolean result=true;
+        System.out.println(fileSavePath+filesName+".json");
+        try {
+            result = nodeService.saveJsonData(indexSymTableName,fileSavePath+filesName+".json");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return  Result.fail();
+        }
+        return result==true?Result.success():Result.fail();
     }
 
     /**
@@ -373,17 +429,17 @@ public class ImportController {
     }
 
     @RequestMapping("/insertUsersData")
-    public void insertUsersData()  {
+    public Result insertUsersData()  {
         int flag=0;
         try{
-            usersDataMapper.createTable(userName+"Data");
+            usersDataMapper.createTable(userName+"_Data");
         }catch (Exception e){
             flag=-1;
-            usersDataMapper.insertIntoTable(userName+"Data",indexDataTableName,indexSymTableName);
-
+            usersDataMapper.insertIntoTable(userName+"_Data",indexDataTableName,indexSymTableName);
         }
         if(flag==0){
-            usersDataMapper.insertIntoTable(userName+"Data",indexDataTableName,indexSymTableName);
+            usersDataMapper.insertIntoTable(userName+"_Data",indexDataTableName,indexSymTableName);
         }
+        return Result.success();
     }
 }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.se.softengineer.utils.EncryptHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -33,13 +32,13 @@ public class Users implements Serializable {
     @TableId(value = "userID")
     private Integer userID;
 
-    @TableField(value = "userName", typeHandler = EncryptHandler.class)
+    @TableField(value = "userName")
     private String userName;
 
-    @TableField(value = "userPassword", typeHandler = EncryptHandler.class)
+    @TableField("userPassword")
     private String userPassword;
 
-    @TableField(value = "userEmail", typeHandler = EncryptHandler.class)
+    @TableField("userEmail")
     private String userEmail;
 
     @TableField("role")

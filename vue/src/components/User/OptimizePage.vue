@@ -1,99 +1,56 @@
 <template>
     <div>
-        <div id="treeChart" :style="{width: '100%', height: '75vh'}"></div>
+            <el-button style="width:100%;" type="primary" @click="toDrawTree">登录</el-button>
     </div>
 </template>
 
 <script>
 export default {
     name: "OptimizePage",
-    data() {
-        return {
-            treeData:[]
+    data(){
+        return{
+            treeData: []
         }
     },
-    created() {
-        this.getTreeData()
-    },
-    mounted() {
-        this.showChart();
-    },
-    watch: {
-        treeData: {
-            handler: function () {
-                this.showChart();
-            },
-            deep: true,
-        },
-    },
-    methods: {
-        getTreeData(){
-            this.$axios.get(this.$httpUrl+'/indexSym/getTreeData?tableName=indexsym').then(res=>res.data).then(res=>{
-                //console.log(res)
+    methods:{
+        toDrawTree(){
+            // this.$axios.get(this.$httpUrl+'/indexSymNode/getTreeData?tableName=indexsym').then(res=>res.data).then(res=>{
+            //     console.log(res)
+            //     //成功
+            //     if(res.code==200){
+            //         //存储当前用户
+            //         sessionStorage.setItem("TreeData",JSON.stringify(res.data))
+            //
+            //         this.$message({
+            //             message: '优化成功！',
+            //             type: 'success'
+            //         });
+            //         this.$router.replace('/DrawTree');//跳转到可视化界面
+            //     }
+            //     //失败
+            //     else{
+            //         this.disabled=false;
+            //         this.$message.error('失败！');
+            //         return false;
+            //     }
+            // });
+            this.$axios.get(this.$httpUrl+'/indexSymNode/getTreeData?tableName=indexsym').then(res=>res.data).then(res=>{
+                console.log(res)
                 if (res.code==200) {
                     for(let i=0;i<res.data.length;i++){
                         this.treeData.push(res.data[i])
                         console.log(this.treeData)
                     }
+                    sessionStorage.setItem("TreeData",JSON.stringify(this.treeData))
                     this.$message({
                         message: '优化成功！',
                         type: 'success'
                     });
+                    this.$router.replace('/DrawTree');//跳转到可视化界面
                 }
                 else
                     this.$message.error('优化失败！');
             })
-        },
-        showChart() {
-            //console.log("sss")
-            // 基于准备好的dom，初始化echarts实例
-            var myChart = this.$echarts.init(document.getElementById('treeChart'));
-
-            // 指定图表的配置项和数据
-            var option = {
-                title: {
-                    text: 'ECharts 入门示例'
-                },
-                tooltip: {
-                    trigger: 'item',
-                    triggerOn: 'mousemove'
-                },
-                series: [
-                    {
-                        type: 'tree',
-                        //orient:'TB',
-                        data: this.treeData,
-
-                        top: '1%',
-                        left: '7%',
-                        bottom: '1%',
-                        right: '20%',
-
-                        symbolSize: 7,
-
-                        label: {
-                            position: 'left',
-                            verticalAlign: 'middle',
-                            align: 'right',
-                            fontSize: 13
-                        },
-
-                        leaves: {
-                            label: {
-                                position: 'right',
-                                verticalAlign: 'middle',
-                                align: 'left'
-                            }
-                        },
-
-                        expandAndCollapse: true,
-                        animationDuration: 550,
-                        animationDurationUpdate: 750
-                    }
-                ]
-            };
-            // 使用刚指定的配置项和数据显示图表。
-            myChart.setOption(option);
         }
     }
 }
