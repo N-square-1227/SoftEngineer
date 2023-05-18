@@ -38,15 +38,16 @@ export default {
             treeData: [],
             OP,
             //options1: [option],
+            /* 算法名应该是改这里吧, by wxy */
             options2: [{
-                value: '1',
-                label: '1'
+                value: 'kmeans',
+                label: 'K-Means聚类算法'
             }, {
-                value: '2',
-                label: '2'
+                value: 'entropy',
+                label: '熵权法调整指标权重'
             }, {
-                value: '3',
-                label: '3'
+                value: 'pca',
+                label: '主成分分析法'
             }],
             value1: '',
             value2: '',

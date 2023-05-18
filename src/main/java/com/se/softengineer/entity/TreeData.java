@@ -35,7 +35,7 @@ public class TreeData implements Serializable {
     }
 
     public TreeData(IndexSymNode indexsym) {
-        this.id = indexsym.getNodeId();
+        this.id = indexsym.getNodeID();
         this.name = indexsym.getNodeName();
         this.type = indexsym.getNodeType();
         this.weight = indexsym.getNodeWeight();

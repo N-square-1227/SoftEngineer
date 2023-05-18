@@ -11,7 +11,6 @@
             <span slot="title">{{item.menuName}}</span>
         </el-menu-item>
     </el-menu>
-
 </template>
 
 <script>

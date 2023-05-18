@@ -3,7 +3,6 @@
         <el-aside width="200px" style="background-color: rgb(238,241,246);height: 100%;margin-left: -1px">
             <Aside></Aside>
         </el-aside>
-
         <el-container style="height: 100%;">
             <el-header style="text-align: right;font-size: 12px;height: 100%;border-bottom: rgb(168,168,168,0.5) 1px solid;">
                 <Header></Header>

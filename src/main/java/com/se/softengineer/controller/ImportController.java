@@ -188,7 +188,8 @@ public class ImportController {
                     return Result.fail();
             }
         }else if(fileType.equals("indexdata")){
-            indexDataTableName=userName+"_"+filesName+"_IndexData";
+            /* 方便根据指标体系表名获取对应的数据表名 by wxy*/
+            indexDataTableName=indexSymTableName + "_data";
             System.out.println("指标数据名字: "+indexDataTableName);
             //拼接sql语句，因为指标个数不确定。
             String[] temp=list.get(1);

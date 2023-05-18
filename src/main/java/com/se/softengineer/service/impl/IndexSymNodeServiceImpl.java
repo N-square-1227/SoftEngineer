@@ -42,7 +42,7 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
 
         // 插入数据到指定的表
         for ( IndexSymNode node : nodeList) {
-            nodeMapper.insertIntoSheet(tableName, node.getNodeId(), node.getNodeName(),
+            nodeMapper.insertIntoSheet(tableName, node.getNodeID(), node.getNodeName(),
                     node.getNodeType(), node.getNodeWeight(), node.getParentID());
         }
         return true;
@@ -122,7 +122,7 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
         List<Integer> tempList = new ArrayList<>();
         for (IndexSymNode node : nodes)
         {
-            tempList.add(node.getNodeId());
+            tempList.add(node.getNodeID());
         }
         // 遍历所有树节点（一个树节点就是数据库中的一条数据）
         for (Iterator<IndexSymNode> iterator = nodes.iterator(); iterator.hasNext();)
@@ -185,7 +185,7 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
         {
             IndexSymNode n = it.next();
             //当n的父节点id为当前节点时 add
-            if (n.getParentID() == curNode.getNodeId())
+            if (n.getParentID() == curNode.getNodeID())
             {
                 childList.add(n);
             }
