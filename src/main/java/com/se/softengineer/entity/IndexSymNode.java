@@ -1,5 +1,6 @@
 package com.se.softengineer.entity;
 
+<<<<<<< HEAD
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -16,7 +17,6 @@ import java.io.Serializable;
  **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName(value = "indexsym")
 public class IndexSymNode implements Serializable, Comparable<IndexSymNode> {
 
     @Serial
@@ -34,6 +34,9 @@ public class IndexSymNode implements Serializable, Comparable<IndexSymNode> {
     private Double nodeWeight;
 
     @TableField("parent_id")
+
+    private List<IndexSymNode> children = new ArrayList<>();
+
     private int ParentID;
 
     public IndexSymNode() {}

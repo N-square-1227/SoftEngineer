@@ -24,9 +24,22 @@
         )
     </update>
 
+    <insert id="insertDataTable">
+        insert into ${tableName} values (
+        <foreach collection="dataList" item="column" separator=",">
+            ${column}
+        </foreach>
+        )
+    </insert>
+
 
     <update id="dropExistTable">
         DROP TABLE IF EXISTS ${tableName}
     </update>
 
+
+    <select id="getUserData" resultType="string">
+        SELECT indexSymDTName
+        FROM ${tableName}
+    </select>
 </mapper>

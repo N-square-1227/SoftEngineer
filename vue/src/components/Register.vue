@@ -5,7 +5,7 @@
 <template>
   <div class="register-page">
     <el-form :model="form" :rules="registerRules" ref="registerForm" class="register-container">
-      <h1 class="title">🔐指标体系优化系统</h1>
+      <h1 class="title">🔐指标优化系统</h1>
       <el-form-item prop="userName">
         <el-input type="text" v-model="form.userName" auto-complete="off" placeholder="用户名">
           <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>
@@ -51,6 +51,7 @@ export default {
       registerRules:{
         userName: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
+            { max: 10, message: '长度不超过 10 字符', trigger: 'blur' }
         ],
         userPassword: [
           { required: true, message: '请输入密码', trigger: 'blur'}
@@ -91,14 +92,15 @@ export default {
             console.log(res)
             //成功
             if (res.code == 200) {
-              //存储
-              sessionStorage.setItem("CurUser", JSON.stringify(res.data))
-              this.$message({
-                message: '注册成功！',
-                type: 'success'
-              });
-              //跳转到主页
-              this.$router.replace('/afterLogin');
+                //存储当前用户
+                sessionStorage.setItem("CurUser",JSON.stringify(res.data.user))
+                console.log(res.data.menu)
+                this.$store.commit("setMenu",res.data.menu)
+                this.$message({
+                    message: '登录成功！',
+                    type: 'success'
+                });
+                this.$router.replace('/UserHomePage');//跳转到用户主页
             }
             //失败
             else {

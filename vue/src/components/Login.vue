@@ -4,8 +4,8 @@
 
 <template>
   <div class="login-page">
-    <el-form :model="form" :rules="loginRules" ref="loginForm" class="login-container">
-      <h1 class="title">🔐后台管理系统</h1>
+    <el-form :model="form" :rules="loginRules" ref="loginForm" class="login-container" @keyup.enter.native="doLogin">
+      <h1 class="title">🔐指标优化系统</h1>
       <el-form-item prop="userName">
         <el-input type="text" v-model="form.userName" auto-complete="off" placeholder="请输入用户名">
           <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>
@@ -17,7 +17,7 @@
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button style="width:100%;" type="primary" @click="doLogin" :disabled="disabled">登录</el-button>
+        <el-button style="width:100%;" type="primary" @click="doLogin" :disabled="disabled ">登录</el-button>
       </el-form-item>
       <el-row style="text-align: right;margin-top: -10px;">
         <el-link type="primary" @click="toRegister">用户注册</el-link>
@@ -54,20 +54,18 @@ export default {
             if(valid){    //valid成功为true 失败为false
               //后端验证用户名密码
               this.$axios.post(this.$httpUrl+'/user/login',this.form).then(res=>res.data).then(res=>{
-                console.log(res)
+                console.log(res.code)
                 //成功
                 if(res.code==200){
-                  //存储
-                  sessionStorage.setItem("CurUser",JSON.stringify(res.data))
-                  this.$message({
-                    message: '登录成功！',
-                    type: 'success'
-                  });
-
-                  // if(res.message=='user')
-                     this.$router.replace('/UserHomePage');//跳转到用户主
-                  // else
-                  //   this.$router.replace('/AdminHomePage');//跳转到用户主页
+                    //存储当前用户
+                    sessionStorage.setItem("CurUser",JSON.stringify(res.data.user))
+                    console.log(res.data.menu)
+                    this.$store.commit("setMenu",res.data.menu)
+                    this.$message({
+                        message: '登录成功！',
+                        type: 'success'
+                    });
+                     this.$router.replace('/UserHomePage');//跳转到用户主页
                 }
                 //失败
                 else{

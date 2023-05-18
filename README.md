@@ -1,4 +1,72 @@
 # SoftEngineer
+======================画图=========================
+
+安装echarts  ：管理员身份打开cmd，进入vue文件夹所在路径，输入下列命令即可
+
+```
+npm install echarts --save
+```
+
+======================new=========================
+
+一、删除了userrole类
+
+新增动态路由->动态菜单栏
+
+安装插件：管理员身份打开cmd，进入vue文件夹所在路径，输入下列命令即可
+
+```
+1、npm i vuex@3.0.0   //用于动态管理
+
+2、npm i vuex-persistedstate    //用于避免刷新导致数据丢失
+```
+
+二、修改了UsersController: login、register方法、UsersServiceImpl: userRegister方法、删除了NodeConreoller(好像叫这个名字)
+
+
+
+三、修改了vue文件
+
+将Main.vue修改为：userManage.vue，并移到Admin目录下
+
+router/index.js也作了修改：将原本的导航路径删除，通过store/index.js进行动态添加
+
+Register.vue 、Login.vue: doRegister、doLogin进行了修改
+
+
+
+四、新增数据表menu，以及对应的实体类、service等
+
+```
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for menu
+-- ----------------------------
+DROP TABLE IF EXISTS `menu`;
+CREATE TABLE `menu` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `menuCode` varchar(8) DEFAULT NULL COMMENT '菜单编码',
+  `menuName` varchar(16) DEFAULT NULL COMMENT '菜单名字',
+  `menuClick` varchar(16) DEFAULT NULL COMMENT '点击触发的函数',
+  `menuRight` varchar(8) DEFAULT NULL COMMENT '权限 1管理员 2用户',
+  `menuComponent` varchar(200) DEFAULT NULL COMMENT '菜单路径',
+  `menuIcon` varchar(100) DEFAULT NULL COMMENT '图标名称',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of menu
+-- ----------------------------
+INSERT INTO `menu` VALUES ('1', '001', '用户管理', 'userManage', '1', 'Admin/userManage', 'el-icon-user-solid');
+INSERT INTO `menu` VALUES ('2', '002', '导入数据', 'ImportFiles', '2','User/ImportFiles', 'el-icon-upload');
+INSERT INTO `menu` VALUES ('3', '003', '指标优化', '3-1', '2', 'Home', 'el-icon-s-promotion');
+```
+
+
+
+==================================================
+
 pom.xml
 
 项目拉下来之后可能需要更改 JDK，我的是 Oracle 17.0.2，在该文件中表现为
