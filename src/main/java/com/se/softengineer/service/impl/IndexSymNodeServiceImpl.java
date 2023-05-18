@@ -201,4 +201,10 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
     {
         return getChildList(list, t).size() > 0 ? true : false;
     }
+
+    @Override
+    public List<IndexSymNode> getAllNodeInfo(String tableName) {
+        List<IndexSymNode> l=nodeMapper.getAllNodeInfo(tableName);
+        return l;
+    }
 }

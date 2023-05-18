@@ -25,4 +25,7 @@
         select node_id from table_name where node_name=${name}
     </select>
 
+    <select id="getAllNodeInfo" resultType="com.se.softengineer.entity.IndexSymNode">
+        SELECT * FROM ${tableName}
+    </select>
 </mapper>

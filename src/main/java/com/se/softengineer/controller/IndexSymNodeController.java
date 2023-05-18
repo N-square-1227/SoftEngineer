@@ -24,8 +24,12 @@ public class IndexSymNodeController {
      * @author lmy
      */
     @GetMapping("/getTreeData")
-    public Result getTreeData(@RequestParam String tableName)
+    public Result getTreeData(@RequestParam("tableName") String tableName,@RequestParam("func") String func)
     {
+        /**
+         * 判断func 调用算法 接收 List<IndexSymNode>数据
+         */
+        //System.out.println(tableName+func);
         // 先查出来表中的所有数据
         List<IndexSymNode> indexSym = indexSymNodeService.getIndex(tableName);
         // 转换成画树需要的类

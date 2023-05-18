@@ -54,7 +54,7 @@ export default {
             if(valid){    //valid成功为true 失败为false
               //后端验证用户名密码
               this.$axios.post(this.$httpUrl+'/user/login',this.form).then(res=>res.data).then(res=>{
-                console.log(res)
+                console.log(res.code)
                 //成功
                 if(res.code==200){
                     //存储当前用户

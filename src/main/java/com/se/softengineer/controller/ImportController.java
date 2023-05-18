@@ -442,4 +442,30 @@ public class ImportController {
         }
         return Result.success();
     }
+
+    /**
+     * @author xiaxue
+     * 获取该用户所有上传的指标体系的名字
+     */
+    @RequestMapping("/getAllSyms/{userName}")
+    public Result getAllSyms(@PathVariable("userName")String userName){
+        //先找到userData表
+        String userData=userName+"_Data";
+        List<String> indexSymDTNames=sampleService.getUserData(userData);
+        Result result=new Result();
+        return indexSymDTNames==null?Result.fail():Result.success(indexSymDTNames);
+    }
+    /**
+     * @author
+     * @param dbName
+     * @return
+     * 获取用户indexSym表中的所有信息
+     * 点击树节点显示信息
+     */
+
+    @RequestMapping("/getAllNodeInfo/{dbName}")
+    public Result getAllNodeInfo(@PathVariable("dbName")String dbName){
+        List<IndexSymNode> data=nodeService.getAllNodeInfo(dbName);
+        return data==null?Result.fail():Result.trans(data);
+    }
 }

@@ -48,4 +48,9 @@ public class SampleServiceImpl extends ServiceImpl<SampleMapper, Sample> impleme
     public boolean insertDataTable(String tableName, List<String> dataList) {
         return sampleMapper.insertDataTable(tableName,dataList);
     }
+
+    @Override
+    public List<String> getUserData(String tableName) {
+        return sampleMapper.getUserData(tableName);
+    }
 }

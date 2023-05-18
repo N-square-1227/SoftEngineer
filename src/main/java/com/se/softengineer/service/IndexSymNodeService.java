@@ -50,4 +50,8 @@ public interface IndexSymNodeService extends IService<IndexSymNode> {
 
     int insertIntoTable(String tableName, String name, int type, double weight, int id);
 
+    /**
+     * @author lmy
+     */
+    List<IndexSymNode> getAllNodeInfo(@Param("tableName")String tableName);
 }

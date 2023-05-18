@@ -12,5 +12,8 @@ public interface SampleService extends IService<Sample> {
     List<String> getColName(String table_name);
     boolean createDataTable(String tableName, List<String> columnList);
     boolean insertDataTable(@Param("tableName") String tableName, List<String> dataList);
-
+    /**
+     * @author xx
+     */
+    List<String> getUserData(String tableName);
 }

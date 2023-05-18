@@ -64,4 +64,9 @@ public interface IndexSymNodeMapper extends BaseMapper<IndexSymNode> {
             "values(#{node_name},${node_type},${node_weight},${parent_id});"
     })
     int insertIntoTable(@Param("tableName")String tableName,@Param("node_name")String name,@Param("node_type")int type,@Param("node_weight")double weight,@Param("parent_id")int id);
+
+    /**
+     * @author xy
+     */
+    List<IndexSymNode> getAllNodeInfo(String tableName);
 }

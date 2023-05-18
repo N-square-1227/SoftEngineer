@@ -18,9 +18,6 @@ import static com.se.softengineer.controller.ImportController.createSql;
 @Mapper
 public interface SampleMapper extends BaseMapper<Sample> {
 
-/*    @Value("#{ImportController.createSql}")
-    String sql = createSql;*/
-
     List<HashMap<String, Double>> getData(String table_name);     // 我也不知道为啥要这样写，反正能获取
 
     List<String> getColName(String table_name);
@@ -28,4 +25,6 @@ public interface SampleMapper extends BaseMapper<Sample> {
     boolean createDataTable(String tableName, List<String> columnList);
 
     boolean insertDataTable(@Param("tableName") String tableName, List<String> dataList);
+
+    List<String> getUserData(String tableName);
 }
