@@ -16,7 +16,7 @@ import java.io.Serializable;
  **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("indexsym")
+@TableName(value = "indexsym")
 public class IndexSymNode implements Serializable, Comparable<IndexSymNode> {
 
     @Serial
@@ -24,7 +24,7 @@ public class IndexSymNode implements Serializable, Comparable<IndexSymNode> {
     @TableId(value = "node_id",type = IdType.AUTO)
     private int nodeID;
 
-    @TableField("node_name")
+    @TableField(value = "node_name")
     private String nodeName;
 
     @TableField("node_type")

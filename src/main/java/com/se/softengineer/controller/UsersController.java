@@ -46,7 +46,7 @@ public class UsersController {
      * @author lmy
      */
     @PostMapping("/login")
-    public Result login(@RequestBody Users user){
+    public Result login(@RequestBody Users user) throws Exception {
         Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
 //        Users curUser = usersService.userLogin(user);
 //        String roleName="";
@@ -60,7 +60,7 @@ public class UsersController {
      * @author lmy
      */
     @PostMapping("/register")
-    public Result register(@RequestBody Users user){
+    public Result register(@RequestBody Users user) throws Exception {
         Users curUser = usersService.userRegister(user.getUserName(),user.getUserPassword(),user.getUserEmail());
         String roleName = userroleService.getRoleNameByUserID(curUser.getUserID());
         return curUser!=null?Result.success(roleName,curUser):Result.fail();
@@ -71,7 +71,7 @@ public class UsersController {
      * @author lmy
      */
     @PostMapping("/update")
-    public Result update(@RequestBody Users user){
+    public Result update(@RequestBody Users user) throws Exception {
         return usersService.updateUser(user)!=null ? Result.success():Result.fail();
     }
 
@@ -80,7 +80,7 @@ public class UsersController {
      * @author lmy
      */
     @PostMapping("/updateInfo")
-    public Result updateInfo(@RequestBody QueryPageParam query){
+    public Result updateInfo(@RequestBody QueryPageParam query) throws Exception {
         HashMap param = query.getParam();
         String name = (String)param.get("userName");
         String email = (String) param.get("userEmail");
@@ -123,7 +123,7 @@ public class UsersController {
     @GetMapping("/userDetail")
     public Result userDetail(@RequestParam Integer userID){
         Users user = usersService.getById(userID);
-        return user!=null ?  Result.success(user):Result.fail();
+        return user!=null ? Result.success(user):Result.fail();
     }
 
     /**

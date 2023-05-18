@@ -90,6 +90,7 @@ public class IndexSymController {
     /**
      * 获取指定数据表的列名List
      * http://localhost:8877/indexsym/loadColumnNames?table_name=indexsym
+     * http://localhost:8877/indexsym/loadColumnNames?table_name=data
      * 后面也可以改成PostMapping
      **/
     @GetMapping("/loadColumnNames")

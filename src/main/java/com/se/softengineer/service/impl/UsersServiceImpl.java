@@ -7,6 +7,7 @@ import com.se.softengineer.mapper.UsersMapper;
 import com.se.softengineer.entity.Users;
 import com.se.softengineer.service.UsersService;
 //import com.se.softengineer.utils.EncryptHandler;
+import com.se.softengineer.utils.AesTypeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,16 +25,16 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
     private UserroleMapper userroleMapper;
 
     /* 用于数据加密和解密 */
-//    EncryptHandler handler = new EncryptHandler();
+    AesTypeHandler handler = new AesTypeHandler();
 
 
     @Override
-    public Users userLogin(String username, String password) {
+    public Users userLogin(String username, String password) throws Exception {
         List list = lambdaQuery()
-//                .eq(Users::getUserName,handler.encrypt(username))
-                .eq(Users::getUserName,username)
-//                .eq(Users::getUserPassword,handler.encrypt(password)).list();
-                .eq(Users::getUserPassword,password).list();
+                .eq(Users::getUserName,handler.encrypt(username))
+//                .eq(Users::getUserName,username)
+                .eq(Users::getUserPassword,handler.encrypt(password)).list();
+//                .eq(Users::getUserPassword,password).list();
 //        List<Users> list = usersMapper.login(username, password);
         Users res = null;
         if(list.size()>0)
@@ -41,13 +42,13 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
         return res;
     }
 
-    private List<Users> getUserListByName(String name){
-//        return lambdaQuery().eq(Users::getUserName,handler.encrypt(name)).list();
-        return lambdaQuery().eq(Users::getUserName,name).list();
+    private List<Users> getUserListByName(String name) throws Exception {
+        return lambdaQuery().eq(Users::getUserName,handler.encrypt(name)).list();
+//        return lambdaQuery().eq(Users::getUserName,name).list();
     }
 
     @Override
-    public Users userRegister(String username, String password, String email) {
+    public Users userRegister(String username, String password, String email) throws Exception {
         List<Users> list = getUserListByName(username);
         if(list.size()>0)
             return null;
@@ -65,7 +66,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
 //            return null;
     }
 
-    public Users updateUser(Users user) {
+    public Users updateUser(Users user) throws Exception {
         List<Users> list = getUserListByName(user.getUserName());
         //用户名存在(即id不一致)
         if(list.size()>0 && list.get(0).getUserID()!=user.getUserID())

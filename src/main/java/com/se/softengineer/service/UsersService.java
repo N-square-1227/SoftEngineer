@@ -14,19 +14,19 @@ public interface UsersService extends IService<Users> {
      * 登录
      * @author lmy
      */
-    public Users userLogin(String username,String password);
+    public Users userLogin(String username,String password) throws Exception;
 //    public Users userLogin(Users user);
 
     /**
      * 注册
      * @author lmy
      */
-    public Users userRegister(String username, String password, String email);
+    public Users userRegister(String username, String password, String email) throws Exception;
 
     /**
      * 修改
      * @author lmy
      */
-    public Users updateUser(Users user);
+    public Users updateUser(Users user) throws Exception;
 
 }
