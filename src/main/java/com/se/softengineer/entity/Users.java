@@ -36,19 +36,13 @@ public class Users implements Serializable/*, Encrypted*/ {
     @TableId(value = "userID", type = IdType.AUTO)
     private Integer userID;
 
-//    @TableField(value = "userName", typeHandler = EncryptHandler.class)
     @TableField(value = "userName", typeHandler = AesTypeHandler.class)
-//    @FieldEncrypt
     private String userName;
 
-//    @TableField(value = "userPassword", typeHandler = EncryptHandler.class)
     @TableField(value = "userPassword", typeHandler = AesTypeHandler.class)
-//    @FieldEncrypt
     private String userPassword;
 
-//    @TableField(value = "userEmail", typeHandler = EncryptHandler.class)
     @TableField(value = "userEmail", typeHandler = AesTypeHandler.class)
-//    @FieldEncrypt
     private String userEmail;
 
     @TableField("role")

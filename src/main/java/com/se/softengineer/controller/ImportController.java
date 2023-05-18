@@ -114,7 +114,7 @@ public class ImportController {
             for (int i = 0; i < indexSymList.getLength(); i++) {
                 //System.out.println("*******************************");
                 // 索引从零开始
-                org.w3c.dom.Node book = indexSymList.item(i);
+                Node book = indexSymList.item(i);
                 // 获取book节点所有属性集合
                 org.w3c.dom.NamedNodeMap attrs = book.getAttributes();
 
@@ -122,7 +122,7 @@ public class ImportController {
                 // 遍历book属性，不知道节点属性和属性名情况
                 for (int j = 0; j < attrs.getLength(); j++) {
                     // 获取某一个属性
-                    org.w3c.dom.Node attr = attrs.item(j);
+                    Node attr = attrs.item(j);
                     //System.out.print("属性名:" + attr.getNodeName());
                     //System.out.println(" --- 属性值:" + attr.getNodeValue());
                 }
@@ -188,8 +188,7 @@ public class ImportController {
                     return Result.fail();
             }
         }else if(fileType.equals("indexdata")){
-            /* 方便根据指标体系表名获取对应的数据表名 by wxy*/
-            indexDataTableName=indexSymTableName + "_data";
+            indexDataTableName=userName+"_"+filesName+"_data";
             System.out.println("指标数据名字: "+indexDataTableName);
             //拼接sql语句，因为指标个数不确定。
             String[] temp=list.get(1);
@@ -276,8 +275,8 @@ public class ImportController {
         List<String> columnNames = new ArrayList<>();
         for(int i = 1; i <= leaf_num; i ++)
             columnNames.add("X" + i);
-        indexDataTableName=table_name+"_IndexData";
-        return sampleService.createDataTable(table_name+"_IndexData", columnNames);
+        indexDataTableName=table_name+"_data";
+        return sampleService.createDataTable(indexDataTableName, columnNames);
     }
 
     /**

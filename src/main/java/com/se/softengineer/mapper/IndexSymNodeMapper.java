@@ -26,9 +26,6 @@ public interface IndexSymNodeMapper extends BaseMapper<IndexSymNode> {
     /**
      * 南希诺
      * 创建熵权法表
-     *             "`node_id` int(11) NOT NULL AUTO_INCREMENT, " +
-     * todo：修改前端的 tableName！
-     * @param tableName 后端修改后的表名
      */
     void createTable(@Param("tableName") String tableName);
 

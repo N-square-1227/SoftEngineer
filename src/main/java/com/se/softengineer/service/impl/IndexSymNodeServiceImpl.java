@@ -199,12 +199,11 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
      */
     private boolean hasChild(List<IndexSymNode> list, IndexSymNode t)
     {
-        return getChildList(list, t).size() > 0 ? true : false;
+        return getChildList(list, t).size() > 0;
     }
 
     @Override
     public List<IndexSymNode> getAllNodeInfo(String tableName) {
-        List<IndexSymNode> l=nodeMapper.getAllNodeInfo(tableName);
-        return l;
+        return nodeMapper.getAllNodeInfo(tableName);
     }
 }
