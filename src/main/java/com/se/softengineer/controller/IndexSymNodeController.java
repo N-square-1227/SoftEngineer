@@ -36,11 +36,11 @@ public class IndexSymNodeController {
          */
         IndexSym indexSym;
         if(func.equals("kmeans")) {
-            indexSym = optimizeService.kmeans(tableName, tableName + "data");
+            indexSym = optimizeService.kmeans(tableName, tableName + "_data");
         } else if (func.equals("entropy")) {
-            indexSym = optimizeService.entropy(tableName, tableName + "data");
+            indexSym = optimizeService.entropy(tableName, tableName + "_data");
         }else if(func.equals("pca")){
-            indexSym = optimizeService.pca(tableName, tableName + "data");
+            indexSym = optimizeService.pca(tableName, tableName + "_data");
         }else {
             return Result.fail();
         }

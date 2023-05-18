@@ -367,7 +367,7 @@ public class ImportController {
 
     @RequestMapping("/downloadExcel1")
     public void downloadExcel1(HttpServletResponse response) throws Exception {
-        this.download("example\\indexSym.xlsx",response);
+        this.download("example\\indexsymOrigin.xlsx",response);
     }
 
     @RequestMapping("/downloadExcel2")
