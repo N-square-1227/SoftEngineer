@@ -83,14 +83,14 @@ public class OptimizeServiceImpl implements OptimizeService {
         List<IndexSymNode> leaves = indexSym.get_leaves();
         PCA pca = new PCA(data);
         pca.solve();
-        for(int i = 0; i < pca.getFactor_num(); i ++) {
-            List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(pca.getNew_sym().getNodeList().get(i).getNodeID());
+        int node_num = pca.getNew_sym().getNodeList().size();
+        for(int i = 0; i < node_num; i ++) {
+            List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(i + 1);
+            if(son_nodes.size() != 0) continue;
             System.out.println(pca.getNew_sym().getNodeList().get(i).getNodeName());
-            for (Integer son_node : son_nodes) {
-                /* 第idx个叶子节点*/
-                int idx = Integer.parseInt(pca.getNew_sym().getNodeList().get(son_node - 1).getNodeName());
-                pca.getNew_sym().getNodeList().get(son_node - 1).setNodeName(leaves.get(idx - 1).getNodeName());
-            }
+            /* 第idx个子节点*/
+            int idx = Integer.parseInt(pca.getNew_sym().getNodeList().get(i).getNodeName());
+            pca.getNew_sym().getNodeList().get(i).setNodeName(leaves.get(idx - 1).getNodeName());
         }
         String newIndexSymName = indexsym_name + "_new_pca";
 
