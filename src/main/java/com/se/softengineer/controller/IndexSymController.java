@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * by wxy
@@ -136,6 +137,12 @@ public class IndexSymController {
     public Result use_kmeans(String indexsym_name, String data_tablename) throws Exception {
         IndexSym newIndexSym = optimizeService.kmeans(indexsym_name, data_tablename);
         return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
+    }
+
+    @GetMapping("/caculateResult")
+    public Result use_caculateResult(String dataName, String indexName, String newindexName){
+        TreeMap res = optimizeService.caculateResult(dataName, indexName, newindexName);
+        return res != null ? Result.success(res) : Result.fail();
     }
 
 }
