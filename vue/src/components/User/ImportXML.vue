@@ -165,10 +165,17 @@ export default {
         },
         insertUsersData() {
             //this.$router.push("/keepExcel")
-            this.$axios({
-                method: 'get',
-                url: 'http://localhost:8877/import/insertUsersData'
-            })
+          this.$axios.get(this.$httpUrl+'/import/insertUsersData/').then(res=>res.data).then(res=>{
+            console.log(res)
+            if (res.code==200) {
+              this.$message({
+                message: '成功！',
+                type: 'success'
+              });
+            }
+            else
+              this.$message.error('失败！');
+          })
 
         },
     },
