@@ -118,6 +118,10 @@ public class UsersController {
      */
     @GetMapping("/delete")
     public Result delete(@RequestParam Integer userID){
+        Users user = usersService.getById(userID);
+        //管理员用户不可删除
+        if(user.getRole()==1)
+            return Result.fail();
         return usersService.removeById(userID) ? Result.success():Result.fail();
     }
 
