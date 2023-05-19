@@ -72,6 +72,8 @@ public class OptimizeServiceImpl implements OptimizeService {
         indexSymService.createTable(newIndexSymName);
         // 将新的指标体系存到数据库的新表里
         indexSymService.insertIntoSheet(newIndexSymName, entropy.getNode());
+
+        /* 返回新的指标体系 */
         newIndexSym.setNodeList(entropy.getNode());
         return newIndexSym;
     }

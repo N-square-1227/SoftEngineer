@@ -122,8 +122,11 @@ public class PCA {
         /* 对每一个主成分而言（每一列），因子载荷矩阵的值越大，说明对这个主成分的影响越大，并且对应因子载荷矩阵的值就是权值 */
         int id_no = 1;
         int factor_id = 1;
+        IndexSymNode root = new IndexSymNode(id_no, "root", 1, 1.0, 0);
+        new_sym.addNode(root);
+        id_no ++;
         for(int i = 0; i < factor_num; i ++) {
-            IndexSymNode factor = new IndexSymNode(id_no, "factor" + factor_id, 1, 1.0, 0);
+            IndexSymNode factor = new IndexSymNode(id_no, "factor" + factor_id, 1, 1.0, 1);
             boolean factorin = false;
             for(int j = 1; j <=numRows; j ++) {
                 /* 数据不太好感觉 */
