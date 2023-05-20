@@ -52,7 +52,7 @@ public class ImportController {
     private String file_Path;
 
     @Autowired
-    private IndexSymNodeService nodeService;
+    private IndexSymNodeService indexSymNodeService;
 
     @Autowired
     private UsersDataService usersDataService;
@@ -176,14 +176,17 @@ public class ImportController {
             headNode.add("0");
             //int headNodeID=nodeService.getHeadID(indexSymTableName,filesName);
             //拼接新表名
-            indexSymTableName = userName+"_"+filesName + "_IndexSym";
+            indexSymTableName = userName+"_"+filesName;
             System.out.println("指标体系名字： "+indexSymTableName);
-            nodeService.createIndexSymTable(indexSymTableName);
-            if(nodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
+            /* 如果上传了同名的指标体系，直接覆盖; 同时在user_data数据库中写入时也要判断是否有重复 by wxy*/
+            indexSymNodeService.dropExistTable(indexSymTableName);
+            indexSymNodeService.createIndexSymTable(indexSymTableName);
+            /* 先插入根节点 */
+            if(indexSymNodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
                 return Result.fail();
             for (String[] l : list) {
                 System.out.println(l[0]+"  "+ Integer.parseInt(l[1])+"  "+ Double.parseDouble(l[2])+"  "+ Integer.parseInt(l[3])+1);
-                if(nodeService.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3])+1)<=0)
+                if(indexSymNodeService.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3])+1)<=0)
                     return Result.fail();
             }
         }else if(fileType.equals("indexdata")){
@@ -252,11 +255,11 @@ public class ImportController {
 
     /**
      * 获取指定数据表中存储的指标体系
-     * http://localhost:8877/indexsym/loadIndexSym=indexsym
+     * http://localhost:8877/import/loadIndexSym=indexsym
      **/
     @GetMapping("/loadIndexSym")
     public List<IndexSymNode> load_indexsym(String table_name) {
-        indexSym.setNodeList(nodeService.getIndex(table_name));
+        indexSym.setNodeList(indexSymNodeService.getIndex(table_name));
         return indexSym.getNodeList();
     }
 
@@ -264,7 +267,7 @@ public class ImportController {
      * 根据指标体系生成对应的数据表（叶子节点是表头
      * @param table_name 指标体系表
      * @return 是否成功建表（啊？？怎么成功建了表return回来的是false啊
-     * http://localhost:8877/indexsym/create_data_table?table_name=indexsym
+     * http://localhost:8877/import/create_data_table?table_name=indexsym
      */
     @GetMapping("/create_data_table")
     public boolean create_data_table(String table_name) {
@@ -275,6 +278,8 @@ public class ImportController {
         for(int i = 1; i <= leaf_num; i ++)
             columnNames.add("X" + i);
         indexDataTableName=table_name+"_data";
+        /* 如果已经上传过，直接覆盖 */
+        sampleService.dropExistTable(indexDataTableName);
         return sampleService.createDataTable(indexDataTableName, columnNames);
     }
 
@@ -342,13 +347,13 @@ public class ImportController {
         headNode.add("0");
         IndexSymNode t=new IndexSymNode();
         indexSymTableName = userName+"_"+filesName + "_IndexSym";
-        nodeService.createIndexSymTable(indexSymTableName);
-        if(nodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
+        indexSymNodeService.createIndexSymTable(indexSymTableName);
+        if(indexSymNodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
             return Result.fail();
         boolean result=true;
         System.out.println(fileSavePath+filesName+".json");
         try {
-            result = nodeService.saveJsonData(indexSymTableName,fileSavePath+filesName+".json");
+            result = indexSymNodeService.saveJsonData(indexSymTableName,fileSavePath+filesName+".json");
         } catch (IOException e) {
             e.printStackTrace();
             return  Result.fail();
@@ -459,6 +464,7 @@ public class ImportController {
          * 同时注意当没有选择待优化的指标体系时，应该添加点击确认后的错误提示信息
          **/
         try{
+            /* 相同名字的指标体系上传时覆盖原有的指标体系，记录写入user_data表时也应该去重 */
             usersDataService.insertIntoTable(userName + "_data", indexDataTableName, indexSymTableName);
         } catch (Exception e) {
             /* 插入不成功返回前端提示错误信息 */
@@ -474,8 +480,8 @@ public class ImportController {
     @RequestMapping("/getAllSyms/{userName}")
     public Result getAllSyms(@PathVariable("userName")String userName){
         //先找到userData表
-        String userData=userName+"_Data";
-        List<String> indexSymDTNames=sampleService.getUserData(userData);
+        String userData=userName+"_data";
+        List<String> indexSymDTNames=usersDataService.getIndexSymTableNames(userData);
         Result result=new Result();
         return indexSymDTNames==null?Result.fail():Result.success(indexSymDTNames);
     }
@@ -489,7 +495,7 @@ public class ImportController {
 
     @RequestMapping("/getAllNodeInfo/{dbName}")
     public Result getAllNodeInfo(@PathVariable("dbName")String dbName){
-        List<IndexSymNode> data=nodeService.getAllNodeInfo(dbName);
+        List<IndexSymNode> data= indexSymNodeService.getAllNodeInfo(dbName);
         return data==null?Result.fail():Result.trans(data);
     }
 }

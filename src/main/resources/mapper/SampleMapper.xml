@@ -37,9 +37,4 @@
         DROP TABLE IF EXISTS ${tableName}
     </update>
 
-
-    <select id="getUserData" resultType="string">
-        SELECT indexSymDTName
-        FROM ${tableName}
-    </select>
 </mapper>

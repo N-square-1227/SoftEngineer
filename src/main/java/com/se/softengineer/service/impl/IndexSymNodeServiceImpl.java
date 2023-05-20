@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.TreeData;
+import com.se.softengineer.mapper.IndexSymMapper;
 import com.se.softengineer.mapper.IndexSymNodeMapper;
 import com.se.softengineer.service.IndexSymNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
 
     @Autowired
     private IndexSymNodeMapper nodeMapper;
+
 
     public List< IndexSymNode> queryNodeList() {
         QueryWrapper< IndexSymNode> queryWrapper = new QueryWrapper<>();
@@ -109,6 +111,7 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
 
     @Override
     public int insertIntoTable(String tableName, String name, int type, double weight, int id) {
+
         return nodeMapper.insertIntoTable(tableName,name,type,weight,id);
     }
 

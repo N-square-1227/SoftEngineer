@@ -30,6 +30,15 @@ public class IndexSymNodeController {
      */
     @GetMapping("/getTreeData")
     public Result getTreeData(@RequestParam("tableName") String tableName,@RequestParam("func") String func) throws Exception {
+        /** by wxy
+         * 由于user_data表改为在用户注册时创建，所以有可能用户没有上传过指标体系，此时table_name为空
+         * 应该在页面返回提示信息
+         **/
+        if(tableName == null || tableName.equals(""))
+            return Result.fail();
+        if(func == null || func.equals(""))
+            return Result.fail();
+
         /**
          * 判断func 调用算法 接收 List<IndexSymNode>数据
          * by wxy

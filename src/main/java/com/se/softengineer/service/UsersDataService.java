@@ -5,6 +5,8 @@ import com.se.softengineer.entity.UsersData;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface UsersDataService extends IService<UsersData> {
 
     int createTable(String tableName);
@@ -14,4 +16,9 @@ public interface UsersDataService extends IService<UsersData> {
     int deleteTable(String table_name);
 
     int renameTable(String origin_table, String new_table);
+
+    /**
+     * @author xx
+     */
+    List<String> getIndexSymTableNames(String tableName);
 }
