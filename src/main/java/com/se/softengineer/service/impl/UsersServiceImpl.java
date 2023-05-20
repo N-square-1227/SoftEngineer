@@ -16,7 +16,7 @@ import java.util.List;
  *
  **/
 @Service
-public class UsersServiceImpl implements UsersService {
+public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements UsersService {
 
     @Autowired
     private UsersMapper usersMapper;
