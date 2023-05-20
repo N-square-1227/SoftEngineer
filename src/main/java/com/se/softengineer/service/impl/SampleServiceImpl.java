@@ -7,7 +7,11 @@ import com.se.softengineer.service.SampleService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * by wxy
@@ -35,10 +39,18 @@ public class SampleServiceImpl extends ServiceImpl<SampleMapper, Sample> impleme
     public List<String> getColName(String table_name){
         return sampleMapper.getColName(table_name);
     }
-
     @Override
     public boolean createDataTable(String tableName, List<String> columnList) {
         return sampleMapper.createDataTable(tableName, columnList);
     }
 
+    @Override
+    public boolean insertDataTable(String tableName, List<String> dataList) {
+        return sampleMapper.insertDataTable(tableName,dataList);
+    }
+
+    @Override
+    public List<String> getUserData(String tableName) {
+        return sampleMapper.getUserData(tableName);
+    }
 }

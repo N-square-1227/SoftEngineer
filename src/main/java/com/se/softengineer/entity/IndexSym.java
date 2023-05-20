@@ -1,7 +1,5 @@
 package com.se.softengineer.entity;
 
-import com.se.softengineer.entity.Node;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +16,7 @@ public class IndexSym {
      * 然后Map里只记了在List里的序号
      **/
     // 指标体系中所有指标的信息
-    private List<Node> nodeList;
+    private List<IndexSymNode> nodeList;
     // 指标之间的父子关系
     private Map<Integer, List<Integer>> nodeTree;
 
@@ -32,7 +30,7 @@ public class IndexSym {
     }
 
     // 使用节点列表构造
-    public IndexSym(List<Node> nodes) {
+    public IndexSym(List<IndexSymNode> nodes) {
         nodeList = nodes;
         nodeTree = new HashMap<>();
         int node_num = nodeList.size();
@@ -43,36 +41,36 @@ public class IndexSym {
 
     // 加入节点的两种方式
     // 1. 直接加入一个Node实例
-    public void addNode(Node node) {
+    public void addNode(IndexSymNode node) {
         nodeList.add(node);
         insert2tree(node);
     }
 
 
     // 添加节点的父子关系
-    public void insert2tree(Node node) {
+    public void insert2tree(IndexSymNode node) {
         Integer father_id = node.getParentID();
         if(nodeTree.containsKey(father_id)) {
             /* 理论上数据库如果是id字段自增，拿进来List的下标应该是对应的(List从0开始, 数据库的从1开始)
              * 不是的话find应该也挺好find
              **/
-            nodeTree.get(father_id).add(node.getNodeId());
+            nodeTree.get(father_id).add(node.getNodeID());
         }
         else {
             List<Integer> temp = new ArrayList<>();
-            temp.add(node.getNodeId());
+            temp.add(node.getNodeID());
             nodeTree.put(father_id, temp);
         }
-        nodeTree.put(node.getNodeId(), new ArrayList<>());
+        nodeTree.put(node.getNodeID(), new ArrayList<>());
     }
 
-    public List<Node> get_leaves() {
-        List<Node> leaves = new ArrayList<>();
+    public List<IndexSymNode> get_leaves() {
+        List<IndexSymNode> leaves = new ArrayList<>();
 
         /* 认为在nodeList里的顺序就是在数据表中存测数据 */
-        for(Node node : nodeList) {
+        for(IndexSymNode node : nodeList) {
 //            System.out.println(node.getNode_id());
-            if(nodeTree.get(node.getNodeId()).size() == 0)
+            if(nodeTree.get(node.getNodeID()).size() == 0)
                 leaves.add(node);
         }
         leaf_num = leaves.size();
@@ -80,11 +78,11 @@ public class IndexSym {
     }
 
 
-    public List<Node> getNodeList() {
+    public List<IndexSymNode> getNodeList() {
         return nodeList;
     }
 
-    public void setNodeList(List<Node> nodeList) {
+    public void setNodeList(List<IndexSymNode> nodeList) {
         this.nodeList = nodeList;
         nodeTree.clear();
         nodeTree = new HashMap<>();

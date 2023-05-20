@@ -3,7 +3,7 @@ package com.se.softengineer.algorithm.pca;
 
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.entity.Node;
+import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
@@ -107,39 +107,45 @@ public class PCA {
         System.out.println("");
         for(int i = 0; i < numRows; i ++) {
             for(int j = 0; j < factor_num; j ++)
-                eigenMatrix[i][j] *= Math.sqrt(eigenvalued[j]);
+                eigenMatrix[i][j] *= -Math.sqrt(eigenvalued[j]);
         }
 
-        /*for(int i = 0; i < numCols; i ++) {
-            for(int j = 0; j < factor_num; j ++)
-                System.out.print(eigenMatrix[i][j]);
-            System.out.println("");
-        }*/
+
+//        for(int i = 0; i < numCols; i ++) {
+//            for(int j = 0; j < factor_num; j ++)
+//                System.out.print(eigenMatrix[i][j]);
+//            System.out.println("");
+//        }
 
         /* 先把因子加入到指标体系中 */
-        int id_no = 1;
-        for(int i = 0; i < factor_num; i ++) {
-            Node node = new Node(id_no, "factor" + id_no, 1, 1.0, 0);
-            new_sym.addNode(node);
-            id_no ++;
-        }
-
         /* 因子载荷矩阵一行是一个因子，和标准化矩阵的顺序一样，也就是和数据库子节点出现的顺序一样 */
         /* 对每一个主成分而言（每一列），因子载荷矩阵的值越大，说明对这个主成分的影响越大，并且对应因子载荷矩阵的值就是权值 */
+        int id_no = 1;
+        int factor_id = 1;
+        IndexSymNode root = new IndexSymNode(id_no, "root", 1, 1.0, 0);
+        new_sym.addNode(root);
+        id_no ++;
         for(int i = 0; i < factor_num; i ++) {
+            IndexSymNode factor = new IndexSymNode(id_no, "factor" + factor_id, 1, 1.0, 1);
+            boolean factorin = false;
             for(int j = 1; j <=numRows; j ++) {
                 /* 数据不太好感觉 */
-                if(Math.abs(eigenMatrix[j - 1][i]) >= 0.65) {
+                if(Math.abs(eigenMatrix[j - 1][i]) >= 0.7) {
+                    if(!factorin) {
+                        new_sym.addNode(factor);
+                        id_no++;
+                        factor_id++;
+                        factorin = true;
+                    }
                     /* 这里的名字先用编号，然后看在哪里换成名字 */
-                    Node node = new Node(id_no, String.valueOf(j), 1, eigenMatrix[j - 1][i], i + 1);
+                    IndexSymNode node = new IndexSymNode(id_no, String.valueOf(j), 1, eigenMatrix[j - 1][i], factor.getNodeID());
                     new_sym.addNode(node);
                     id_no ++;
                 }
             }
         }
 
-        /* 权重实际上要重新算的，还没算，不难，先放一下 */
-
+        factor_num = factor_id - 1;
         return true;
 
         /**

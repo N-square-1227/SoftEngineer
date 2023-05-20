@@ -5,12 +5,13 @@ import com.se.softengineer.algorithm.Kmeans.Cluster;
 import com.se.softengineer.algorithm.Kmeans.ElbowMethod;
 import com.se.softengineer.algorithm.Kmeans.Kmeans;
 import com.se.softengineer.algorithm.Kmeans.Point;
+import com.se.softengineer.algorithm.algorithmResult.CalulateResult;
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.algorithm.pca.PCA;
 import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.entity.Node;
+import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
-import com.se.softengineer.service.NodeService;
+import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.OptimizeService;
 import com.se.softengineer.service.SampleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,13 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 
 @Service
 public class OptimizeServiceImpl implements OptimizeService {
 
     @Autowired
-    private NodeService nodeService;
+    private IndexSymService indexSymService;
 
     @Autowired
     private SampleService sampleService;
@@ -58,19 +60,20 @@ public class OptimizeServiceImpl implements OptimizeService {
         entropy.setIndexNumber(columnList.size());
         // 计算每个指标子指标的个数并填充到 entropy 中
 
-        List<Node> node = nodeService.getIndex(indexsym_name);
+        List<IndexSymNode> node = indexSymService.getIndex(indexsym_name);
         entropy.setNode(node);
         entropy.fillMap(node);
 
         // 调用算法类的熵权法
         entropy.algorithm();
 
-        // 建表
-        // todo:修改表名为前端传回来的数据！！！
-        nodeService.dropExistTable("nxntest");
-        nodeService.createTable("nxntest");
+        String newIndexSymName = indexsym_name + "_new_entropy";
+        indexSymService.dropExistTable(newIndexSymName);
+        indexSymService.createTable(newIndexSymName);
         // 将新的指标体系存到数据库的新表里
-        nodeService.insertIntoSheet("nxntest", entropy.getNode());
+        indexSymService.insertIntoSheet(newIndexSymName, entropy.getNode());
+
+        /* 返回新的指标体系 */
         newIndexSym.setNodeList(entropy.getNode());
         return newIndexSym;
     }
@@ -78,19 +81,26 @@ public class OptimizeServiceImpl implements OptimizeService {
     @Override
     public IndexSym pca(String indexsym_name, String data_tablename) {
         List<Sample> data = sampleService.getData(data_tablename);
-        IndexSym indexSym = new IndexSym(nodeService.getIndex(indexsym_name));
-        List<Node> leaves = indexSym.get_leaves();
+        IndexSym indexSym = new IndexSym(indexSymService.getIndex(indexsym_name));
+        List<IndexSymNode> leaves = indexSym.get_leaves();
         PCA pca = new PCA(data);
         pca.solve();
-        for(int i = 0; i < pca.getFactor_num(); i ++) {
-            List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(pca.getNew_sym().getNodeList().get(i).getNodeId());
+        int node_num = pca.getNew_sym().getNodeList().size();
+        for(int i = 0; i < node_num; i ++) {
+            List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(i + 1);
+            if(son_nodes.size() != 0) continue;
             System.out.println(pca.getNew_sym().getNodeList().get(i).getNodeName());
-            for (Integer son_node : son_nodes) {
-                /* 第idx个叶子节点*/
-                int idx = Integer.parseInt(pca.getNew_sym().getNodeList().get(son_node - 1).getNodeName());
-                pca.getNew_sym().getNodeList().get(son_node - 1).setNodeName(leaves.get(idx - 1).getNodeName());
-            }
+            /* 第idx个子节点*/
+            int idx = Integer.parseInt(pca.getNew_sym().getNodeList().get(i).getNodeName());
+            pca.getNew_sym().getNodeList().get(i).setNodeName(leaves.get(idx - 1).getNodeName());
         }
+        String newIndexSymName = indexsym_name + "_new_pca";
+
+        indexSymService.dropExistTable(newIndexSymName);
+        indexSymService.createTable(newIndexSymName);
+        // 将新的指标体系存到数据库的新表里
+        indexSymService.insertIntoSheet(newIndexSymName, pca.getNew_sym().getNodeList());
+
         return pca.getNew_sym();
     }
 
@@ -103,14 +113,14 @@ public class OptimizeServiceImpl implements OptimizeService {
     @Override
     public IndexSym kmeans(String indexsym_name, String data_tablename) throws Exception {
         List<Sample> sampleList,testList = new ArrayList<>();
-        List<Node> indexList,leafindex = new ArrayList<>();
+        List<IndexSymNode> indexList,leafindex = new ArrayList<>();
         IndexSym newIndexSym = new IndexSym();
         //这里的data需要从前端传回来
         sampleList = sampleService.getData(data_tablename);
         testList = sampleService.getData(data_tablename);
         List<String> columnList = new ArrayList<>();
         columnList = sampleService.getColName(data_tablename);
-        indexList = nodeService.getIndex(indexsym_name);
+        indexList = indexSymService.getIndex(indexsym_name);
         IndexSym indexSym = new IndexSym(indexList);
         leafindex = indexSym.get_leaves();//获取叶子节点
 
@@ -124,10 +134,12 @@ public class OptimizeServiceImpl implements OptimizeService {
         //执行kmeans算法
         Kmeans kRun = new Kmeans(k,sampleList);
         Set<Cluster> clusterSet = kRun.run();
-        List<Node> nodeList = new ArrayList<>();
+        List<IndexSymNode> nodeList = new ArrayList<>();
         int centerNum = clusterSet.size();
-        for(int i=1;i<=centerNum;i++){
-            Node node = new Node(i,"father"+i,1,1.0,0);
+        IndexSymNode node = new IndexSymNode(1,indexsym_name,1,1.0,0);
+        nodeList.add(node);
+        for(int i=2;i<=centerNum + 1;i++){
+            node = new IndexSymNode(i,"father"+i,1,1.0,1);
             nodeList.add(node);
         }
         int num = 1;
@@ -135,17 +147,35 @@ public class OptimizeServiceImpl implements OptimizeService {
             List<Point> pointList = cluster.getMembers();
             for(Point point:pointList){
                 int id = point.getId();
-                Node node = new Node(centerNum+1,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),num);
+                node = new IndexSymNode(centerNum+1 + 1,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),num + 1);
                 nodeList.add(node);
                 centerNum += 1;
             }
             num += 1;
         }
-        nodeService.dropExistTable("xlytest");
-        nodeService.createTable("xlytest");
+
+        String newIndexSymName = indexsym_name + "_new_kmeans";
+
+        indexSymService.dropExistTable(newIndexSymName);
+        indexSymService.createTable(newIndexSymName);
         // 将新的指标体系存到数据库的新表里
-        nodeService.insertIntoSheet("xlytest", nodeList);
+        indexSymService.insertIntoSheet(newIndexSymName, nodeList);
         newIndexSym.setNodeList(nodeList);
         return newIndexSym;
+    }
+
+    @Override
+    public TreeMap caculateResult(String dataName, String indexName, String newindexName){
+        List<Sample> data = sampleService.getData(dataName);
+        IndexSym indexSym = new IndexSym(indexSymService.getIndex(indexName));
+        IndexSym newindexSym = new IndexSym(indexSymService.getIndex(newindexName));
+        int num = data.size();
+        TreeMap<Double, Integer> map = new TreeMap<>();
+
+        for(int i = 0; i < num; i ++) {
+            CalulateResult res = new CalulateResult(data.get(i).getData(), indexSym, newindexSym);
+            map.put(res.caculateValue(), i);
+        }
+        return map;
     }
 }

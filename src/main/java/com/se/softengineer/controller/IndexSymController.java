@@ -1,14 +1,12 @@
 package com.se.softengineer.controller;
 
-import com.se.softengineer.algorithm.EntropyWeight.Entropy;
-import com.se.softengineer.algorithm.dataprocess.DataNumpy;
-import com.se.softengineer.algorithm.pca.PCA;
 import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.entity.Node;
+import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
-import com.se.softengineer.service.NodeService;
+import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.OptimizeService;
 import com.se.softengineer.service.SampleService;
+import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * by wxy
@@ -27,7 +26,7 @@ import java.util.List;
 public class IndexSymController {
 
     @Autowired
-    private NodeService nodeService;
+    private IndexSymService indexSymService;
 
     @Autowired
     private SampleService sampleService;
@@ -44,21 +43,21 @@ public class IndexSymController {
      * Just for test
      **/
     @GetMapping("/test")
-    private String test() {
-        return "Hello World!";
+    private Result test() {
+        return Result.success("Hello World!");
     }
 
 
     /**
      * 获取指定数据表中存储的指标体系
-     * http://localhost:8877/indexsym/loadIndexSym=indexsym
+     * http://localhost:8877/indexsym/loadIndexSym?table_name=indexsym
      **/
     @GetMapping("/loadIndexSym")
-    private List<Node> load_indexsym(String table_name) {
-        indexSym.setNodeList(nodeService.getIndex(table_name));
+    private Result load_indexsym(String table_name) {
+        indexSym.setNodeList(indexSymService.getIndex(table_name));
 //        for(int i = 0; i < indexSym.getNodeList().size(); i ++)
 //            System.out.println(indexSym.getNodeList().get(i));
-        return indexSym.getNodeList();
+        return indexSym.getNodeList().size() != 0 ? Result.success(indexSym.getNodeList()) : Result.fail();
     }
 
     /**
@@ -67,9 +66,9 @@ public class IndexSymController {
      * 后面也可以改成PostMapping
      **/
     @GetMapping("/loadData")
-    private List<Sample> load_data(String table_name) {
+    private Result load_data(String table_name) {
         data = sampleService.getData(table_name);
-        return data;
+        return data.size() != 0 ? Result.success(data) : Result.fail() ;
     }
 
     /**
@@ -79,37 +78,39 @@ public class IndexSymController {
      * http://localhost:8877/indexsym/create_data_table?table_name=indexsym
      */
     @GetMapping("/create_data_table")
-    private boolean create_data_table(String table_name) {
+    private Result create_data_table(String table_name) {
         load_indexsym(table_name);
         indexSym.get_leaves();
         int leaf_num = indexSym.getLeaf_num();
         List<String> columnNames = new ArrayList<>();
         for(int i = 1; i <= leaf_num; i ++)
             columnNames.add("X" + i);
-        return sampleService.createDataTable(table_name+"_data", columnNames);
+        return !sampleService.createDataTable(table_name+"_data", columnNames) ? Result.success() : Result.fail();
     }
 
     /**
      * 获取指定数据表的列名List
      * http://localhost:8877/indexsym/loadColumnNames?table_name=indexsym
+     * http://localhost:8877/indexsym/loadColumnNames?table_name=data
      * 后面也可以改成PostMapping
      **/
     @GetMapping("/loadColumnNames")
-    private List<String> load_columnNames(String table_name) {
+    private Result load_columnNames(String table_name) {
         columnList = sampleService.getColName(table_name);
-        return columnList;
+        return columnList.size() != 0 ?Result.success(columnList):Result.fail();
     }
 
     /**
      * 调用PCA算法对指定的指标体系做优化
      * indexsym_name表示存储指定指标体系的数据表的名字
      * data_tablename表示对应的数据的数据表的名字
-     * http://localhost:8877/indexsym/usePCA?indexsym_name=indexsym&&data_tablename=data
+     * http://localhost:8877/indexsym/pca?indexsym_name=indexsym&&data_tablename=data
      * 后面也可以改成PostMapping
      **/
     @GetMapping("/pca")
-    public IndexSym use_PCA(String indexsym_name, String data_tablename) {
-        return optimizeService.pca(indexsym_name, data_tablename);
+    public Result use_PCA(String indexsym_name, String data_tablename) {
+        IndexSym newIndexSym = optimizeService.pca(indexsym_name, data_tablename);
+        return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 
     /**
@@ -120,8 +121,9 @@ public class IndexSymController {
      * @return
      */
     @GetMapping("/entropy")
-    public IndexSym use_entropy(String indexsym_name, String data_tablename) throws Exception {
-        return optimizeService.entropy(indexsym_name, data_tablename);
+    public Result use_entropy(String indexsym_name, String data_tablename) throws Exception {
+        IndexSym newIndexSym = optimizeService.entropy(indexsym_name, data_tablename);
+        return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 
     /**
@@ -132,8 +134,15 @@ public class IndexSymController {
      * @throws Exception
      */
     @GetMapping("/kmeans")
-    public IndexSym use_kmeans(String indexsym_name, String data_tablename) throws Exception {
-        return optimizeService.kmeans(indexsym_name, data_tablename);
+    public Result use_kmeans(String indexsym_name, String data_tablename) throws Exception {
+        IndexSym newIndexSym = optimizeService.kmeans(indexsym_name, data_tablename);
+        return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
+    }
+
+    @GetMapping("/caculateResult")
+    public Result use_caculateResult(String dataName, String indexName, String newindexName){
+        TreeMap res = optimizeService.caculateResult(dataName, indexName, newindexName);
+        return res != null ? Result.success(res) : Result.fail();
     }
 
 }
