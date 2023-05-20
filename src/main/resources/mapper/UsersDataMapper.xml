@@ -14,4 +14,12 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
     </update>
 
+    <update id="deleteTable" parameterType="String">
+        DROP TABLE IF EXISTS ${table_name}
+    </update>
+
+    <update id="renameTable" parameterType="String">
+        ALTER TABLE ${origin_name} RENAME TO ${new_name}
+    </update>
+
 </mapper>

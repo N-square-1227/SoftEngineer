@@ -15,6 +15,7 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
 
     @Resource
     UsersDataMapper usersDataMapper;
+
     @Override
     public int createTable(String tableName) {
         return usersDataMapper.createTable(tableName);
@@ -23,5 +24,15 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
     @Override
     public int insertIntoTable(String tableName, String dataTableName, String indexSymDTName) {
         return usersDataMapper.insertIntoTable(tableName, dataTableName, indexSymDTName);
+    }
+
+    @Override
+    public int deleteTable(String table_name) {
+        return usersDataMapper.deleteTable(table_name);
+    }
+
+    @Override
+    public int renameTable(String origin_table, String new_table) {
+        return usersDataMapper.renameTable(origin_table, new_table);
     }
 }
