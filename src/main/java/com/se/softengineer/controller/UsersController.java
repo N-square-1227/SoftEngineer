@@ -51,8 +51,9 @@ public class UsersController {
     public Result login(@RequestBody Users user) throws Exception {
         Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
         if(curUser!=null){
-            if(curUser.getRole() == 1)
-                usersDataService.deleteTable(curUser.getUserName() + "_data");
+            /* 删除管理员的user_data表 */
+//            if(curUser.getRole() == 1)
+//                usersDataService.deleteTable(curUser.getUserName() + "_data");
 
             List menuList = menuService.lambdaQuery().like(Menu::getMenuRight,curUser.getRole()).list();
             HashMap res = new HashMap();
@@ -134,7 +135,7 @@ public class UsersController {
         //管理员用户不可删除
         if(user.getRole()==1)
             return Result.fail();
-        try {   /* 同时删除用户所属的data表 */
+        try {   /* 同时删除用户所属的data表和相关的指标体系及数据表 */
             usersDataService.deleteTable(user.getUserName() + "_data");
         }catch(Exception e){
             return Result.fail();

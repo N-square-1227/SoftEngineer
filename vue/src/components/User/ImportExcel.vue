@@ -46,7 +46,7 @@
                 <el-button type="submit" size="mini" @click="jumpBehind">上传</el-button>
             </el-tooltip>
             <br><br>
-            <el-button type="submit" size="mini" @click="clearAll1();clearAll2()">再次上传(reset)</el-button>
+            <el-button type="submit" size="mini" @click="clearAll1();clearAll2()">重置</el-button>
             <el-button type="submit" size="mini" @click="insertUsersData">确认</el-button>
         </el-main>
     </div>

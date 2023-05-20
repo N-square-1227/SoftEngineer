@@ -22,4 +22,14 @@
         ALTER TABLE ${origin_name} RENAME TO ${new_name}
     </update>
 
+    <select id="getIndexSymTableNames" resultType="string">
+        SELECT indexSymDTName
+        FROM ${tableName}
+    </select>
+
+    <select id="getDataTableNames" resultType="string">
+        SELECT dataTableName
+        FROM ${tableName}
+    </select>
+
 </mapper>

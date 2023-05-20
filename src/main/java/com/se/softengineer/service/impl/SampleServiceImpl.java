@@ -50,7 +50,9 @@ public class SampleServiceImpl extends ServiceImpl<SampleMapper, Sample> impleme
     }
 
     @Override
-    public List<String> getUserData(String tableName) {
-        return sampleMapper.getUserData(tableName);
+    public void dropExistTable(String tableName) {
+        sampleMapper.dropExistTable(tableName);
     }
+
+
 }

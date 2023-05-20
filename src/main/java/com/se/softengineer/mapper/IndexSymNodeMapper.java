@@ -23,17 +23,11 @@ public interface IndexSymNodeMapper extends BaseMapper<IndexSymNode> {
 
     List< IndexSymNode> getIndex(String table_name);
 
-    /**
-     * 南希诺
-     * 创建熵权法表
-     */
+
     void createTable(@Param("tableName") String tableName);
 
-    /**
-     * 南希诺
-     * 删除表
-     * @param tableName 后端修改后的表名
-     */
+
+    @Update({"DROP TABLE IF ESIXTS #{tableName}"})
     void dropExistTable(@Param("tableName") String tableName);
 
 

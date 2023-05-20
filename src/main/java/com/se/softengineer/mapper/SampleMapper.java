@@ -26,5 +26,5 @@ public interface SampleMapper extends BaseMapper<Sample> {
 
     boolean insertDataTable(@Param("tableName") String tableName, List<String> dataList);
 
-    List<String> getUserData(String tableName);
+    void dropExistTable(String tableName);
 }

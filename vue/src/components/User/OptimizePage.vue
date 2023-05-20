@@ -98,23 +98,36 @@ export default {
         //           }*/
         // },
         toDrawTree(){
-            this.$axios.get(this.$httpUrl+'/indexSymNode/getTreeData?tableName='+name+"&func="+func).then(res=>res.data).then(res=>{
-                console.log(res)
-                if (res.code==200) {
-                    for(let i=0;i<res.data.length;i++){
-                        this.treeData.push(res.data[i])
-                        console.log(this.treeData)
-                    }
-                    sessionStorage.setItem("TreeData",JSON.stringify(this.treeData))
-                    this.$message({
-                        message: '优化成功！',
-                        type: 'success'
-                    });
-                    this.$router.replace('/DrawTree');//跳转到可视化界面
+          if(name == null) {
+            this.$message({
+              message: '未选择指标体系！',
+              type: 'warning'
+            });
+          }
+          else if(func == null) {
+            this.$message({
+              message: '未选择优化算法！',
+              type: 'warning'
+            });
+          }
+          else {
+            this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName=' + name + "&func=" + func).then(res => res.data).then(res => {
+              console.log(res)
+              if (res.code == 200) {
+                for (let i = 0; i < res.data.length; i++) {
+                  this.treeData.push(res.data[i])
+                  console.log(this.treeData)
                 }
-                else
-                    this.$message.error('优化失败！');
+                sessionStorage.setItem("TreeData", JSON.stringify(this.treeData))
+                this.$message({
+                  message: '优化成功！',
+                  type: 'success'
+                });
+                this.$router.replace('/DrawTree');//跳转到可视化界面
+              } else
+                this.$message.error('优化失败！');
             })
+          }
         }
     }
 }

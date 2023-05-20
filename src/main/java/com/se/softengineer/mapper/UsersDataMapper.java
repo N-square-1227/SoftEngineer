@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 @Mapper
 public interface UsersDataMapper extends BaseMapper<UsersData> {
 
@@ -19,6 +21,10 @@ public interface UsersDataMapper extends BaseMapper<UsersData> {
     int insertIntoTable(@Param("tableName")String tableName,@Param("dataTableName")String type,@Param("indexSymDTName")String weight);
 
     int deleteTable(String table_name);
+
+    List<String> getIndexSymTableNames(String tableName);
+
+    List<String> getDataTableNames(String tableName);
 
     int renameTable(String origin_name, String new_name);
 
