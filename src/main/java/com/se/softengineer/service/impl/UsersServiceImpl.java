@@ -2,9 +2,11 @@ package com.se.softengineer.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.se.softengineer.entity.Users;
+import com.se.softengineer.mapper.UsersDataMapper;
 import com.se.softengineer.mapper.UsersMapper;
 import com.se.softengineer.service.UsersService;
 import com.se.softengineer.utils.AesTypeHandler;
+import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Autowired
     private UsersMapper usersMapper;
+
+    @Autowired
+    private UsersDataMapper usersDataMapper;
 
     AesTypeHandler handler = new AesTypeHandler();
 
@@ -75,6 +80,19 @@ public class UsersServiceImpl implements UsersService {
         //用户名存在(即id不一致)
         if(list.size()>0 && list.get(0).getUserID()!=user.getUserID())
             return null;
+
+        /* 修改用户信息时有可能对用户名做了更改，因此需要修改存储用户名下指标体系的数据表username_data. by wxy*/
+        Users origin_user = usersMapper.selectById(user.getUserID());
+        try {
+            String origin_name = origin_user.getUserName();
+            if(!user.getUserName().equals(origin_name)) {  // 修改了名字才需要改
+                int role = origin_user.getRole();
+                if (role == 2)   // 只有普通用户才有这个表
+                    usersDataMapper.renameTable(origin_name + "_data", user.getUserName() + "_data");
+            }
+        }catch (Exception e) {
+            return null;
+        }
         int i = usersMapper.updateById(user);
         if(i==1)
             return user;

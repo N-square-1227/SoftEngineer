@@ -11,5 +11,7 @@ public interface UsersDataService extends IService<UsersData> {
 
     int insertIntoTable(String tableName,String dataTableName,String indexSymDTName);
 
+    int deleteTable(String table_name);
 
+    int renameTable(String origin_table, String new_table);
 }

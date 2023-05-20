@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.se.softengineer.entity.Menu;
 import com.se.softengineer.entity.Users;
 import com.se.softengineer.service.MenuService;
+import com.se.softengineer.service.UsersDataService;
 import com.se.softengineer.service.UsersService;
 import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
@@ -28,6 +29,9 @@ public class UsersController {
     @Autowired
     private MenuService menuService;
 
+    @Autowired
+    private UsersDataService usersDataService;
+
     /**
      * 时间格式化
      */
@@ -47,6 +51,9 @@ public class UsersController {
     public Result login(@RequestBody Users user) throws Exception {
         Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
         if(curUser!=null){
+            if(curUser.getRole() == 1)
+                usersDataService.deleteTable(curUser.getUserName() + "_data");
+
             List menuList = menuService.lambdaQuery().like(Menu::getMenuRight,curUser.getRole()).list();
             HashMap res = new HashMap();
             res.put("user",curUser);
@@ -64,6 +71,10 @@ public class UsersController {
     public Result register(@RequestBody Users user) throws Exception {
         Users curUser = usersService.userRegister(user.getUserName(),user.getUserPassword(),user.getUserEmail());
         if(curUser!=null){
+            /* 创建username_Data表，存储用户所属的指标体系和数据文件 by wxy*/
+            usersDataService.deleteTable(user.getUserName() + "_data");
+            usersDataService.createTable(user.getUserName() + "_data");
+
             List menuList = menuService.lambdaQuery().like(Menu::getMenuRight,curUser.getRole()).list();
             HashMap res = new HashMap();
             res.put("user",curUser);
@@ -74,16 +85,17 @@ public class UsersController {
     }
 
     /**
-     * 修改用户信息
+     * 管理员修改用户信息
      * @author lmy
      */
     @PostMapping("/update")
     public Result update(@RequestBody Users user) throws Exception {
+        /* 更新用户信息，如果修改了用户名，同时要更新user_data表 */
         return usersService.updateUser(user)!=null ? Result.success():Result.fail();
     }
 
     /**
-     * 修改用户信息
+     * 修改个人信息
      * @author lmy
      */
     @PostMapping("/updateInfo")
@@ -122,6 +134,11 @@ public class UsersController {
         //管理员用户不可删除
         if(user.getRole()==1)
             return Result.fail();
+        try {   /* 同时删除用户所属的data表 */
+            usersDataService.deleteTable(user.getUserName() + "_data");
+        }catch(Exception e){
+            return Result.fail();
+        }
         return usersService.removeById(userID) ? Result.success():Result.fail();
     }
 

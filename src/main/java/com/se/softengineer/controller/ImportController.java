@@ -1,11 +1,10 @@
 package com.se.softengineer.controller;
 
 import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.mapper.IndexSymNodeMapper;
-import com.se.softengineer.mapper.UsersDataMapper;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.service.IndexSymNodeService;
 import com.se.softengineer.service.SampleService;
+import com.se.softengineer.service.UsersDataService;
 import com.se.softengineer.utils.Result;
 import com.se.softengineer.utils.AnalyExcel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,7 @@ public class ImportController {
     private IndexSymNodeService nodeService;
 
     @Autowired
-    private UsersDataMapper usersDataMapper;
+    private UsersDataService usersDataService;
 
     @Autowired
     private SampleService sampleService;
@@ -428,8 +427,15 @@ public class ImportController {
         }
     }
 
+    /**
+     * v1.0
+     * @author lmy
+     * v2.0
+     * @author wxy
+     **/
     @RequestMapping("/insertUsersData")
     public Result insertUsersData()  {
+        /** v 1.0 点击确认后创建表并插入数据
         int flag=0;
         try{
             usersDataMapper.createTable(userName+"_Data");
@@ -439,6 +445,24 @@ public class ImportController {
         }
         if(flag==0){
             usersDataMapper.insertIntoTable(userName+"_Data",indexDataTableName,indexSymTableName);
+        }
+        */
+
+        /** v 2.0
+         * 调整为：
+         * 用户注册时即在数据库中创建表，在上传数据界面点击确定直接插入；
+         * 删除用户时连带username_Data表一起删除
+         * 修改用户名时也需要修改这个表名
+         *
+         * 解决某未上传过数据的用户登陆后进入“指标优化”界面直接报错的问题
+         * 修改register、update、delete方法
+         * 同时注意当没有选择待优化的指标体系时，应该添加点击确认后的错误提示信息
+         **/
+        try{
+            usersDataService.insertIntoTable(userName + "_data", indexDataTableName, indexSymTableName);
+        } catch (Exception e) {
+            /* 插入不成功返回前端提示错误信息 */
+            return Result.fail();
         }
         return Result.success();
     }
