@@ -9,6 +9,7 @@ import com.se.softengineer.entity.Users;
 import com.se.softengineer.service.MenuService;
 import com.se.softengineer.service.UsersDataService;
 import com.se.softengineer.service.UsersService;
+import com.se.softengineer.utils.AesTypeHandler;
 import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class UsersController {
 
     @Autowired
     private UsersDataService usersDataService;
+
+    private AesTypeHandler handler;
 
     /**
      * 时间格式化
@@ -116,12 +119,12 @@ public class UsersController {
      * @author lmy
      */
     @PostMapping("/updatePwd")
-    public Result updatePwd(@RequestBody QueryPageParam query){
+    public Result updatePwd(@RequestBody QueryPageParam query) throws Exception {
         HashMap param = query.getParam();
         String newPwd = (String)param.get("newPwd");
         Integer id = (Integer) param.get("userID");
 
-        return usersService.lambdaUpdate().set(Users::getUserPassword, newPwd)
+        return usersService.lambdaUpdate().set(Users::getUserPassword, handler.encrypt(newPwd))
                 .eq(Users::getUserID,id).update(new Users()) ? Result.success() : Result.fail();
     }
 
