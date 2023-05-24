@@ -3,6 +3,7 @@ package com.se.softengineer.controller;
 import com.se.softengineer.algorithm.caculate.CaculateResult;
 import com.se.softengineer.algorithm.caculate.CaculateSample;
 import com.se.softengineer.entity.IndexSym;
+import com.se.softengineer.entity.IndexSymResult;
 import com.se.softengineer.entity.Sample;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.OptimizeService;
@@ -144,7 +145,7 @@ public class IndexSymController {
 
     @GetMapping("/caculateResult")
     public Result use_caculateResult(String dataName, String indexName, String newindexName){
-        TreeMap res = optimizeService.caculateResult(dataName, indexName, newindexName);
+        List<IndexSymResult> res = optimizeService.caculateResult(dataName, indexName, newindexName);
         return res != null ? Result.success(res) : Result.fail();
     }
 

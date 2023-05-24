@@ -18,7 +18,7 @@
                 </el-option>
             </el-select>
 
-            <el-tooltip class="item" effect="dark" placement="top-start">
+            <el-tooltip class="item" effect="dark" placement="top-start" content="确定">
                 <el-button @click="toDrawTree">确定</el-button>
             </el-tooltip>
 

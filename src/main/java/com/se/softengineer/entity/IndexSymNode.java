@@ -50,7 +50,7 @@ public class IndexSymNode implements Serializable, Comparable<IndexSymNode> {
     }
 
     @Override
-    //如果该点到原点的距离大于o点到原点的距离，则该点大于o点
+    /* 按权重排序 */
     public int compareTo(IndexSymNode o) {
         return this.nodeWeight.compareTo(o.nodeWeight);
     }
