@@ -50,6 +50,16 @@ const routes = [
             {
                 path :'/IndexSymManage',
                 name: 'IndexSymManage',
+                component:()=>import("../components/User/IndexSymManage")
+            },
+            {
+                path: '/DrawOriginalTree',
+                name: 'DrawOriginalTree',
+                component:()=>import("../components/User/Comments/DrawOriginalTree")
+            },
+            {
+                path :'/IndexSymManage',
+                name: 'IndexSymManage',
                 component:()=>import("../components/User/IndexSymManage"),
                 children:[
                     {

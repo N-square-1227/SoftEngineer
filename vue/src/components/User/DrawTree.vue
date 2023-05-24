@@ -33,21 +33,6 @@ export default {
     },
     methods: {
         getTreeData(){
-            // this.$axios.get(this.$httpUrl+'/indexSym/getTreeData?tableName=indexsym').then(res=>res.data).then(res=>{
-            //     //console.log(res)
-            //     if (res.code==200) {
-            //         for(let i=0;i<res.data.length;i++){
-            //             this.treeData.push(res.data[i])
-            //             console.log(this.treeData)
-            //         }
-            //         this.$message({
-            //             message: '优化成功！',
-            //             type: 'success'
-            //         });
-            //     }
-            //     else
-            //         this.$message.error('优化失败！');
-            // })
             this.treeData = JSON.parse(sessionStorage.getItem('TreeData'))
         },
         showChart() {
@@ -76,13 +61,13 @@ export default {
                         bottom: '1%',
                         right: '20%',
 
-                        symbolSize: 7,
+                        symbolSize: 5,
 
                         label: {
                             position: 'left',
                             verticalAlign: 'middle',
                             align: 'right',
-                            fontSize: 13
+                            fontSize: 14
                         },
 
                         leaves: {

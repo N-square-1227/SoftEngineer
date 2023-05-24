@@ -58,6 +58,7 @@ export default {
     data() {
         return{
             user:JSON.parse(sessionStorage.getItem('CurUser')),
+            treeData: []
         }
     },
     methods: {
@@ -109,7 +110,7 @@ export default {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'indexSym.xlsx');
+                link.setAttribute('download', 'indexsymOrigin.xlsx');
                 document.body.appendChild(link);
                 link.click();
             })

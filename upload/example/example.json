@@ -1,14 +1,158 @@
 [
     {
-        "nodeName": "城市旅游竞争业绩1",
+        "nodeName": "城市旅游竞争业绩",
         "nodeType": 1,
         "nodeWeight": 1,
-        "parentID": 0
+        "parentID": 1
     }, 
     {
-        "nodeName": "城市旅游竞争潜力1",
+        "nodeName": "城市旅游竞争潜力",
         "nodeType": 1,
         "nodeWeight": 1,
-        "parentID": 0
+        "parentID": 1
+    },
+    {
+        "nodeName": "城市旅游支撑力",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 1
+    },
+    {
+        "nodeName": "国内旅游人数/万人次",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 2
+    },
+    {
+        "nodeName": "国内旅游收入/亿元",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 2
+    },
+    {
+        "nodeName": "入境旅游人数/万人次",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 2
+    },
+    {
+        "nodeName": "入境旅游收入/万人次",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 2
+    },
+    {
+        "nodeName": "旅游总收入占GDP的比例/%",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 2
+    },
+    {
+        "nodeName": "客房出租率/%",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 2
+    },
+    {
+        "nodeName": "餐饮住宿业销售额/亿元",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 2
+    },
+    {
+        "nodeName": "接待过夜游客比率/%",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 3
+    },
+    {
+        "nodeName": "多次来浙游览游客比例/%",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 3
+    },
+    {
+        "nodeName": "游客评价满意度较高比例/%",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 3
+    },
+    {
+        "nodeName": "第三产业占GDP的比例/%",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 3
+    },
+    {
+        "nodeName": "星级饭店数量/个",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 3
+    },
+    {
+        "nodeName": "旅行社数量/个",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 3
+    },
+    {
+        "nodeName": "国家重点风景名胜区和4A级以上景点个数/个",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 3
+    },
+    {
+        "nodeName": "第三产业从业人数/万人",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 3
+    },
+    {
+        "nodeName": "导游数量/个 ",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 3
+    },
+    {
+        "nodeName": "餐饮住宿业从业人数/万人",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 3
+    },
+    {
+        "nodeName": "固定资产投资规模/公顷",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 4
+    },
+    {
+        "nodeName": "城市人均GDP/元",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 4
+    },
+    {
+        "nodeName": "公园绿地面积/公顷",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 4
+    },
+    {
+        "nodeName": "污水集中处理率/%",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 4
+    },
+    {
+        "nodeName": "生活垃圾无害化处理率/%",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 4
+    },
+    {
+        "nodeName": "年客运总量/万人次",
+        "nodeType": 1,
+        "nodeWeight": 1,
+        "parentID": 4
     }
 ]

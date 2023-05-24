@@ -1,11 +1,11 @@
 package com.se.softengineer.entity;
 
-//import cn.zhz.privacy.annotation.FieldDesensitize;
-//import cn.zhz.privacy.annotation.FieldEncrypt;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.se.softengineer.utils.AesTypeHandler;
+import lombok.AllArgsConstructor;
 import com.se.softengineer.utils.AesTypeHandler;
 //import io.github.encrypt.annotation.FieldEncrypt;
 //import io.github.encrypt.bean.Encrypted;
@@ -17,8 +17,8 @@ import java.io.Serializable;
 // lombok 注解
 @Data
 // 用来标注你映射的是哪张表
-@TableName(value = "users", autoResultMap = true)
-public class Users implements Serializable/*, Encrypted*/ {
+@TableName(value = "users",autoResultMap = true)
+public class Users implements Serializable {
     /*
     1、将对象的内容进行流化。对流化后的对象进行读写操作，也可以在网络之间传输，需要实现 Serializable 接口.
 

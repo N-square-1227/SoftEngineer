@@ -8,6 +8,11 @@ import com.se.softengineer.service.SampleService;
 
 import java.util.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class CalulateResult {
     private List<Double> data;        //用于对比优化后的体系和优化前的体系的数据
     private IndexSym indexSym;      //优化前的指标体系
