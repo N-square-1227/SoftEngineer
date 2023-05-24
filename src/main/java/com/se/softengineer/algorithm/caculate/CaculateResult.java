@@ -1,30 +1,28 @@
-package com.se.softengineer.algorithm.algorithmResult;
+package com.se.softengineer.algorithm.caculate;
 
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
-import com.se.softengineer.service.IndexSymService;
-import com.se.softengineer.service.SampleService;
 
 import java.util.*;
 
-public class CalulateResult {
+public class CaculateResult {
     private List<Double> data;        //用于对比优化后的体系和优化前的体系的数据
     private IndexSym indexSym;      //优化前的指标体系
     private IndexSym newIndexSym;   // 优化后的指标体系
 
     private Map<Integer,Integer> nodeMap;       //新旧指标体系的节点对应
 
-    private List<Integer>  visit;       // 记忆化搜索
+    private List<Integer>  visit;       // 记忆化搜索(没实现)
 
-    public CalulateResult(List<Double> data, IndexSym indexSym, IndexSym newIndexSym) {
+    public CaculateResult(List<Double> data, IndexSym indexSym, IndexSym newIndexSym) {
         this.data = data;
         this.indexSym = indexSym;
         this.newIndexSym = newIndexSym;
         visit = new ArrayList<>();
         nodeMap = new HashMap<>();
         //原来指标体系的叶子节点
-        List<IndexSymNode> leafNode = indexSym.get_leaves();
+        List<IndexSymNode> leafNode = this.indexSym.get_leaves();
         int leaf_num = indexSym.getLeaf_num();
         //新指标体系的叶子节点
         List<IndexSymNode> newleafNode = newIndexSym.get_leaves();

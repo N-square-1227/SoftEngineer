@@ -5,7 +5,7 @@ import com.se.softengineer.algorithm.Kmeans.Cluster;
 import com.se.softengineer.algorithm.Kmeans.ElbowMethod;
 import com.se.softengineer.algorithm.Kmeans.Kmeans;
 import com.se.softengineer.algorithm.Kmeans.Point;
-import com.se.softengineer.algorithm.algorithmResult.CalulateResult;
+import com.se.softengineer.algorithm.caculate.CaculateResult;
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.algorithm.pca.PCA;
 import com.se.softengineer.entity.IndexSym;
@@ -173,7 +173,7 @@ public class OptimizeServiceImpl implements OptimizeService {
         TreeMap<Double, Integer> map = new TreeMap<>();
 
         for(int i = 0; i < num; i ++) {
-            CalulateResult res = new CalulateResult(data.get(i).getData(), indexSym, newindexSym);
+            CaculateResult res = new CaculateResult(data.get(i).getData(), indexSym, newindexSym);
             map.put(res.caculateValue(), i);
         }
         return map;

@@ -1,7 +1,8 @@
 package com.se.softengineer.controller;
 
+import com.se.softengineer.algorithm.caculate.CaculateResult;
+import com.se.softengineer.algorithm.caculate.CaculateSample;
 import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.OptimizeService;
@@ -9,11 +10,13 @@ import com.se.softengineer.service.SampleService;
 import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -143,6 +146,19 @@ public class IndexSymController {
     public Result use_caculateResult(String dataName, String indexName, String newindexName){
         TreeMap res = optimizeService.caculateResult(dataName, indexName, newindexName);
         return res != null ? Result.success(res) : Result.fail();
+    }
+
+
+    /** by wxy
+     * 调用方法类CaculateSample
+     * 获取某一组样例各个节点的计算结果
+     * 返回值为CaculateSample的内部类，包含一个Map和一个List
+     * res: List是各个节点的值，按照节点id排列
+     * res_map: map是节点id到节点值的映射，按需取用
+     **/
+    @PostMapping("/caculateSample")
+    public Result caculateSample(IndexSym indexSym, Sample sample) {
+         return Result.success(new CaculateSample(indexSym, sample).caculate());
     }
 
 }
