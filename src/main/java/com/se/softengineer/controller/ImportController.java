@@ -1,7 +1,9 @@
 package com.se.softengineer.controller;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.mapper.IndexSymNodeMapper;
+import com.se.softengineer.entity.TreeData;
 import com.se.softengineer.mapper.UsersDataMapper;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.service.IndexSymNodeService;
@@ -60,6 +62,9 @@ public class ImportController {
 
     @Autowired
     private SampleService sampleService;
+
+    @Autowired
+    private IndexSymNodeService indexSymNodeService;
 
 
     private IndexSym indexSym = new IndexSym();
@@ -177,7 +182,7 @@ public class ImportController {
             headNode.add("0");
             //int headNodeID=nodeService.getHeadID(indexSymTableName,filesName);
             //拼接新表名
-            indexSymTableName = userName+"_"+filesName + "_IndexSym";
+            indexSymTableName = userName+"_"+filesName; //+ "_IndexSym";
             System.out.println("指标体系名字： "+indexSymTableName);
             nodeService.createIndexSymTable(indexSymTableName);
             if(nodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
@@ -275,8 +280,8 @@ public class ImportController {
         List<String> columnNames = new ArrayList<>();
         for(int i = 1; i <= leaf_num; i ++)
             columnNames.add("X" + i);
-        indexDataTableName=table_name+"_IndexData";
-        return sampleService.createDataTable(table_name+"_IndexData", columnNames);
+        indexDataTableName=table_name+"_data";  //"_IndexData";
+        return sampleService.createDataTable(indexDataTableName, columnNames);
     }
 
     /**
@@ -342,7 +347,7 @@ public class ImportController {
         headNode.add("0");
         headNode.add("0");
         IndexSymNode t=new IndexSymNode();
-        indexSymTableName = userName+"_"+filesName + "_IndexSym";
+        indexSymTableName = userName+"_"+filesName;  //+ "_IndexSym";
         nodeService.createIndexSymTable(indexSymTableName);
         if(nodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
             return Result.fail();
@@ -367,7 +372,7 @@ public class ImportController {
 
     @RequestMapping("/downloadExcel1")
     public void downloadExcel1(HttpServletResponse response) throws Exception {
-        this.download("example\\indexSym.xlsx",response);
+        this.download("example\\indexsymOrigin.xlsx",response);
     }
 
     @RequestMapping("/downloadExcel2")
@@ -467,5 +472,19 @@ public class ImportController {
     public Result getAllNodeInfo(@PathVariable("dbName")String dbName){
         List<IndexSymNode> data=nodeService.getAllNodeInfo(dbName);
         return data==null?Result.fail():Result.trans(data);
+    }
+
+    /**
+     * @author lmy
+     */
+    @GetMapping("/getOrigTreeData")
+    public Result getOrigTreeData() throws Exception
+    {
+        List<IndexSymNode> indexSym = indexSymNodeService.getIndex(indexSymTableName);
+        // 转换成画树需要的类
+        List<TreeData> treeData=indexSymNodeService.getIndexSymData(indexSym);
+        JSONArray jsonArray=JSONArray.parseArray(JSON.toJSONString(treeData));
+        // 返回构建好的数据
+        return jsonArray.size()>0?Result.success(jsonArray):Result.fail();
     }
 }

@@ -44,7 +44,7 @@ public class UsersController {
      * @author lmy
      */
     @PostMapping("/login")
-    public Result login(@RequestBody Users user){
+    public Result login(@RequestBody Users user) throws Exception {
         Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
         if(curUser!=null){
             List menuList = menuService.lambdaQuery().like(Menu::getMenuRight,curUser.getRole()).list();
@@ -61,7 +61,7 @@ public class UsersController {
      * @author lmy
      */
     @PostMapping("/register")
-    public Result register(@RequestBody Users user){
+    public Result register(@RequestBody Users user) throws Exception {
         Users curUser = usersService.userRegister(user.getUserName(),user.getUserPassword(),user.getUserEmail());
         if(curUser!=null){
             List menuList = menuService.lambdaQuery().like(Menu::getMenuRight,curUser.getRole()).list();
@@ -78,7 +78,7 @@ public class UsersController {
      * @author lmy
      */
     @PostMapping("/update")
-    public Result update(@RequestBody Users user){
+    public Result update(@RequestBody Users user) throws Exception {
         return usersService.updateUser(user)!=null ? Result.success():Result.fail();
     }
 
@@ -87,7 +87,7 @@ public class UsersController {
      * @author lmy
      */
     @PostMapping("/updateInfo")
-    public Result updateInfo(@RequestBody QueryPageParam query){
+    public Result updateInfo(@RequestBody QueryPageParam query) throws Exception {
         HashMap param = query.getParam();
         String name = (String)param.get("userName");
         String email = (String) param.get("userEmail");
@@ -118,6 +118,10 @@ public class UsersController {
      */
     @GetMapping("/delete")
     public Result delete(@RequestParam Integer userID){
+        Users user = usersService.getById(userID);
+        //管理员用户不可删除
+        if(user.getRole()==1)
+            return Result.fail();
         return usersService.removeById(userID) ? Result.success():Result.fail();
     }
 

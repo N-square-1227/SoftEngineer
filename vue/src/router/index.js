@@ -46,6 +46,16 @@ const routes = [
                 path: '/DrawTree',
                 name: 'DrawTree',
                 component:()=>import("../components/User/DrawTree")
+            },
+            {
+                path :'/IndexSymManage',
+                name: 'IndexSymManage',
+                component:()=>import("../components/User/IndexSymManage")
+            },
+            {
+                path: '/DrawOriginalTree',
+                name: 'DrawOriginalTree',
+                component:()=>import("../components/User/Comments/DrawOriginalTree")
             }
         ]
     },

@@ -39,9 +39,9 @@
             <el-button type="danger" @click="changePwd" size="big">修改密码</el-button>
         </div>
 
-        <!--    编辑个人信息-->
+        <!--    修改个人信息-->
         <el-dialog
-                title="编辑查看用户信息"
+                title="修改个人信息"
                 :visible.sync="ModifyInfoDialog"
                 width="30%"
                 center>
@@ -100,6 +100,10 @@ export default {
                 newPwd: ''
             },
             rulesModify:{
+                userName: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                    { max: 10, message: '长度不超过 10 字符', trigger: 'blur' }
+                ],
                 userEmail:[
                     { required: true, message: '请输入邮箱地址', trigger: 'blur' },
                     { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }

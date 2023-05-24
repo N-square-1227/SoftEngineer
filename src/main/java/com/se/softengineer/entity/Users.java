@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.se.softengineer.utils.AesTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -13,7 +14,7 @@ import java.io.Serializable;
 // lombok 注解
 @Data
 // 用来标注你映射的是哪张表
-@TableName("users")
+@TableName(value = "users",autoResultMap = true)
 public class Users implements Serializable {
     /*
     1、将对象的内容进行流化。对流化后的对象进行读写操作，也可以在网络之间传输，需要实现 Serializable 接口.
@@ -32,13 +33,13 @@ public class Users implements Serializable {
     @TableId(value = "userID")
     private Integer userID;
 
-    @TableField(value = "userName")
+    @TableField(value = "userName",typeHandler = AesTypeHandler.class)
     private String userName;
 
-    @TableField("userPassword")
+    @TableField(value = "userPassword",typeHandler = AesTypeHandler.class)
     private String userPassword;
 
-    @TableField("userEmail")
+    @TableField(value = "userEmail",typeHandler = AesTypeHandler.class)
     private String userEmail;
 
     @TableField("role")

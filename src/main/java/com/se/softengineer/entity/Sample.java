@@ -14,6 +14,11 @@ public class Sample {
 
     public Sample() {}
 
+    public Sample(List<Double> data){
+        this.data = data;
+    }
+
+
     public List<Double> getData() {
 //        System.out.println(data);
         return data;

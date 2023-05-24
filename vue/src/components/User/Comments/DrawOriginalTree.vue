@@ -6,7 +6,7 @@
 
 <script>
 export default {
-    name: "DrawTree",
+    name: "DrawOriginalTree",
     data() {
         return {
             treeData:[]
@@ -33,7 +33,7 @@ export default {
     },
     methods: {
         getTreeData(){
-            this.treeData = JSON.parse(sessionStorage.getItem('TreeData'))
+            this.treeData = JSON.parse(sessionStorage.getItem('OriginalTreeData'))
         },
         showChart() {
             //console.log("sss")
@@ -105,7 +105,7 @@ export default {
                             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">类型：' + params.data.type + '</span>' + '<br>'
                             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">权重：' + params.data.weight + '</span>' + '<br>'
                             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">父节点ID：' + params.data.parentID + '</span>' + '<br>';
-                            // + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">最后登录时间：' + params.data.lastLoginTime + '</span>';
+                    // + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">最后登录时间：' + params.data.lastLoginTime + '</span>';
                 }
             }
             // 使用刚指定的配置项和数据显示图表。

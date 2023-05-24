@@ -56,14 +56,14 @@ public class IndexSym {
             /* 理论上数据库如果是id字段自增，拿进来List的下标应该是对应的(List从0开始, 数据库的从1开始)
              * 不是的话find应该也挺好find
              **/
-            nodeTree.get(father_id).add(node.getNodeId());
+            nodeTree.get(father_id).add(node.getNodeID());
         }
         else {
             List<Integer> temp = new ArrayList<>();
-            temp.add(node.getNodeId());
+            temp.add(node.getNodeID());
             nodeTree.put(father_id, temp);
         }
-        nodeTree.put(node.getNodeId(), new ArrayList<>());
+        nodeTree.put(node.getNodeID(), new ArrayList<>());
     }
 
     public List<IndexSymNode> get_leaves() {
@@ -72,7 +72,7 @@ public class IndexSym {
         /* 认为在nodeList里的顺序就是在数据表中存测数据 */
         for(IndexSymNode node : nodeList) {
 //            System.out.println(node.getNode_id());
-            if(nodeTree.get(node.getNodeId()).size() == 0)
+            if(nodeTree.get(node.getNodeID()).size() == 0)
                 leaves.add(node);
         }
         leaf_num = leaves.size();
