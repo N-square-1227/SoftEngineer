@@ -8,17 +8,12 @@ import com.se.softengineer.entity.Sample;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.OptimizeService;
 import com.se.softengineer.service.SampleService;
+import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * by wxy
@@ -66,13 +61,57 @@ public class IndexSymController {
 
     /**
      * 获取指定数据表中的所有数据
-     * http://localhost:8877/indexsym/usePCA?table_name=data
+     * http://localhost:8877/indexsym/loadData?table_name=data
      * 后面也可以改成PostMapping
      **/
     @GetMapping("/loadData")
     private Result load_data(String table_name) {
         data = sampleService.getData(table_name);
         return data.size() != 0 ? Result.success(data) : Result.fail() ;
+    }
+
+    @PostMapping("loadNewData")
+    private Result load_new_data(@RequestBody QueryPageParam params) {
+        HashMap param = params.getParam();
+        String table_name = (String)param.get("basicTableName");
+        Integer func = (Integer) param.get("func");
+
+        String new_tablename = table_name + "_new" + "_" + func;
+        String data_tablename = table_name + "_data";
+
+        IndexSym origin_sym = new IndexSym(indexSymService.getIndex(table_name));
+        IndexSym new_sym = new IndexSym(indexSymService.getIndex(new_tablename));
+        List<Sample> samples = sampleService.getData(data_tablename);
+
+        CaculateResult caculateResult = new CaculateResult(samples.get(0).getData(), origin_sym, new_sym);
+        /* 新指标体系中的叶子节点的id对应原本的指标中的叶子节点索引 */
+        Map<Integer, Integer> node_map = caculateResult.getNodeMap();
+
+        int nodeNums = origin_sym.getNodeList().size();
+        List<Integer> new_dataCols = new ArrayList<>();
+        for(int i = 0; i < nodeNums; i ++) {
+            int node_id = origin_sym.getNodeList().get(i).getNodeID();
+            if(node_map.containsKey(node_id)) {
+                new_dataCols.add(node_map.get(node_id));
+            }
+        }
+
+        List<Sample> new_data = new ArrayList<>();
+        for (Sample value : samples) {
+            Sample sample = new Sample();
+            for (Integer new_dataCol : new_dataCols)
+                sample.getData().add(value.getData().get(new_dataCol));
+            new_data.add(sample);
+        }
+        HashMap<String, Object> res_map = new HashMap<>();
+        res_map.put("data", new_data);
+        res_map.put("colNum", new_dataCols.size());
+        return Result.success(res_map);
+
+        /**
+         * 问题：
+         * 应该是要分页，但是原本的分页要借助一个什么Wrapper，要查数据库的，现在没有数据库
+         **/
     }
 
     /**

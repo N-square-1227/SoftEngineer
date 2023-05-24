@@ -3,9 +3,11 @@ package com.se.softengineer.algorithm.caculate;
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
+import lombok.Data;
 
 import java.util.*;
 
+@Data
 public class CaculateResult {
     private List<Double> data;        //用于对比优化后的体系和优化前的体系的数据
     private IndexSym indexSym;      //优化前的指标体系
@@ -26,7 +28,7 @@ public class CaculateResult {
         int leaf_num = indexSym.getLeaf_num();
         //新指标体系的叶子节点
         List<IndexSymNode> newleafNode = newIndexSym.get_leaves();
-        System.out.println(newleafNode);
+//        System.out.println(newleafNode);
         //对应新旧指标体系叶子节点的值
 
         for(int i = 0; i < leaf_num; i ++)
@@ -36,7 +38,7 @@ public class CaculateResult {
                     this.nodeMap.put(newNode.getNodeID(),i);
                     break;
                 }
-        System.out.println(nodeMap);
+//        System.out.println(nodeMap);
     }
 
     public double caculateValue(){
@@ -52,7 +54,7 @@ public class CaculateResult {
         List<Integer> sonNode = newIndexSym.getNodeTree().get(indexSymNode.getNodeID());
 
         if(sonNode.size() == 0){
-            System.out.println(indexSymNode);
+//            System.out.println(indexSymNode);
             return indexSymNode.getNodeWeight() * data.get(nodeMap.get(indexSymNode.getNodeID()));
         }
 

@@ -34,6 +34,8 @@ export default {
     name: "OptimizePage",
     data() {
         return {
+            pageSize:3,
+            pageNum:1,
             user:JSON.parse(sessionStorage.getItem('CurUser')),
             treeData: [],
             OP,
@@ -120,11 +122,14 @@ export default {
                 // }
                 this.treeData.push(res.data[0])
                 console.log(this.treeData)
+                /* 优化结果 */
                 sessionStorage.setItem("TreeData", JSON.stringify(this.treeData))
                 /* 新指标体系的计算结果 */
                 sessionStorage.setItem("newResult", JSON.stringify(res.data[1]))
                 /* 旧指标体系的计算结果 */
                 sessionStorage.setItem("originResult", JSON.stringify(res.data[2]))
+                /* 加载指标体系使用的数据 */
+                this.loadSampleData()
                 this.$message({
                   message: '优化成功！',
                   type: 'success'
@@ -135,7 +140,22 @@ export default {
                 this.$message.error('优化失败！');
             })
           }
-        }
+        },
+        loadSampleData(){
+          this.$axios.post(this.$httpUrl + '/indexsym/loadNewData', {
+            pageSize: this.pageSize,
+            pageNum : this.pageNum,
+            param:{
+              basicTableName: name, // 这是原始指标体系的表名,优化后的表名添加使用的函数，数据表名添加后缀
+              func: func,
+            }
+          }).then(res => res.data).then(res => {
+            console.log(res);
+            /* 看到时候具体是什么 */
+            sessionStorage.setItem("Data", res.data);
+            sessionStorage.setItem("Cols", res.data);
+          })
+        },
     }
 }
 
