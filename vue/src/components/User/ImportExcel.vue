@@ -165,12 +165,12 @@ export default {
                 message: '成功！',
                 type: 'success'
               });
+              this.$router.replace('/IndexSymManage');//跳转到可视化界面
             }
             else
               this.$message.error('失败！');
           })
-
-        },
+        }
     }
 }
 </script>

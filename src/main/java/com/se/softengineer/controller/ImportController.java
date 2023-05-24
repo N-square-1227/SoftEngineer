@@ -1,7 +1,10 @@
 package com.se.softengineer.controller;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
+import com.se.softengineer.entity.TreeData;
 import com.se.softengineer.service.IndexSymNodeService;
 import com.se.softengineer.service.SampleService;
 import com.se.softengineer.service.UsersDataService;
@@ -497,5 +500,27 @@ public class ImportController {
     public Result getAllNodeInfo(@PathVariable("dbName")String dbName){
         List<IndexSymNode> data= indexSymNodeService.getAllNodeInfo(dbName);
         return data==null?Result.fail():Result.trans(data);
+    }
+
+    /**
+     * authhor xly
+     * @return
+     */
+    @GetMapping("/initialTreeData")
+    public Result initialTreeData(){
+        String tableName = indexSymTableName;
+        if(tableName == null || tableName.equals(""))
+            return Result.fail();
+        /**
+         * 判断func 调用算法 接收 List<IndexSymNode>数据
+         * by wxy
+         */
+        IndexSym indexSym = new IndexSym();
+        List<IndexSymNode> indexSymNodes = indexSym.getNodeList();
+        // 转换成画树需要的类
+        List<TreeData> treeData=indexSymNodeService.getIndexSymData(indexSymNodes);
+        JSONArray jsonArray=JSONArray.parseArray(JSON.toJSONString(treeData));
+        // 返回构建好的数据
+        return jsonArray.size()>0?Result.success(jsonArray):Result.fail();
     }
 }

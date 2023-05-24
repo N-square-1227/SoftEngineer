@@ -61,6 +61,8 @@ public class OptimizeServiceImpl implements OptimizeService {
         // 计算每个指标子指标的个数并填充到 entropy 中
 
         List<IndexSymNode> node = indexSymService.getIndex(indexsym_name);
+        // 添加父节点
+        //node.add(new IndexSymNode(1, indexsym_name, 1, 1.0, 0));
         entropy.setNode(node);
         entropy.fillMap(node);
 
@@ -139,7 +141,7 @@ public class OptimizeServiceImpl implements OptimizeService {
         IndexSymNode node = new IndexSymNode(1,indexsym_name,1,1.0,0);
         nodeList.add(node);
         for(int i=2;i<=centerNum + 1;i++){
-            node = new IndexSymNode(i,"father"+i,1,1.0,1);
+            node = new IndexSymNode(i,"father"+(i-1),1,1.0,1);
             nodeList.add(node);
         }
         int num = 1;
@@ -147,7 +149,7 @@ public class OptimizeServiceImpl implements OptimizeService {
             List<Point> pointList = cluster.getMembers();
             for(Point point:pointList){
                 int id = point.getId();
-                node = new IndexSymNode(centerNum+1 + 1,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),num + 1);
+                node = new IndexSymNode(centerNum+1+1,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),num+1 );
                 nodeList.add(node);
                 centerNum += 1;
             }

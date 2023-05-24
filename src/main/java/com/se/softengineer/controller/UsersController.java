@@ -33,7 +33,7 @@ public class UsersController {
     @Autowired
     private UsersDataService usersDataService;
 
-    private AesTypeHandler handler;
+    private AesTypeHandler handler = new AesTypeHandler();
 
     /**
      * 时间格式化
