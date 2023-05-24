@@ -50,7 +50,24 @@ const routes = [
             {
                 path :'/IndexSymManage',
                 name: 'IndexSymManage',
-                component:()=>import("../components/User/IndexSymManage")
+                component:()=>import("../components/User/IndexSymManage"),
+                children:[
+                    {
+                        path: '/DrawTree',
+                        name: 'DrawTree',
+                        component:()=>import("../components/User/Comments/DrawOriginalTree")
+                    },
+                    {
+                        path: '/IndexNode',
+                        name: 'IndexNode',
+                        component:()=>import("../components/User/Comments/IndexNode")
+                    },
+                    {
+                        path: '/IndexNodeData',
+                        name: 'IndexNodeData',
+                        component:()=>import("../components/User/Comments/IndexNodeData")
+                    }
+                ]
             }
         ]
     },

@@ -2,15 +2,22 @@ package com.se.softengineer.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.TreeData;
+import com.se.softengineer.entity.Users;
 import com.se.softengineer.service.IndexSymNodeService;
 import com.se.softengineer.service.OptimizeService;
+import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -71,5 +78,26 @@ public class IndexSymNodeController {
     public JSONArray getJsonList(List<TreeData> list){
         System.out.println(JSONArray.parseArray(JSON.toJSONString(list)));
         return JSONArray.parseArray(JSON.toJSONString(list));
+    }
+
+    /**
+     * @author xly
+     * @param query
+     * @return
+     */
+    @PostMapping("/nodeQuery")
+    public Result listPage(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+        String name = (String) param.get("name");
+
+        Page<IndexSymNode> page = new Page();
+        page.setCurrent(query.getPageNum());
+        page.setSize(query.getPageSize());
+
+        LambdaQueryWrapper<IndexSymNode> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if(StringUtils.isNotBlank(name) && !"null".equals(name))
+            lambdaQueryWrapper.like(IndexSymNode::getNodeName,name);
+        IPage result = indexSymNodeService.page(page,lambdaQueryWrapper);
+        return Result.success(result.getRecords(),result.getTotal());
     }
 }
