@@ -51,7 +51,7 @@ export default {
             this.treeData = JSON.parse(sessionStorage.getItem('TreeData'))
         },
         showChart() {
-            //console.log("sss")
+            console.log("eChart")
             // 基于准备好的dom，初始化echarts实例
             var myChart = this.$echarts.init(document.getElementById('treeChart'));
 
@@ -72,9 +72,9 @@ export default {
                         data: this.treeData,
 
                         top: '1%',
-                        left: '7%',
+                        left: '10%',
                         bottom: '1%',
-                        right: '20%',
+                        right: '25%',
 
                         symbolSize: 7,
 
@@ -82,7 +82,7 @@ export default {
                             position: 'left',
                             verticalAlign: 'middle',
                             align: 'right',
-                            fontSize: 13
+                            fontSize: 13,
                         },
 
                         leaves: {
@@ -95,7 +95,7 @@ export default {
 
                         expandAndCollapse: true,
                         animationDuration: 550,
-                        animationDurationUpdate: 750
+                        animationDurationUpdate: 750,
                     }
                 ]
             };

@@ -346,7 +346,9 @@ public class ImportController {
         headNode.add("0");
         headNode.add("0");
         IndexSymNode t=new IndexSymNode();
-        indexSymTableName = userName+"_"+filesName + "_IndexSym";
+//        indexSymTableName = userName+"_"+filesName + "_IndexSym";
+        indexSymTableName = userName+"_"+filesName;
+        indexSymNodeService.dropExistTable(indexSymTableName);
         indexSymNodeService.createIndexSymTable(indexSymTableName);
         if(indexSymNodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
             return Result.fail();

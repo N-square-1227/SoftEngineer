@@ -18,7 +18,7 @@
                 </el-option>
             </el-select>
 
-            <el-tooltip class="item" effect="dark" content="指标数据仅支持excel导入" placement="top-start">
+            <el-tooltip class="item" effect="dark" placement="top-start">
                 <el-button @click="toDrawTree">确定</el-button>
             </el-tooltip>
 
@@ -69,7 +69,7 @@ export default {
                     console.log(this.symList[i]);
                 }
             })
-            //console.log("getAllSyms")
+            console.log("getAllSyms")
             //这是关键代码
         },
         getValue1(val1) {
@@ -114,16 +114,23 @@ export default {
             this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName=' + name + "&func=" + func).then(res => res.data).then(res => {
               console.log(res)
               if (res.code == 200) {
-                for (let i = 0; i < res.data.length; i++) {
-                  this.treeData.push(res.data[i])
-                  console.log(this.treeData)
-                }
+                // for (let i = 0; i < res.data.length; i++) {
+                //   this.treeData.push(res.data[i])
+                //   console.log(this.treeData)
+                // }
+                this.treeData.push(res.data[0])
+                console.log(this.treeData)
                 sessionStorage.setItem("TreeData", JSON.stringify(this.treeData))
+                /* 新指标体系的计算结果 */
+                sessionStorage.setItem("newResult", JSON.stringify(res.data[1]))
+                /* 旧指标体系的计算结果 */
+                sessionStorage.setItem("originResult", JSON.stringify(res.data[2]))
                 this.$message({
                   message: '优化成功！',
                   type: 'success'
                 });
-                this.$router.replace('/DrawTree');//跳转到可视化界面
+                // this.$router.replace('/DrawTree');//跳转到可视化界面
+                this.$router.replace('/OptimizeResultFrame');
               } else
                 this.$message.error('优化失败！');
             })
