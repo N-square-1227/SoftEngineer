@@ -18,7 +18,7 @@
         </el-option>
       </el-select>
 
-      <el-tooltip class="item" effect="dark" content="指标数据仅支持excel导入" placement="top-start">
+      <el-tooltip class="item" effect="dark" placement="top-start" content="确定">
         <el-button @click="toDrawTree">确定</el-button>
       </el-tooltip>
 
@@ -34,6 +34,8 @@ export default {
   name: "OptimizePage",
   data() {
     return {
+      pageSize:3,
+      pageNum:1,
       user:JSON.parse(sessionStorage.getItem('CurUser')),
       treeData: [],
       OP,
@@ -69,7 +71,7 @@ export default {
           console.log(this.symList[i]);
         }
       })
-      //console.log("getAllSyms")
+      console.log("getAllSyms")
       //这是关键代码
     },
     getValue1(val1) {
@@ -112,23 +114,57 @@ export default {
       }
       else {
         this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName=' + name + "&func=" + func).then(res => res.data).then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.code == 200) {
-            for (let i = 0; i < res.data.length; i++) {
-              this.treeData.push(res.data[i])
-              console.log(this.treeData)
-            }
+            // for (let i = 0; i < res.data.length; i++) {
+            //   this.treeData.push(res.data[i])
+            //   console.log(this.treeData)
+            // }
+            this.treeData.push(res.data[0])
+            // console.log(this.treeData)
+            /* 优化结果 */
             sessionStorage.setItem("TreeData", JSON.stringify(this.treeData))
+            /* 新指标体系的计算结果 */
+            sessionStorage.setItem("newResult", JSON.stringify(res.data[1]))
+            /* 旧指标体系的计算结果 */
+            sessionStorage.setItem("originResult", JSON.stringify(res.data[2]))
+            /* 加载指标体系使用的数据 */
+            this.loadSampleData()
+            /* 保存数据表的名字（优化后指标体系存储的数据表） */
+            const newName = name + "_new_" + func;
+            sessionStorage.setItem("newTableName", JSON.stringify(newName))
             this.$message({
               message: '优化成功！',
               type: 'success'
             });
-            this.$router.replace('/DrawTree');//跳转到可视化界面
+            // this.$router.replace('/DrawTree');//跳转到可视化界面
+            this.$router.replace('/OptimizeResultFrame');
           } else
             this.$message.error('优化失败！');
         })
       }
-    }
+    },
+    loadSampleData(){
+      this.$axios.post(this.$httpUrl + '/indexsym/loadNewData', {
+        pageSize: this.pageSize,
+        pageNum : this.pageNum,
+        param:{
+          basicTableName: name, // 这是原始指标体系的表名,优化后的表名添加使用的函数，数据表名添加后缀
+          func: func,
+        }
+      }).then(res => res.data).then(res => {
+        // console.log(res);
+        if(res.code == 200) {
+          sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
+          // console.log(res.data.sampleData)
+          sessionStorage.setItem("colNum", res.data.colNum);
+          sessionStorage.setItem("sampleNum", res.data.sampleNum);
+        }
+        else {
+          this.$message.error('数据加载出错！');
+        }
+      })
+    },
   }
 }
 
@@ -138,4 +174,3 @@ export default {
 <style>
 
 </style>
-

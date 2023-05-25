@@ -21,7 +21,7 @@
         DROP TABLE IF EXISTS ${tableName}
     </update>
 
-    <select id="getListPage" resultType="com.baomidou.mybatisplus.core.metadata.IPage">
+    <select id="getListPage" resultType="com.se.softengineer.entity.IndexSymNode">
         select * from ${table_name} ${ew.customSqlSegment}
     </select>
 

@@ -7,15 +7,8 @@ import lombok.Data;
 
 import java.util.*;
 
-
-public class CaculateResult {
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Data
-public class CalulateResult {
+public class CaculateResult {
     private List<Double> data;        //用于对比优化后的体系和优化前的体系的数据
     private IndexSym indexSym;      //优化前的指标体系
     private IndexSym newIndexSym;   // 优化后的指标体系

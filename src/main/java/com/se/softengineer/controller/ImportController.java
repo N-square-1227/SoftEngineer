@@ -6,10 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
+import com.se.softengineer.entity.Sample;
 import com.se.softengineer.entity.TreeData;
 import com.se.softengineer.service.IndexSymNodeService;
 import com.se.softengineer.service.IndexSymService;
@@ -361,9 +360,7 @@ public class ImportController {
         headNode.add("0");
         headNode.add("0");
         IndexSymNode t=new IndexSymNode();
-//        indexSymTableName = userName+"_"+filesName + "_IndexSym";
-        indexSymTableName = userName+"_"+filesName;
-        indexSymNodeService.dropExistTable(indexSymTableName);
+        indexSymTableName = userName+"_"+filesName + "_IndexSym";
         indexSymNodeService.createIndexSymTable(indexSymTableName);
         if(indexSymNodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
             return Result.fail();
@@ -538,6 +535,7 @@ public class ImportController {
     public Result listPage(@RequestBody QueryPageParam query){
         HashMap param = query.getParam();
         String table_name = indexSymTableName;
+        String queryContent = (String)param.get("name");
 //        System.out.println(table_name);
 
         Page<IndexSymNode> page = new Page();
@@ -546,11 +544,31 @@ public class ImportController {
 
         LambdaQueryWrapper<IndexSymNode> lambdaQueryWrapper = new LambdaQueryWrapper();
         /* 条件 */
-//        if (StringUtils.isNotBlank(table_name) && !("null" == table_name))
-//            lambdaQueryWrapper.like(Orgnz::getOrgnzname, userInput);
+        if (StringUtils.isNotBlank(queryContent) && !("null" == queryContent))
+            lambdaQueryWrapper.like(IndexSymNode::getNodeName, queryContent);
 
         IPage result = indexSymService.pageCC(page,table_name,lambdaQueryWrapper);
         System.out.println("total=="+result.getTotal());
         return Result.success(result.getRecords(), result.getTotal());
+    }
+
+    /**
+     * 获取指定数据表中的所有数据
+     * http://localhost:8877/indexsym/loadData?table_name=data
+     * 后面也可以改成PostMapping
+     **/
+    @PostMapping ("/loadData")
+    public Result loadData() {
+        try {
+            List<Sample> sampleList = sampleService.getData(indexDataTableName);
+            List<Double> data = sampleList.get(0).getData();
+            HashMap<String, Object> res_map = new HashMap<>();
+            res_map.put("sampleData", sampleList);
+            res_map.put("colNum", data.size());
+            res_map.put("sampleNum", sampleList.size());
+            return Result.success(res_map);
+        }catch (Exception e){
+            return Result.fail();
+        }
     }
 }

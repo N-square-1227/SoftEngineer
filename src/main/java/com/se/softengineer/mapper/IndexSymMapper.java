@@ -53,5 +53,5 @@ public interface IndexSymMapper extends BaseMapper<IndexSymNode> {
     /**
      * 分页查询指标体系数据表
      **/
-    IPage getListPage(IPage<IndexSymNode> page, @Param("table_name") String table_name, @Param(Constants.WRAPPER) Wrapper wrapper);
+    IPage getListPage(IPage<IndexSymNode> page,@Param("table_name") String table_name, @Param(Constants.WRAPPER) Wrapper wrapper);
 }
