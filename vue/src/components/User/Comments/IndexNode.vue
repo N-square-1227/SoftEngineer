@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="margin-bottom: 5px;text-align: left">
-      <el-input v-model="nodeName" placeholder="请输入节点名称" suffix-icon="el-icon-search" style="width: 200px;"
+      <el-input v-model="name" placeholder="请输入节点名称" suffix-icon="el-icon-search" style="width: 200px;"
                 @keyup.enter.native="loadPost"></el-input>
       <el-button type="primary" style="margin-left: 10px;" @click="loadPost">查询</el-button>
       <el-button type="success" @click="resetParam">重置</el-button>
@@ -30,7 +30,7 @@
     <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
+        :current-page="pageNum"
         :page-sizes="[5, 7, 10, 20]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
@@ -66,7 +66,7 @@ export default {
         pageSize:this.pageSize,
         pageNum:this.pageNum,
         param:{
-          name:this.nodeName,
+          name:this.name,
         }
       }).then(res=>res.data).then(res=>{
         console.log(res)

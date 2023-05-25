@@ -59,6 +59,9 @@ export default {
       return this.data.slice(start, end);
     },
   },
+  beforeMount() {
+    this.loadPost();
+  },
   created() {
     this.setTableData();
   },
@@ -76,6 +79,25 @@ export default {
       console.log(`当前页: ${val}`);
       this.currentPage=val
       this.setTableData()
+    },
+    loadPost(){
+      this.$axios.post(this.$httpUrl + '/import/loadData', {
+        pageSize: this.pageSize,
+        pageNum : this.pageNum,
+      }).then(res => res.data).then(res => {
+        // console.log(res);
+        if(res.code == 200) {
+          const colNum = res.data.colNum;
+          sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
+          // console.log(res.data.sampleData)
+          sessionStorage.setItem("colNum", res.data.colNum);
+          sessionStorage.setItem("sampleNum", res.data.sampleNum);
+          this.setTableData();
+        }
+        else {
+          this.$message.error('数据加载出错！');
+        }
+      })
     },
     setTableData() {
       /* 先动态生成表头 */
