@@ -1,20 +1,24 @@
 package com.se.softengineer.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.se.softengineer.algorithm.caculate.CaculateResult;
+import com.se.softengineer.algorithm.caculate.CaculateSample;
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
+import com.se.softengineer.entity.IndexSymResult;
 import com.se.softengineer.entity.Sample;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.OptimizeService;
 import com.se.softengineer.service.SampleService;
+import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * by wxy
@@ -60,15 +64,81 @@ public class IndexSymController {
         return indexSym.getNodeList().size() != 0 ? Result.success(indexSym.getNodeList()) : Result.fail();
     }
 
+    @PostMapping("/nodeListPage")
+    public Result nodeListPage(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+        String table_name = (String)param.get("table_name");
+        String queryContent = (String)param.get("query_nodeName");
+//        System.out.println(table_name);
+
+        Page<IndexSymNode> page = new Page();
+        page.setCurrent(query.getPageNum());
+        page.setSize(query.getPageSize());
+
+        LambdaQueryWrapper<IndexSymNode> lambdaQueryWrapper = new LambdaQueryWrapper();
+        /* 条件 */
+        if (StringUtils.isNotBlank(queryContent) && !("null" == queryContent))
+            lambdaQueryWrapper.like(IndexSymNode::getNodeName, queryContent);
+
+        IPage result = indexSymService.pageCC(page,table_name,lambdaQueryWrapper);
+        System.out.println("total=="+result.getTotal());
+        return Result.success(result.getRecords(), result.getTotal());
+    }
+
     /**
      * 获取指定数据表中的所有数据
-     * http://localhost:8877/indexsym/usePCA?table_name=data
+     * http://localhost:8877/indexsym/loadData?table_name=data
      * 后面也可以改成PostMapping
      **/
     @GetMapping("/loadData")
     private Result load_data(String table_name) {
         data = sampleService.getData(table_name);
         return data.size() != 0 ? Result.success(data) : Result.fail() ;
+    }
+
+    @PostMapping("loadNewData")
+    private Result load_new_data(@RequestBody QueryPageParam params) {
+        try {
+            HashMap param = params.getParam();
+            String table_name = (String) param.get("basicTableName");
+            String func = (String) param.get("func");
+
+            String new_tablename = table_name + "_new" + "_" + func;
+            String data_tablename = table_name + "_data";
+
+            IndexSym origin_sym = new IndexSym(indexSymService.getIndex(table_name));
+            IndexSym new_sym = new IndexSym(indexSymService.getIndex(new_tablename));
+            List<Sample> samples = sampleService.getData(data_tablename);
+
+            CaculateResult caculateResult = new CaculateResult(samples.get(0).getData(), origin_sym, new_sym);
+            /* 新指标体系中的叶子节点的id对应原本的指标中的叶子节点索引 */
+            Map<Integer, Integer> node_map = caculateResult.getNodeMap();
+
+            int nodeNums = origin_sym.getNodeList().size();
+            List<Integer> new_dataCols = new ArrayList<>();
+            for (int i = 0; i < nodeNums; i++) {
+                int node_id = origin_sym.getNodeList().get(i).getNodeID();
+                if (node_map.containsKey(node_id)) {
+                    new_dataCols.add(node_map.get(node_id));
+                }
+            }
+
+            List<Sample> new_data = new ArrayList<>();
+            for (Sample value : samples) {
+                Sample sample = new Sample();
+                for (Integer new_dataCol : new_dataCols)
+                    sample.getData().add(value.getData().get(new_dataCol));
+                new_data.add(sample);
+            }
+            HashMap<String, Object> res_map = new HashMap<>();
+            res_map.put("sampleData", new_data);
+            res_map.put("colNum", new_dataCols.size());
+            res_map.put("sampleNum", new_data.size());
+            return Result.success(res_map);
+        }catch (Exception e) {
+            return Result.fail();
+        }
+        /* 分页去前端实现了 */
     }
 
     /**
@@ -141,8 +211,21 @@ public class IndexSymController {
 
     @GetMapping("/caculateResult")
     public Result use_caculateResult(String dataName, String indexName, String newindexName){
-        TreeMap res = optimizeService.caculateResult(dataName, indexName, newindexName);
+        List<IndexSymResult> res = optimizeService.caculateResult(dataName, indexName, newindexName);
         return res != null ? Result.success(res) : Result.fail();
+    }
+
+
+    /** by wxy
+     * 调用方法类CaculateSample
+     * 获取某一组样例各个节点的计算结果
+     * 返回值为CaculateSample的内部类，包含一个Map和一个List
+     * res: List是各个节点的值，按照节点id排列
+     * res_map: map是节点id到节点值的映射，按需取用
+     **/
+    @PostMapping("/caculateSample")
+    public Result caculateSample(IndexSym indexSym, Sample sample) {
+         return Result.success(new CaculateSample(indexSym, sample).caculate());
     }
 
 }

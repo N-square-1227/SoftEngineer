@@ -1,7 +1,4 @@
-/**
- * @author lmy
- */
-
+<!--@author lmy-->
 <template>
   <div class="register-page">
     <el-form :model="form" :rules="registerRules" ref="registerForm" class="register-container">

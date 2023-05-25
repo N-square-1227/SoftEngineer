@@ -78,6 +78,11 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, IndexSymNod
     }
 
     @Override
+    public IPage pageCC(IPage<IndexSymNode> page, String table_name, Wrapper wrapper) {
+        return indexSymMapper.getListPage(page, table_name, wrapper);
+    }
+
+    @Override
     public void add(IndexSymNode node) {
         indexSymMapper.insert(node);
     }

@@ -32,6 +32,8 @@ public interface IndexSymService {
 
     List<IndexSymNode> getIndex(String table_name);
 
+    IPage pageCC(IPage<IndexSymNode> page,String table_name, Wrapper wrapper);
+
     /* by nxn */
     void createTable(String table_name);
     /* by nxn */

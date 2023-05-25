@@ -5,11 +5,12 @@ import com.se.softengineer.algorithm.Kmeans.Cluster;
 import com.se.softengineer.algorithm.Kmeans.ElbowMethod;
 import com.se.softengineer.algorithm.Kmeans.Kmeans;
 import com.se.softengineer.algorithm.Kmeans.Point;
-import com.se.softengineer.algorithm.algorithmResult.CalulateResult;
+import com.se.softengineer.algorithm.caculate.CaculateResult;
 import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.algorithm.pca.PCA;
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
+import com.se.softengineer.entity.IndexSymResult;
 import com.se.softengineer.entity.Sample;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.OptimizeService;
@@ -17,10 +18,7 @@ import com.se.softengineer.service.SampleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 public class OptimizeServiceImpl implements OptimizeService {
@@ -167,17 +165,22 @@ public class OptimizeServiceImpl implements OptimizeService {
     }
 
     @Override
-    public TreeMap caculateResult(String dataName, String indexName, String newindexName){
+    public List<IndexSymResult> caculateResult(String dataName, String indexName, String newindexName){
         List<Sample> data = sampleService.getData(dataName);
         IndexSym indexSym = new IndexSym(indexSymService.getIndex(indexName));
         IndexSym newindexSym = new IndexSym(indexSymService.getIndex(newindexName));
         int num = data.size();
-        TreeMap<Double, Integer> map = new TreeMap<>();
+//        TreeMap<Double, Integer> map = new TreeMap<>();
+        List<IndexSymResult> res_list = new ArrayList<>();
 
         for(int i = 0; i < num; i ++) {
-            CalulateResult res = new CalulateResult(data.get(i).getData(), indexSym, newindexSym);
-            map.put(res.caculateValue(), i);
+            CaculateResult res_caculator = new CaculateResult(data.get(i).getData(), indexSym, newindexSym);
+            IndexSymResult res = new IndexSymResult(res_caculator.caculateValue(), i);
+            res_list.add(res);
         }
-        return map;
+
+        Collections.sort(res_list);
+
+        return res_list;
     }
 }

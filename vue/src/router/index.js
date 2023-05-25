@@ -32,9 +32,9 @@ const routes = [
                 component:()=>import("../components/User/ImportJson")
             },
             {
-                path: '/DrawTree',
-                name: 'DrawTree',
-                component:()=>import("../components/User/DrawTree")
+                path: '/OptimizeResultFrame',
+                name: 'OptimizeResultFrame',
+                component:()=>import("../components/User/OptimizeResultFrame")
             },
             {
                 path :'/IndexSymManage',

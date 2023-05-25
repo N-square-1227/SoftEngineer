@@ -1,18 +1,20 @@
-package com.se.softengineer.algorithm.algorithmResult;
+package com.se.softengineer.algorithm.caculate;
 
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
-import com.se.softengineer.service.IndexSymService;
-import com.se.softengineer.service.SampleService;
+import lombok.Data;
 
 import java.util.*;
 
+
+public class CaculateResult {
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Data
 public class CalulateResult {
     private List<Double> data;        //用于对比优化后的体系和优化前的体系的数据
     private IndexSym indexSym;      //优化前的指标体系
@@ -20,20 +22,20 @@ public class CalulateResult {
 
     private Map<Integer,Integer> nodeMap;       //新旧指标体系的节点对应
 
-    private List<Integer>  visit;       // 记忆化搜索
+    private List<Integer>  visit;       // 记忆化搜索(没实现)
 
-    public CalulateResult(List<Double> data, IndexSym indexSym, IndexSym newIndexSym) {
+    public CaculateResult(List<Double> data, IndexSym indexSym, IndexSym newIndexSym) {
         this.data = data;
         this.indexSym = indexSym;
         this.newIndexSym = newIndexSym;
         visit = new ArrayList<>();
         nodeMap = new HashMap<>();
         //原来指标体系的叶子节点
-        List<IndexSymNode> leafNode = indexSym.get_leaves();
+        List<IndexSymNode> leafNode = this.indexSym.get_leaves();
         int leaf_num = indexSym.getLeaf_num();
         //新指标体系的叶子节点
         List<IndexSymNode> newleafNode = newIndexSym.get_leaves();
-        System.out.println(newleafNode);
+//        System.out.println(newleafNode);
         //对应新旧指标体系叶子节点的值
 
         for(int i = 0; i < leaf_num; i ++)
@@ -43,7 +45,7 @@ public class CalulateResult {
                     this.nodeMap.put(newNode.getNodeID(),i);
                     break;
                 }
-        System.out.println(nodeMap);
+//        System.out.println(nodeMap);
     }
 
     public double caculateValue(){
@@ -59,7 +61,7 @@ public class CalulateResult {
         List<Integer> sonNode = newIndexSym.getNodeTree().get(indexSymNode.getNodeID());
 
         if(sonNode.size() == 0){
-            System.out.println(indexSymNode);
+//            System.out.println(indexSymNode);
             return indexSymNode.getNodeWeight() * data.get(nodeMap.get(indexSymNode.getNodeID()));
         }
 
