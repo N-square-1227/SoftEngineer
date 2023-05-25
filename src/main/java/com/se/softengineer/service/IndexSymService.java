@@ -1,5 +1,7 @@
 package com.se.softengineer.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.se.softengineer.entity.IndexSymNode;
 
 import java.io.IOException;
@@ -28,6 +30,8 @@ public interface IndexSymService {
 
 
     List<IndexSymNode> getIndex(String table_name);
+
+    IPage pageCC(IPage<IndexSymNode> page,String table_name, Wrapper wrapper);
 
     /* by nxn */
     void createTable(String table_name);

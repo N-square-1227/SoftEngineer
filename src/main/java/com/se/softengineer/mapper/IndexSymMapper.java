@@ -1,6 +1,9 @@
 package com.se.softengineer.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.se.softengineer.entity.IndexSymNode;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -36,7 +39,6 @@ public interface IndexSymMapper extends BaseMapper<IndexSymNode> {
      * 南希诺
      * 创建熵权法表
      *             "`node_id` int(11) NOT NULL AUTO_INCREMENT, " +
-     * todo：修改前端的 tableName！
      * @param tableName 后端修改后的表名
      */
     void createTable(@Param("tableName") String tableName);
@@ -47,4 +49,9 @@ public interface IndexSymMapper extends BaseMapper<IndexSymNode> {
      * @param tableName 后端修改后的表名
      */
     void dropExistTable(@Param("tableName") String tableName);
+
+    /**
+     * 分页查询指标体系数据表
+     **/
+    IPage getListPage(IPage<IndexSymNode> page,@Param("table_name") String table_name, @Param(Constants.WRAPPER) Wrapper wrapper);
 }

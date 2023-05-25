@@ -32,7 +32,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[3, 5, 10, 20]"
+        :page-sizes="[5, 7, 10, 20]"
         :page-size="pageSize"
         :total="total"
         layout="total, sizes, prev, pager, next, jumper">
@@ -48,7 +48,7 @@ export default {
       data:[],
       sampleNum: 0,
       currentPage : 1,
-      pageSize : 3,
+      pageSize : 5,
       total: 1,
     }
   },
@@ -92,7 +92,7 @@ export default {
       /* 然后填充数据 */
       const dataList = JSON.parse(sessionStorage.getItem("data"));
       this.sampleNum = sessionStorage.getItem("sampleNum");
-      console.log(this.sampleNum)
+      // console.log(this.sampleNum)
       this.data = []
       for (let i = 0; i < this.sampleNum; i ++) {
         const data = dataList[i].data;
@@ -110,6 +110,7 @@ export default {
         this.data.push(sample);
       }
       // console.log(this.data)
+      /* 把默认的string变成数字 */
       this.total = this.sampleNum - 0;
     },
   },

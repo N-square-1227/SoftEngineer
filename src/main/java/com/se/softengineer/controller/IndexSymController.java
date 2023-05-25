@@ -1,8 +1,13 @@
 package com.se.softengineer.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.se.softengineer.algorithm.caculate.CaculateResult;
 import com.se.softengineer.algorithm.caculate.CaculateSample;
 import com.se.softengineer.entity.IndexSym;
+import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.IndexSymResult;
 import com.se.softengineer.entity.Sample;
 import com.se.softengineer.service.IndexSymService;
@@ -59,6 +64,26 @@ public class IndexSymController {
         return indexSym.getNodeList().size() != 0 ? Result.success(indexSym.getNodeList()) : Result.fail();
     }
 
+    @PostMapping("/nodeListPage")
+    public Result nodeListPage(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+        String table_name = (String)param.get("table_name");
+//        System.out.println(table_name);
+
+        Page<IndexSymNode> page = new Page();
+        page.setCurrent(query.getPageNum());
+        page.setSize(query.getPageSize());
+
+        LambdaQueryWrapper<IndexSymNode> lambdaQueryWrapper = new LambdaQueryWrapper();
+        /* 条件 */
+//        if (StringUtils.isNotBlank(table_name) && !("null" == table_name))
+//            lambdaQueryWrapper.like(Orgnz::getOrgnzname, userInput);
+
+        IPage result = indexSymService.pageCC(page,table_name,lambdaQueryWrapper);
+        System.out.println("total=="+result.getTotal());
+        return Result.success(result.getRecords(), result.getTotal());
+    }
+
     /**
      * 获取指定数据表中的所有数据
      * http://localhost:8877/indexsym/loadData?table_name=data
@@ -112,10 +137,7 @@ public class IndexSymController {
         }catch (Exception e) {
             return Result.fail();
         }
-        /**
-         * 问题：
-         * 应该是要分页，但是原本的分页要借助一个什么Wrapper，要查数据库的，现在没有数据库
-         **/
+        /* 分页去前端实现了 */
     }
 
     /**

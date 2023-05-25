@@ -12,7 +12,7 @@ import * as echarts from 'echarts'
 Vue.prototype.$axios =axios;
 Vue.config.productionTip = false
 Vue.prototype.$echarts=echarts
-Vue.prototype.$httpUrl='http://localhost:8877'
+Vue.prototype.$httpUrl='http://localhost:8090'
 
 Vue.use(VueRouter);
 Vue.use(ElementUI);

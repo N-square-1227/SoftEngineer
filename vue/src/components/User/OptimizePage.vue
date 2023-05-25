@@ -114,7 +114,7 @@ export default {
           }
           else {
             this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName=' + name + "&func=" + func).then(res => res.data).then(res => {
-              console.log(res)
+              // console.log(res)
               if (res.code == 200) {
                 // for (let i = 0; i < res.data.length; i++) {
                 //   this.treeData.push(res.data[i])
@@ -130,6 +130,9 @@ export default {
                 sessionStorage.setItem("originResult", JSON.stringify(res.data[2]))
                 /* 加载指标体系使用的数据 */
                 this.loadSampleData()
+                /* 保存数据表的名字（优化后指标体系存储的数据表） */
+                const newName = name + "_new_" + func;
+                sessionStorage.setItem("newTableName", JSON.stringify(newName))
                 this.$message({
                   message: '优化成功！',
                   type: 'success'
@@ -150,7 +153,7 @@ export default {
               func: func,
             }
           }).then(res => res.data).then(res => {
-            console.log(res);
+            // console.log(res);
             if(res.code == 200) {
               sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
               // console.log(res.data.sampleData)

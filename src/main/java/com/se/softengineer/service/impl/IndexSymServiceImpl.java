@@ -1,7 +1,9 @@
 package com.se.softengineer.service.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.se.softengineer.entity.IndexSymNode;
@@ -68,6 +70,11 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, IndexSymNod
     /* 读取indexsym数据表中的所有指标 */
     public List<IndexSymNode> getIndex(String table_name) {
         return indexSymMapper.getIndex(table_name);
+    }
+
+    @Override
+    public IPage pageCC(IPage<IndexSymNode> page, String table_name, Wrapper wrapper) {
+        return indexSymMapper.getListPage(page, table_name, wrapper);
     }
 
     @Override
