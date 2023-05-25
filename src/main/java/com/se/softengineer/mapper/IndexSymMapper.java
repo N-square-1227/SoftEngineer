@@ -1,6 +1,9 @@
 package com.se.softengineer.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.se.softengineer.entity.IndexSymNode;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,15 +22,15 @@ public interface IndexSymMapper extends BaseMapper<IndexSymNode> {
             "( node_name, node_type, node_weight, parent_id) " +
             "values ( #{nodeName}, #{nodeType}, #{nodeWeight}, #{parentID})")
     boolean insertIntoTable(String tableName, @Param("nodeName") String nodeName,
-                           @Param("nodeType") Integer nodeType, @Param("nodeWeight") Double noteWeight,
-                           @Param("parentID") Integer parentID);
+                            @Param("nodeType") Integer nodeType, @Param("nodeWeight") Double noteWeight,
+                            @Param("parentID") Integer parentID);
 
     @Insert("insert into ${tableName} " +
             "(node_id, node_name, node_type, node_weight, parent_id) " +
             "values ( #{nodeID}, #{nodeName}, #{nodeType}, #{nodeWeight}, #{parentID})")
     boolean insertIntoTable_noauto(String tableName,  @Param("nodeID") Integer nodeID, @Param("nodeName") String nodeName,
-                            @Param("nodeType") Integer nodeType, @Param("nodeWeight") Double noteWeight,
-                            @Param("parentID") Integer parentID);
+                                   @Param("nodeType") Integer nodeType, @Param("nodeWeight") Double noteWeight,
+                                   @Param("parentID") Integer parentID);
 
     List<IndexSymNode> getIndex(String table_name);
 
@@ -46,4 +49,9 @@ public interface IndexSymMapper extends BaseMapper<IndexSymNode> {
      * @param tableName 后端修改后的表名
      */
     void dropExistTable(@Param("tableName") String tableName);
+
+    /**
+     * 分页查询指标体系数据表
+     **/
+    IPage getListPage(IPage<IndexSymNode> page, @Param("table_name") String table_name, @Param(Constants.WRAPPER) Wrapper wrapper);
 }

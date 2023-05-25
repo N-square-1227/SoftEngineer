@@ -8,18 +8,22 @@
     </div>
     <el-table :data="tableData"
               :header-cell-style="{ background:'#f2f5fc',color:'#555555'}">
-      <el-table-column prop="node_id" label="ID" width="100">
+      <el-table-column prop="nodeID" label="ID" width="180">
       </el-table-column>
-      <el-table-column prop="node_name" label="节点名" width="180">
+      <el-table-column prop="nodeName" label="节点名称" width="300">
       </el-table-column>
       <el-table-column
-          prop="node_type" label="节点类型" width="180"
+          prop="nodeType" label="节点类型" width="180"
           :filters="[{ text: '正指标', value: '1' }, { text: '负指标', value: '0' }]"
           :filter-method="filterRole" filter-placement="bottom-end">
+        <template slot-scope="scope">
+         <span v-if="scope.row.nodeType === 0">负指标</span >
+          <span v-if="scope.row.nodeType === 1">正指标</span >
+        </template>
       </el-table-column>
-      <el-table-column prop="node_weight" label="权重" width="180">
+      <el-table-column prop="nodeWeight" label="节点权重" width="180">
       </el-table-column>
-      <el-table-column prop="parent_id" label="父节点" width="180">
+      <el-table-column prop="parentID" label="父节点">
       </el-table-column>
     </el-table>
     <el-pagination
@@ -46,17 +50,17 @@ export default {
     name:'',
     centerDialogVisible: false,
     form:{
-      node_id:'',
-      node_name:'',
-      node_weight:'',
-      node_type:'',
-      parent_id:'',
+      nodeID:'',
+      nodeName:'',
+      nodeWeight:'',
+      nodeType:'',
+      parentID:'',
       },
     }
   },
   methods:{
     loadPost(){
-      this.$axios.post(this.$httpUrl+'/indexSymNode/nodeQuery',{
+      this.$axios.post(this.$httpUrl+'/import/nodeQuery',{
         pageSize:this.pageSize,
         pageNum:this.pageNum,
         param:{

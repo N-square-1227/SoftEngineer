@@ -1,7 +1,9 @@
 package com.se.softengineer.service.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.se.softengineer.entity.IndexSymNode;
@@ -52,6 +54,11 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, IndexSymNod
     @Override
     public boolean insertIntoTable(String tableName, Integer nodeID, String nodeName, int nodeType, double nodeWeight, int parentID) {
         return indexSymMapper.insertIntoTable_noauto(tableName, nodeID, nodeName, nodeType, nodeWeight, parentID);
+    }
+
+    @Override
+    public IPage pageCC(IPage<IndexSymNode> page, String table_name, Wrapper wrapper) {
+        return indexSymMapper.getListPage(page, table_name, wrapper);
     }
 
     @Override

@@ -23,8 +23,6 @@ public class IndexSymNode implements Serializable, Comparable<IndexSymNode> {
     private static final long serialVersionUID = 2L;
     @TableId(value = "node_id",type = IdType.AUTO)
     private Integer nodeID;
-    @TableId(value = "node_id")
-    private Integer nodeID;
 
     @TableField(value = "node_name")
     private String nodeName;
@@ -36,12 +34,11 @@ public class IndexSymNode implements Serializable, Comparable<IndexSymNode> {
     private Double nodeWeight;
 
     @TableField("parent_id")
-    // 先暂时用 int, 不知道用 id 比较好还是用整个节点比较好
-    private Integer parentID;
+    private Integer ParentID;
 
     private List<IndexSymNode> children = new ArrayList<>();
 
-    private Integer ParentID;
+
 
     public IndexSymNode() {}
 

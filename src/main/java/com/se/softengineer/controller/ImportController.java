@@ -1,11 +1,21 @@
 package com.se.softengineer.controller;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.mapper.IndexSymNodeMapper;
-import com.se.softengineer.mapper.UsersDataMapper;
 import com.se.softengineer.entity.IndexSymNode;
+import com.se.softengineer.entity.TreeData;
 import com.se.softengineer.service.IndexSymNodeService;
+import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.SampleService;
+import com.se.softengineer.service.UsersDataService;
+import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
 import com.se.softengineer.utils.AnalyExcel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +32,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -60,6 +71,9 @@ public class ImportController {
 
     @Autowired
     private SampleService sampleService;
+
+    @Autowired
+    private IndexSymService indexSymService;
 
 
     private IndexSym indexSym = new IndexSym();
@@ -256,11 +270,11 @@ public class ImportController {
 
     /**
      * 获取指定数据表中存储的指标体系
-     * http://localhost:8877/indexsym/loadIndexSym=indexsym
+     * http://localhost:8877/import/loadIndexSym=indexsym
      **/
     @GetMapping("/loadIndexSym")
     public List<IndexSymNode> load_indexsym(String table_name) {
-        indexSym.setNodeList(nodeService.getIndex(table_name));
+        indexSym.setNodeList(indexSymNodeService.getIndex(table_name));
         return indexSym.getNodeList();
     }
 
@@ -268,7 +282,7 @@ public class ImportController {
      * 根据指标体系生成对应的数据表（叶子节点是表头
      * @param table_name 指标体系表
      * @return 是否成功建表（啊？？怎么成功建了表return回来的是false啊
-     * http://localhost:8877/indexsym/create_data_table?table_name=indexsym
+     * http://localhost:8877/import/create_data_table?table_name=indexsym
      */
     @GetMapping("/create_data_table")
     public boolean create_data_table(String table_name) {
@@ -278,8 +292,10 @@ public class ImportController {
         List<String> columnNames = new ArrayList<>();
         for(int i = 1; i <= leaf_num; i ++)
             columnNames.add("X" + i);
-        indexDataTableName=table_name+"_IndexData";
-        return sampleService.createDataTable(table_name+"_IndexData", columnNames);
+        indexDataTableName=table_name+"_data";
+        /* 如果已经上传过，直接覆盖 */
+        sampleService.dropExistTable(indexDataTableName);
+        return sampleService.createDataTable(indexDataTableName, columnNames);
     }
 
     /**
@@ -346,13 +362,13 @@ public class ImportController {
         headNode.add("0");
         IndexSymNode t=new IndexSymNode();
         indexSymTableName = userName+"_"+filesName + "_IndexSym";
-        nodeService.createIndexSymTable(indexSymTableName);
-        if(nodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
+        indexSymNodeService.createIndexSymTable(indexSymTableName);
+        if(indexSymNodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
             return Result.fail();
         boolean result=true;
         System.out.println(fileSavePath+filesName+".json");
         try {
-            result = nodeService.saveJsonData(indexSymTableName,fileSavePath+filesName+".json");
+            result = indexSymNodeService.saveJsonData(indexSymTableName,fileSavePath+filesName+".json");
         } catch (IOException e) {
             e.printStackTrace();
             return  Result.fail();
@@ -370,7 +386,7 @@ public class ImportController {
 
     @RequestMapping("/downloadExcel1")
     public void downloadExcel1(HttpServletResponse response) throws Exception {
-        this.download("example\\indexSym.xlsx",response);
+        this.download("example\\indexsymOrigin.xlsx",response);
     }
 
     @RequestMapping("/downloadExcel2")
@@ -431,17 +447,43 @@ public class ImportController {
         }
     }
 
+    /**
+     * v1.0
+     * @author lmy
+     * v2.0
+     * @author wxy
+     **/
     @RequestMapping("/insertUsersData")
     public Result insertUsersData()  {
-        int flag=0;
+        /** v 1.0 点击确认后创建表并插入数据
+         int flag=0;
+         try{
+         usersDataMapper.createTable(userName+"_Data");
+         }catch (Exception e){
+         flag=-1;
+         usersDataMapper.insertIntoTable(userName+"_Data",indexDataTableName,indexSymTableName);
+         }
+         if(flag==0){
+         usersDataMapper.insertIntoTable(userName+"_Data",indexDataTableName,indexSymTableName);
+         }
+         */
+
+        /** v 2.0
+         * 调整为：
+         * 用户注册时即在数据库中创建表，在上传数据界面点击确定直接插入；
+         * 删除用户时连带username_Data表一起删除
+         * 修改用户名时也需要修改这个表名
+         *
+         * 解决某未上传过数据的用户登陆后进入“指标优化”界面直接报错的问题
+         * 修改register、update、delete方法
+         * 同时注意当没有选择待优化的指标体系时，应该添加点击确认后的错误提示信息
+         **/
         try{
-            usersDataMapper.createTable(userName+"_Data");
-        }catch (Exception e){
-            flag=-1;
-            usersDataMapper.insertIntoTable(userName+"_Data",indexDataTableName,indexSymTableName);
-        }
-        if(flag==0){
-            usersDataMapper.insertIntoTable(userName+"_Data",indexDataTableName,indexSymTableName);
+            /* 相同名字的指标体系上传时覆盖原有的指标体系，记录写入user_data表时也应该去重 */
+            usersDataService.insertIntoTable(userName + "_data", indexDataTableName, indexSymTableName);
+        } catch (Exception e) {
+            /* 插入不成功返回前端提示错误信息 */
+            return Result.fail();
         }
         return Result.success();
     }
@@ -453,8 +495,8 @@ public class ImportController {
     @RequestMapping("/getAllSyms/{userName}")
     public Result getAllSyms(@PathVariable("userName")String userName){
         //先找到userData表
-        String userData=userName+"_Data";
-        List<String> indexSymDTNames=sampleService.getUserData(userData);
+        String userData=userName+"_data";
+        List<String> indexSymDTNames=usersDataService.getIndexSymTableNames(userData);
         Result result=new Result();
         return indexSymDTNames==null?Result.fail():Result.success(indexSymDTNames);
     }
@@ -468,7 +510,45 @@ public class ImportController {
 
     @RequestMapping("/getAllNodeInfo/{dbName}")
     public Result getAllNodeInfo(@PathVariable("dbName")String dbName){
-        List<IndexSymNode> data=nodeService.getAllNodeInfo(dbName);
+        List<IndexSymNode> data= indexSymNodeService.getAllNodeInfo(dbName);
         return data==null?Result.fail():Result.trans(data);
+    }
+
+    /**
+     * @author lmy
+     */
+    @GetMapping("/getOrigTreeData")
+    public Result getOrigTreeData() throws Exception {
+        List<IndexSymNode> indexSym = indexSymNodeService.getIndex(indexSymTableName);
+        // 转换成画树需要的类
+        List<TreeData> treeData=indexSymNodeService.getIndexSymData(indexSym);
+        JSONArray jsonArray=JSONArray.parseArray(JSON.toJSONString(treeData));
+        // 返回构建好的数据
+        return jsonArray.size()>0?Result.success(jsonArray):Result.fail();
+    }
+
+    /**
+     * @author xly
+     * @param query
+     * @return
+     */
+    @PostMapping("/nodeQuery")
+    public Result listPage(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+        String table_name = indexSymTableName;
+//        System.out.println(table_name);
+
+        Page<IndexSymNode> page = new Page();
+        page.setCurrent(query.getPageNum());
+        page.setSize(query.getPageSize());
+
+        LambdaQueryWrapper<IndexSymNode> lambdaQueryWrapper = new LambdaQueryWrapper();
+        /* 条件 */
+//        if (StringUtils.isNotBlank(table_name) && !("null" == table_name))
+//            lambdaQueryWrapper.like(Orgnz::getOrgnzname, userInput);
+
+        IPage result = indexSymService.pageCC(page,table_name,lambdaQueryWrapper);
+        System.out.println("total=="+result.getTotal());
+        return Result.success(result.getRecords(), result.getTotal());
     }
 }

@@ -6,6 +6,7 @@
 export default {
   name: "IndexNodeData"
 }
+
 </script>
 
 <style scoped>

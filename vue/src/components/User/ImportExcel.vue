@@ -162,11 +162,23 @@ export default {
           this.$axios.get(this.$httpUrl+'/import/insertUsersData/').then(res=>res.data).then(res=>{
             console.log(res)
             if (res.code==200) {
-              this.$message({
-                message: '成功！',
-                type: 'success'
-              });
-              this.$router.replace('/IndexSymManage');//跳转到可视化界面
+              this.$axios.get(this.$httpUrl+'/import/getOrigTreeData/').then(res=>res.data).then(res=>{
+                console.log(res)
+                if (res.code==200) {
+                  for(let i=0;i<res.data.length;i++){
+                    this.treeData.push(res.data[i])
+                    console.log(this.treeData)
+                  }
+                  sessionStorage.setItem("OriginalTreeData",JSON.stringify(this.treeData))
+                  this.$message({
+                    message: '成功！',
+                    type: 'success'
+                  });
+                  this.$router.replace('/IndexSymManage');//跳转到可视化界面
+                }
+                else
+                  this.$message.error('失败！');
+              })
             }
             else
               this.$message.error('失败！');

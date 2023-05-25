@@ -79,25 +79,4 @@ public class IndexSymNodeController {
         System.out.println(JSONArray.parseArray(JSON.toJSONString(list)));
         return JSONArray.parseArray(JSON.toJSONString(list));
     }
-
-    /**
-     * @author xly
-     * @param query
-     * @return
-     */
-    @PostMapping("/nodeQuery")
-    public Result listPage(@RequestBody QueryPageParam query){
-        HashMap param = query.getParam();
-        String name = (String) param.get("name");
-
-        Page<IndexSymNode> page = new Page();
-        page.setCurrent(query.getPageNum());
-        page.setSize(query.getPageSize());
-
-        LambdaQueryWrapper<IndexSymNode> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        if(StringUtils.isNotBlank(name) && !"null".equals(name))
-            lambdaQueryWrapper.like(IndexSymNode::getNodeName,name);
-        IPage result = indexSymNodeService.page(page,lambdaQueryWrapper);
-        return Result.success(result.getRecords(),result.getTotal());
-    }
 }

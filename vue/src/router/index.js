@@ -16,17 +16,6 @@ const routes = [
                 name:'Home',
                 component:()=>import('../components/Home')
             },
-            // //导航跳转
-            // {
-            //     path:'/userManage',
-            //     name:'userManage',
-            //     component:()=>import('../components/Main')
-            // },
-            // {
-            //     path: '/ImportFiles',
-            //     name: 'ImportFiles',
-            //     component:()=>import("../components/User/ImportFiles")
-            // },
             {
                 path: '/ImportExcel',
                 name: 'ImportExcel',
@@ -50,21 +39,11 @@ const routes = [
             {
                 path :'/IndexSymManage',
                 name: 'IndexSymManage',
-                component:()=>import("../components/User/IndexSymManage")
-            },
-            {
-                path: '/DrawOriginalTree',
-                name: 'DrawOriginalTree',
-                component:()=>import("../components/User/Comments/DrawOriginalTree")
-            },
-            {
-                path :'/IndexSymManage',
-                name: 'IndexSymManage',
                 component:()=>import("../components/User/IndexSymManage"),
                 children:[
                     {
-                        path: '/DrawTree',
-                        name: 'DrawTree',
+                        path: '/DrawOriginalTree',
+                        name: 'DrawOriginalTree',
                         component:()=>import("../components/User/Comments/DrawOriginalTree")
                     },
                     {

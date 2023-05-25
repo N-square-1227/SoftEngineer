@@ -1,5 +1,7 @@
 package com.se.softengineer.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.se.softengineer.entity.IndexSymNode;
 
 import java.io.IOException;
@@ -26,6 +28,7 @@ public interface IndexSymService {
 
     boolean insertIntoTable(String tableName, Integer nodeID, String nodeName, int nodeType, double nodeWeight, int parentID);
 
+    IPage pageCC(IPage<IndexSymNode> page, String table_name, Wrapper wrapper);
 
     List<IndexSymNode> getIndex(String table_name);
 
