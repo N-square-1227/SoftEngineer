@@ -22,8 +22,7 @@
           label="操作"
           width="100">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-          <el-button type="text" size="small">编辑</el-button>
+          <el-button @click="handleClick(scope.row)" type="success" size="small">计算</el-button>
         </template>
       </el-table-column>
 
@@ -50,6 +49,8 @@ export default {
       currentPage : 1,
       pageSize : 5,
       total: 1,
+
+      table_name: "",
     }
   },
   computed:{
@@ -60,11 +61,27 @@ export default {
     },
   },
   created() {
+    this.table_name = JSON.parse(sessionStorage.getItem("newTableName"));
     this.setTableData();
   },
   methods: {
-    handleClick(row) {
+    handleClick(row) {  // 计算并在树形结构中显示
       console.log(row);
+      this.$axios.post(this.$httpUrl+'/indexsym/caculateSample',{
+        param: {
+          table_name: this.table_name,
+          sample: row,
+        }
+      }).then(res=>res.data).then(res=> {
+        if(res.code === 200) {
+          // console.log(res.data)
+          sessionStorage.setItem("sample_result", JSON.stringify(res.data));
+          // console.log(sessionStorage.getItem("sample_result"))
+          this.$message.success("计算完成！\n您可以在指标体系树型结构中查看！")
+        }else{
+          this.$message.error('数据计算出错！');
+        }
+      })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);

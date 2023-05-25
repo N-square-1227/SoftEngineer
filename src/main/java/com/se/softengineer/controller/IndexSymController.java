@@ -96,6 +96,10 @@ public class IndexSymController {
         return data.size() != 0 ? Result.success(data) : Result.fail() ;
     }
 
+    /**
+     * 分页显示指标体系数据
+     * 后面还是迁到service里，controller里写这么多太累赘了
+     **/
     @PostMapping("loadNewData")
     private Result load_new_data(@RequestBody QueryPageParam params) {
         try {
@@ -224,8 +228,24 @@ public class IndexSymController {
      * res_map: map是节点id到节点值的映射，按需取用
      **/
     @PostMapping("/caculateSample")
-    public Result caculateSample(IndexSym indexSym, Sample sample) {
-         return Result.success(new CaculateSample(indexSym, sample).caculate());
+    public Result caculateSample(@RequestBody QueryPageParam query) {
+        HashMap param = query.getParam();
+
+        String table_name = (String) param.get("table_name");
+        System.out.println(table_name);
+        LinkedHashMap data = ((LinkedHashMap) param.get("sample"));
+        List<Double> list = new ArrayList<>();
+        for(Object key : data.keySet())
+            try {
+                list.add((double) data.get(key));
+            }catch (Exception e) {    // 有整数类型，会报类型转换错误
+                list.add((double)(int) data.get(key));
+            }
+        list.remove(0);
+        Sample sample = new Sample(list);
+        System.out.println(sample.getData());
+        IndexSym indexSym = new IndexSym(indexSymService.getIndex(table_name));
+        return Result.success((new CaculateSample(indexSym, sample).caculate()));
     }
 
 }

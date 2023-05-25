@@ -58,6 +58,7 @@ export default {
     },
     beforeMount() {
         this.getAllSyms()
+        sessionStorage.removeItem("sample_result")
     },
     methods: {
         //获取该用户上传的所有指标体系
