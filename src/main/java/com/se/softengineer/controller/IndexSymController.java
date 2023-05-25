@@ -68,6 +68,7 @@ public class IndexSymController {
     public Result nodeListPage(@RequestBody QueryPageParam query){
         HashMap param = query.getParam();
         String table_name = (String)param.get("table_name");
+        String queryContent = (String)param.get("query_nodeName");
 //        System.out.println(table_name);
 
         Page<IndexSymNode> page = new Page();
@@ -76,8 +77,8 @@ public class IndexSymController {
 
         LambdaQueryWrapper<IndexSymNode> lambdaQueryWrapper = new LambdaQueryWrapper();
         /* 条件 */
-//        if (StringUtils.isNotBlank(table_name) && !("null" == table_name))
-//            lambdaQueryWrapper.like(Orgnz::getOrgnzname, userInput);
+        if (StringUtils.isNotBlank(queryContent) && !("null" == queryContent))
+            lambdaQueryWrapper.like(IndexSymNode::getNodeName, queryContent);
 
         IPage result = indexSymService.pageCC(page,table_name,lambdaQueryWrapper);
         System.out.println("total=="+result.getTotal());

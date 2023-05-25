@@ -1,33 +1,30 @@
 
 <template>
   <div>
-<!--    写搜索再说吧 -->
-<!--    <div style="margin-bottom: 5px;text-align: left">-->
-<!--      <el-input v-model="name" placeholder="请输入名字" suffix-icon="el-icon-search" style="width: 200px;"-->
-<!--                @keyup.enter.native="loadPost"></el-input>-->
-<!--      <el-button type="primary" style="margin-left: 10px;" @click="loadPost">查询</el-button>-->
-<!--      <el-button type="success" @click="resetParam">重置</el-button>-->
-<!--    </div>-->
+    <div style="margin-bottom: 5px;text-align: left">
+      <el-input v-model="nodeName" placeholder="请输入节点名称" suffix-icon="el-icon-search" style="width: 200px;"
+                @keyup.enter.native="loadPost"></el-input>
+      <el-button type="primary" style="margin-left: 10px;" @click="loadPost">查询</el-button>
+      <el-button type="success" @click="resetParam">重置</el-button>
+    </div>
     <el-table :data="tableData"
               :header-cell-style="{ background:'#f2f5fc',color:'#555555'}">
-      <el-table-column prop="nodeID" label="ID" width="180">
+      <el-table-column prop="nodeID" label="ID" width="100">
       </el-table-column>
-      <el-table-column prop="nodeName" label="节点名称" width="180">
+      <el-table-column prop="nodeName" label="节点名称" width="300">
       </el-table-column>
       <el-table-column
-          prop="nodeType" label="节点类型" width="180"
-          :filters="[{ text: '正指标', value: '1' }, { text: '负指标', value: '0' }]"
-          :filter-method="filterRole" filter-placement="bottom-end">
+          prop="nodeType" label="节点类型" width="200">
         <template slot-scope="scope">
-          <span v-if="scope.row.nodeType === 0">定量负向指标</span >
-          <span v-if="scope.row.nodeType === 1">定量正向指标</span >
-          <span v-if="scope.row.nodeType === 2">定性正向指标</span >
-          <span v-if="scope.row.nodeType === 3">定性负向指标</span >
+          <span v-if="scope.row.nodeType === 0" >定量负向指标</span>
+          <span v-if="scope.row.nodeType === 1" >定量正向指标</span >
+          <span v-if="scope.row.nodeType === 2" >定性正向指标</span >
+          <span v-if="scope.row.nodeType === 3" >定性负向指标</span >
         </template>
       </el-table-column>
-      <el-table-column prop="nodeWeight" label="节点权重" width="180">
+      <el-table-column prop="nodeWeight" label="节点权重" width="200">
       </el-table-column>
-      <el-table-column prop="parentID" label="父节点">
+      <el-table-column prop="parentID" label="父节点ID">
       </el-table-column>
     </el-table>
 
@@ -57,6 +54,8 @@ export default {
       pageSize : 5,
       total: 1,
       tableName: "",
+
+      nodeName: "",
     }
   },
   created() {
@@ -71,6 +70,7 @@ export default {
         pageNum:this.currentPage,
         param:{
           table_name:this.tableName,
+          query_nodeName : this.nodeName,
         }
       }).then(res=>res.data).then(res=>{
         console.log(res)
@@ -95,8 +95,9 @@ export default {
       this.currentPage=val
       this.loadPost()
     },
-    filterRole(value, row) {
-      return row.role === value;
+    resetParam(){
+      this.nodeName=''
+      this.loadPost()
     },
   }
 }
