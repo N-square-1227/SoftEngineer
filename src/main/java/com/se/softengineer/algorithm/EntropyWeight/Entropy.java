@@ -334,10 +334,13 @@ public class Entropy {
             }
         }
 
+        // 记录最大的父节点的值
+        int maxFather = Integer.MIN_VALUE;
         // del
         while (num > 0) {
             node.remove(0);
             int key = node.get(0).getParentID();
+            maxFather = Math.max(maxFather, key);
             map.put(key, map.get(key) - 1);
             num--;
         }
@@ -348,6 +351,7 @@ public class Entropy {
         for (IndexSymNode value : node) {
             weight.compute(value.getParentID(), (k, v) -> (v == null) ? value.getNodeWeight() : v + value.getNodeWeight());
         }
+
         for (int key : map.keySet()) {
             for (IndexSymNode value : node) {
                 if (value.getNodeID() == key) {
@@ -355,8 +359,15 @@ public class Entropy {
                 }
             }
         }
+
+        // 重新赋值 id
+        int i = 0;
+        while (!map.containsKey(node.get(i).getNodeID())) {
+            node.get(i).setNodeID(maxFather + 1);
+            i++;
+        }
 //        System.out.println("hello");
-//        // todo：一级指标个数，到时候修改这个值
+//        // 一级指标个数，到时候修改这个值
 //        int oneIndexNum = 3;
 //        for (int i = 0; i < WList.size(); i++) {
 //            node.get(i + oneIndexNum).setNodeWeight(WList.get(i));
