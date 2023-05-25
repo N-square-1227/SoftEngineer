@@ -364,6 +364,7 @@ public class Entropy {
         int i = 0;
         while (!map.containsKey(node.get(i).getNodeID())) {
             node.get(i).setNodeID(maxFather + 1);
+            maxFather ++;
             i++;
         }
 //        System.out.println("hello");
