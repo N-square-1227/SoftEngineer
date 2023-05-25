@@ -131,9 +131,6 @@ export default {
                 sessionStorage.setItem("originResult", JSON.stringify(res.data[2]))
                 /* 加载指标体系使用的数据 */
                 this.loadSampleData()
-                /* 保存数据表的名字（优化后指标体系存储的数据表） */
-                const newName = name + "_new_" + func;
-                sessionStorage.setItem("newTableName", JSON.stringify(newName))
                 this.$message({
                   message: '优化成功！',
                   type: 'success'

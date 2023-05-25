@@ -61,7 +61,7 @@ export default {
     },
   },
   created() {
-    this.table_name = JSON.parse(sessionStorage.getItem("newTableName"));
+    this.table_name = JSON.parse(sessionStorage.getItem("name")) + "_new_" + JSON.parse(sessionStorage.getItem("func"));
     this.setTableData();
   },
   methods: {
