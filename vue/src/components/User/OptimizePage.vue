@@ -121,7 +121,7 @@ export default {
                 //   console.log(this.treeData)
                 // }
                 this.treeData.push(res.data[0])
-                console.log(this.treeData)
+                // console.log(this.treeData)
                 /* 优化结果 */
                 sessionStorage.setItem("TreeData", JSON.stringify(this.treeData))
                 /* 新指标体系的计算结果 */
@@ -151,9 +151,15 @@ export default {
             }
           }).then(res => res.data).then(res => {
             console.log(res);
-            /* 看到时候具体是什么 */
-            sessionStorage.setItem("Data", res.data);
-            sessionStorage.setItem("Cols", res.data);
+            if(res.code == 200) {
+              sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
+              // console.log(res.data.sampleData)
+              sessionStorage.setItem("colNum", res.data.colNum);
+              sessionStorage.setItem("sampleNum", res.data.sampleNum);
+            }
+            else {
+              this.$message.error('数据加载出错！');
+            }
           })
         },
     }

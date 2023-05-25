@@ -72,42 +72,46 @@ public class IndexSymController {
 
     @PostMapping("loadNewData")
     private Result load_new_data(@RequestBody QueryPageParam params) {
-        HashMap param = params.getParam();
-        String table_name = (String)param.get("basicTableName");
-        Integer func = (Integer) param.get("func");
+        try {
+            HashMap param = params.getParam();
+            String table_name = (String) param.get("basicTableName");
+            String func = (String) param.get("func");
 
-        String new_tablename = table_name + "_new" + "_" + func;
-        String data_tablename = table_name + "_data";
+            String new_tablename = table_name + "_new" + "_" + func;
+            String data_tablename = table_name + "_data";
 
-        IndexSym origin_sym = new IndexSym(indexSymService.getIndex(table_name));
-        IndexSym new_sym = new IndexSym(indexSymService.getIndex(new_tablename));
-        List<Sample> samples = sampleService.getData(data_tablename);
+            IndexSym origin_sym = new IndexSym(indexSymService.getIndex(table_name));
+            IndexSym new_sym = new IndexSym(indexSymService.getIndex(new_tablename));
+            List<Sample> samples = sampleService.getData(data_tablename);
 
-        CaculateResult caculateResult = new CaculateResult(samples.get(0).getData(), origin_sym, new_sym);
-        /* 新指标体系中的叶子节点的id对应原本的指标中的叶子节点索引 */
-        Map<Integer, Integer> node_map = caculateResult.getNodeMap();
+            CaculateResult caculateResult = new CaculateResult(samples.get(0).getData(), origin_sym, new_sym);
+            /* 新指标体系中的叶子节点的id对应原本的指标中的叶子节点索引 */
+            Map<Integer, Integer> node_map = caculateResult.getNodeMap();
 
-        int nodeNums = origin_sym.getNodeList().size();
-        List<Integer> new_dataCols = new ArrayList<>();
-        for(int i = 0; i < nodeNums; i ++) {
-            int node_id = origin_sym.getNodeList().get(i).getNodeID();
-            if(node_map.containsKey(node_id)) {
-                new_dataCols.add(node_map.get(node_id));
+            int nodeNums = origin_sym.getNodeList().size();
+            List<Integer> new_dataCols = new ArrayList<>();
+            for (int i = 0; i < nodeNums; i++) {
+                int node_id = origin_sym.getNodeList().get(i).getNodeID();
+                if (node_map.containsKey(node_id)) {
+                    new_dataCols.add(node_map.get(node_id));
+                }
             }
-        }
 
-        List<Sample> new_data = new ArrayList<>();
-        for (Sample value : samples) {
-            Sample sample = new Sample();
-            for (Integer new_dataCol : new_dataCols)
-                sample.getData().add(value.getData().get(new_dataCol));
-            new_data.add(sample);
+            List<Sample> new_data = new ArrayList<>();
+            for (Sample value : samples) {
+                Sample sample = new Sample();
+                for (Integer new_dataCol : new_dataCols)
+                    sample.getData().add(value.getData().get(new_dataCol));
+                new_data.add(sample);
+            }
+            HashMap<String, Object> res_map = new HashMap<>();
+            res_map.put("sampleData", new_data);
+            res_map.put("colNum", new_dataCols.size());
+            res_map.put("sampleNum", new_data.size());
+            return Result.success(res_map);
+        }catch (Exception e) {
+            return Result.fail();
         }
-        HashMap<String, Object> res_map = new HashMap<>();
-        res_map.put("data", new_data);
-        res_map.put("colNum", new_dataCols.size());
-        return Result.success(res_map);
-
         /**
          * 问题：
          * 应该是要分页，但是原本的分页要借助一个什么Wrapper，要查数据库的，现在没有数据库
