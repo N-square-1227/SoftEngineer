@@ -63,8 +63,14 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
 
     @Override
     /* 读取indexsym数据表中的所有指标 */
-    public List< IndexSymNode> getIndex(String table_name) {
-        return nodeMapper.getIndex(table_name);
+    public List<IndexSymNode> getIndex(String table_name) {
+        List<IndexSymNode> nodeList = new ArrayList<>();
+        try {
+            nodeList = nodeMapper.getIndex(table_name);
+            return nodeList;
+        }catch (Exception e) {
+            return nodeList;
+        }
     }
 
     /**

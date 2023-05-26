@@ -211,7 +211,11 @@ public class ImportController {
             //拼接sql语句，因为指标个数不确定。
             String[] temp=list.get(1);
             int column=temp.length-1;//指标个数
-            create_data_table(indexSymTableName);
+            try {
+                create_data_table(indexSymTableName);
+            }catch (Exception e){
+                return Result.fail();
+            }
             String name = null;
             int i=0;
             for (String[] l : list) {
