@@ -54,10 +54,6 @@ public class UsersController {
     public Result login(@RequestBody Users user) throws Exception {
         Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
         if(curUser!=null){
-            /* 删除管理员的user_data表 */
-//            if(curUser.getRole() == 1)
-//                usersDataService.deleteTable(curUser.getUserName() + "_data");
-
             List menuList = menuService.lambdaQuery().like(Menu::getMenuRight,curUser.getRole()).list();
             HashMap res = new HashMap();
             res.put("user",curUser);
@@ -134,6 +130,7 @@ public class UsersController {
      */
     @GetMapping("/delete")
     public Result delete(@RequestParam Integer userID){
+
         Users user = usersService.getById(userID);
         //管理员用户不可删除
         if(user.getRole()==1)

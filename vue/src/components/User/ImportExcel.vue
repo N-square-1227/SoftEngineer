@@ -1,10 +1,10 @@
 <template>
     <div>
         <el-main style="text-align: center">
-            <a  size="mini" class="el-upload__tip">请先下载模板文件，再按照规定格式上传</a>
+            <a  size="small" class="el-upload__tip">请先下载模板文件，再按照规定格式上传</a>
             <br><br>
-            <el-button type="primary" plain size="mini" @click="download1" style="text-align: center">节点数据模板下载</el-button><br><br>
-            <el-button type="primary" plain size="mini" @click="download2" style="text-align: center">指标数据模板下载</el-button><br><br>
+            <el-button type="primary" plain size="medium" @click="download1" style="text-align: center">节点数据模板下载</el-button>
+            <el-button type="primary" plain size="medium" @click="download2" style="text-align: center">指标数据模板下载</el-button><br><br>
             <!--    <a  size="mini" class="el-upload__tip">请先下载模板文件，再按照规定格式上传</a>
                 <br><br>-->
             <!--   上传文件 -->
@@ -12,33 +12,34 @@
                     accept=".xlsx,.xls"
                     class="upload-demo"
                     action="111"
-                    ref="clearAll1"
-                    :http-request="excelUpload2"
-                    :on-change="handleChange"
-                    style="text-align: center"
-            >
+                    ref="nodeFileList"
+                    :http-request="excelUploadNode"
+                    :on-change="nodehandleChange"
+                    :file-list="nodefileList"
+                    style="text-align: center;margin-right: 10px">
 
-                <el-button size="mini" type="primary"  >选择节点数据文件</el-button>
+                <el-button size="medium" type="primary"  >选择节点数据文件</el-button>
+
             </el-upload>
             <br>
 
             <el-tooltip class="item" effect="dark" content="节点数据仅支持excel导入" placement="top-start">
-                <el-button type="submit" size="mini" @click="jumpBehind" >上传</el-button>
+              <el-button type="submit" size="mini" @click="jumpBehind" >上传</el-button>
             </el-tooltip>
-
 
             <!--    <el-form-item>-->
             <br><br>
+
             <el-upload
                     accept=".xlsx,.xls"
                     class="upload-demo"
-                    ref="clearAll2"
+                    ref="dataFileList"
                     action="localhost:8877/import/excel"
-                    :http-request="excelUpload1"
-                    :on-change="handleChange"
-                    style="text-align: center"
-            >
-                <el-button size="small" type="primary" >选择指标数据文件</el-button>
+                    :http-request="excelUploadData"
+                    :on-change="datahandleChange"
+                    :file-list="datafileList"
+                    style="text-align: center">
+                <el-button size="medium" type="primary" >选择指标数据文件</el-button>
             </el-upload>
             <br>
 
@@ -46,8 +47,8 @@
                 <el-button type="submit" size="mini" @click="jumpBehind">上传</el-button>
             </el-tooltip>
             <br><br>
-            <el-button type="submit" size="mini" @click="clearAll1();clearAll2()">重置</el-button>
-            <el-button type="submit" size="mini" @click="insertUsersData">确认</el-button>
+            <el-button type="submit" size="small" @click="clearNodeFile();clearDataFile()">重置</el-button>
+            <el-button type="submit" size="small" @click="insertUsersData">确认</el-button>
         </el-main>
     </div>
 </template>
@@ -58,18 +59,24 @@ export default {
     data() {
         return{
             user:JSON.parse(sessionStorage.getItem('CurUser')),
-            treeData: []
+            treeData: [],
+            nodefileList:[],
+            datafileList:[],
         }
     },
     methods: {
-        handleChange(file, fileList) {
-            this.fileList = fileList.slice(-3);
+        /* 如果上传选择多个文件，点击上传之后实际上只会把最后上传的文件写入数据库，所以设置只显示这一个 */
+        nodehandleChange(file, fileList) {
+          this.nodefileList = fileList.slice(-1);
+        },
+        datahandleChange(file, fileList) {
+          this.datafileList = fileList.slice(-1);
         },
         /*如果直接在el-upload写这一段url地址会出现跨域的问题，所以直接用表单*/
-        excelUpload1(file) {
+        excelUploadData(file) {
             let fn=file.name
             console.log(file.file)
-            console.log("xxxxxxxx")
+            // console.log("xxxxxxxx")
             const formData = new FormData()
             formData.append("file",file.file)
             this.$axios({
@@ -78,10 +85,10 @@ export default {
                 url:'http://localhost:8877/import/excel/indexdata',
                 headers:{'Content-Type': 'multipart/form-data'}
             }).then(function (resp){
-                console.log("1111111111111");
+                // console.log("1111111111111");
             })
         },
-        excelUpload2(file) {
+        excelUploadNode(file) {
             let fn=file.name
             console.log(file.file)
             console.log("xxxxxxxx")
@@ -93,7 +100,7 @@ export default {
                 url:'http://localhost:8877/import/excel/indexSym',
                 headers:{'Content-Type': 'multipart/form-data'}
             }).then(function (resp){
-                console.log("1111111111111");
+                // console.log("1111111111111");
             })
         },
         download1() {
@@ -136,25 +143,29 @@ export default {
         },
         //点击上传跳转后端
         jumpBehind() {
-            //this.$router.push("/keepExcel")
-            this.$axios.get(this.$httpUrl+'/import/keepExcel/'+this.user.userName).then(res=>res.data).then(res=>{
+            /* 解决没有选择文件点击上传后仍然显示上传成功的问题 */
+            if(this.$refs.nodeFileList.uploadFiles.length === 0)
+              this.$message.warning("请选择指标信息文件！")
+            else {
+              //this.$router.push("/keepExcel")
+              this.$axios.get(this.$httpUrl + '/import/keepExcel/' + this.user.userName).then(res => res.data).then(res => {
                 console.log(res)
-                if (res.code==200) {
-                    this.$message({
-                        message: '上传成功！',
-                        type: 'success'
-                    });
-                }
-                else
-                    this.$message.error('上传失败！');
-            })
+                if (res.code == 200) {
+                  this.$message({
+                    message: '上传成功！',
+                    type: 'success'
+                  });
+                } else
+                  this.$message.error('上传失败！指标信息未上传或数据与指标不对应！');
+              })
+            }
         },
-        clearAll1(){
-            this.$refs.clearAll1.clearFiles();
+        clearNodeFile(){
+            this.$refs.nodeFileList.clearFiles();
             //this.$router.push('/ImportExcel')
         },
-        clearAll2(){
-            this.$refs.clearAll2.clearFiles();
+        clearDataFile(){
+            this.$refs.dataFileList.clearFiles();
             //this.$router.push('/ImportExcel')
         },
         insertUsersData(){

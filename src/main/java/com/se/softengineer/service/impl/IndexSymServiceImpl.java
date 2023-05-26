@@ -25,12 +25,6 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, IndexSymNod
     @Autowired
     private IndexSymMapper indexSymMapper;
 
-    public List<IndexSymNode> queryNodeList() {
-        QueryWrapper<IndexSymNode> queryWrapper = new QueryWrapper<>();
-//        System.out.println(nodeMapper.selectList(queryWrapper));
-        return indexSymMapper.selectList(queryWrapper);
-    }
-
     @Override
     public boolean insertIntoSheet(String tableName, List<IndexSymNode> nodeList) {
         // 鲁棒性
@@ -44,16 +38,6 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, IndexSymNod
                     node.getNodeType(), node.getNodeWeight(), node.getParentID());
         }
         return true;
-    }
-
-    public boolean insertIntoTable(String tableName, String nodeName, int nodeType, double nodeWeight, int parentID){
-        return indexSymMapper.insertIntoTable(tableName, nodeName,
-                nodeType, nodeWeight, parentID);
-    }
-
-    @Override
-    public boolean insertIntoTable(String tableName, Integer nodeID, String nodeName, int nodeType, double nodeWeight, int parentID) {
-        return indexSymMapper.insertIntoTable_noauto(tableName, nodeID, nodeName, nodeType, nodeWeight, parentID);
     }
 
     @Override
@@ -73,7 +57,7 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, IndexSymNod
     }
 
     @Override
-    public IPage pageCC(IPage<IndexSymNode> page, String table_name, Wrapper wrapper) {
+    public IPage nodePaged(IPage<IndexSymNode> page, String table_name, Wrapper wrapper) {
         return indexSymMapper.getListPage(page, table_name, wrapper);
     }
 
@@ -81,23 +65,5 @@ public class IndexSymServiceImpl extends ServiceImpl<IndexSymMapper, IndexSymNod
     public void add(IndexSymNode node) {
         indexSymMapper.insert(node);
     }
-    @Override
-    public Boolean saveJson(String tableName,String filePath) throws IOException {
-        try{
-            InputStream inputStream = new FileInputStream(filePath);
-            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuffer sb = new StringBuffer();
-            String line;
-            while ((line=br.readLine())!=null){
-                sb.append(line);
-            }
-            List<IndexSymNode> nodeList = JSON.parseArray(sb.toString(), IndexSymNode.class);
-            for(IndexSymNode node : nodeList)
-                indexSymMapper.insertIntoTable(tableName,node.getNodeName(),node.getNodeType(),node.getNodeWeight(),node.getParentID());   //插入数据
-        }catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
+
 }

@@ -211,7 +211,11 @@ public class ImportController {
             //拼接sql语句，因为指标个数不确定。
             String[] temp=list.get(1);
             int column=temp.length-1;//指标个数
-            create_data_table(indexSymTableName);
+            try {
+                create_data_table(indexSymTableName);
+            }catch (Exception e){
+                return Result.fail();
+            }
             String name = null;
             int i=0;
             for (String[] l : list) {
@@ -551,7 +555,7 @@ public class ImportController {
         if (StringUtils.isNotBlank(queryContent) && !("null" == queryContent))
             lambdaQueryWrapper.like(IndexSymNode::getNodeName, queryContent);
 
-        IPage result = indexSymService.pageCC(page,table_name,lambdaQueryWrapper);
+        IPage result = indexSymService.nodePaged(page,table_name,lambdaQueryWrapper);
         System.out.println("total=="+result.getTotal());
         return Result.success(result.getRecords(), result.getTotal());
     }

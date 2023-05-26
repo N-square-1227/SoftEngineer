@@ -28,29 +28,6 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
     @Autowired
     private IndexSymNodeMapper nodeMapper;
 
-
-    public List< IndexSymNode> queryNodeList() {
-        QueryWrapper< IndexSymNode> queryWrapper = new QueryWrapper<>();
-//        System.out.println(nodeMapper.selectList(queryWrapper));
-        return nodeMapper.selectList(queryWrapper);
-    }
-
-    @Override
-    public boolean insertIntoSheet(String tableName, List< IndexSymNode> nodeList) {
-        // 鲁棒性
-        if (StringUtils.isBlank(tableName) || nodeList == null || nodeList.isEmpty()) {
-            return false;
-        }
-
-        // 插入数据到指定的表
-        for ( IndexSymNode node : nodeList) {
-            nodeMapper.insertIntoSheet(tableName, node.getNodeID(), node.getNodeName(),
-                    node.getNodeType(), node.getNodeWeight(), node.getParentID());
-        }
-        return true;
-    }
-
-
     @Override
     public void createTable(String table_name) {
         nodeMapper.createTable(table_name);
@@ -63,8 +40,14 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
 
     @Override
     /* 读取indexsym数据表中的所有指标 */
-    public List< IndexSymNode> getIndex(String table_name) {
-        return nodeMapper.getIndex(table_name);
+    public List<IndexSymNode> getIndex(String table_name) {
+        List<IndexSymNode> nodeList = new ArrayList<>();
+        try {
+            nodeList = nodeMapper.getIndex(table_name);
+            return nodeList;
+        }catch (Exception e) {
+            return nodeList;
+        }
     }
 
     /**
@@ -93,7 +76,7 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
 
     public void insertJson(String tableName,List<IndexSymNode> nodeList){
         for(IndexSymNode node : nodeList) {
-            System.out.println(node.toString());
+//            System.out.println(node.toString());
             nodeMapper.insertIntoTable2(tableName,node.getNodeID(),node.getNodeName(),node.getNodeType(),node.getNodeWeight(),node.getParentID());   //插入数据
             if(node.getChildren().size()!=0)
                 insertJson(tableName,node.getChildren());
