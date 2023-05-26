@@ -59,7 +59,7 @@ export default {
     }
   },
   created() {
-    this.tableName = JSON.parse(sessionStorage.getItem("newTableName"));
+    this.tableName = JSON.parse(sessionStorage.getItem("name")) + "_new_" + JSON.parse(sessionStorage.getItem("func"));
     this.loadPost();
   },
   methods:{
@@ -73,7 +73,7 @@ export default {
           query_nodeName : this.nodeName,
         }
       }).then(res=>res.data).then(res=>{
-        console.log(res)
+        // console.log(res)
         if (res.code==200) {
           // console.log(res.data)
           // console.log(res.total)

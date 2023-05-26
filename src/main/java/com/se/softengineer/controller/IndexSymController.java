@@ -77,7 +77,7 @@ public class IndexSymController {
 
         LambdaQueryWrapper<IndexSymNode> lambdaQueryWrapper = new LambdaQueryWrapper();
         /* 条件 */
-        if (StringUtils.isNotBlank(queryContent) && !("null" == queryContent))
+        if (StringUtils.isNotBlank(queryContent) && !("null".equals(queryContent)))
             lambdaQueryWrapper.like(IndexSymNode::getNodeName, queryContent);
 
         IPage result = indexSymService.pageCC(page,table_name,lambdaQueryWrapper);
@@ -96,6 +96,10 @@ public class IndexSymController {
         return data.size() != 0 ? Result.success(data) : Result.fail() ;
     }
 
+    /**
+     * 分页显示指标体系数据
+     * 后面还是迁到service里，controller里写这么多太累赘了
+     **/
     @PostMapping("loadNewData")
     private Result load_new_data(@RequestBody QueryPageParam params) {
         try {
@@ -209,8 +213,19 @@ public class IndexSymController {
         return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 
-    @GetMapping("/caculateResult")
-    public Result use_caculateResult(String dataName, String indexName, String newindexName){
+    /*
+    * http://localhost:8877/indexsym/caculateResult?dataName=wxy_indexsym_data&indexName=wxy_indexsym&newindexName=wxy_indexsym_new_entropy
+    * 这太长了，改post
+    **/
+    @PostMapping("/caculateResult")
+//    public Result use_caculateResult(String dataName, String indexName, String newindexName){
+    public Result use_caculateResult(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+
+        String dataName = (String) param.get("dataName");
+        String indexName = (String) param.get("indexName");
+        String newindexName = (String) param.get("newindexName");
+
         List<IndexSymResult> res = optimizeService.caculateResult(dataName, indexName, newindexName);
         return res != null ? Result.success(res) : Result.fail();
     }
@@ -224,8 +239,24 @@ public class IndexSymController {
      * res_map: map是节点id到节点值的映射，按需取用
      **/
     @PostMapping("/caculateSample")
-    public Result caculateSample(IndexSym indexSym, Sample sample) {
-         return Result.success(new CaculateSample(indexSym, sample).caculate());
+    public Result caculateSample(@RequestBody QueryPageParam query) {
+        HashMap param = query.getParam();
+
+        String table_name = (String) param.get("table_name");
+//        System.out.println(table_name);
+        LinkedHashMap data = ((LinkedHashMap) param.get("sample"));
+        List<Double> list = new ArrayList<>();
+        for(Object key : data.keySet())
+            try {
+                list.add((double) data.get(key));
+            }catch (Exception e) {    // 有整数类型，会报类型转换错误
+                list.add((double)(int) data.get(key));
+            }
+        list.remove(0);
+        Sample sample = new Sample(list);
+        System.out.println(sample.getData());
+        IndexSym indexSym = new IndexSym(indexSymService.getIndex(table_name));
+        return Result.success((new CaculateSample(indexSym, sample).caculate()));
     }
 
 }
