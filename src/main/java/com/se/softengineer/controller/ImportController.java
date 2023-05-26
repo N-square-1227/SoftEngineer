@@ -555,7 +555,7 @@ public class ImportController {
         if (StringUtils.isNotBlank(queryContent) && !("null" == queryContent))
             lambdaQueryWrapper.like(IndexSymNode::getNodeName, queryContent);
 
-        IPage result = indexSymService.pageCC(page,table_name,lambdaQueryWrapper);
+        IPage result = indexSymService.nodePaged(page,table_name,lambdaQueryWrapper);
         System.out.println("total=="+result.getTotal());
         return Result.success(result.getRecords(), result.getTotal());
     }

@@ -30,9 +30,6 @@ public interface IndexSymNodeMapper extends BaseMapper<IndexSymNode> {
     @Update({"DROP TABLE IF ESIXTS #{tableName}"})
     void dropExistTable(@Param("tableName") String tableName);
 
-
-    int getHeadID(@Param("table_name")String table_name, @Param("name") String name);
-
     /**
      * @author xy
      */

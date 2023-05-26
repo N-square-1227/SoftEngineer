@@ -51,6 +51,8 @@ export default {
       total: 1,
 
       table_name: "",
+      colNum: 0,
+      raw_data:[],
     }
   },
   computed:{
@@ -62,6 +64,9 @@ export default {
   },
   created() {
     this.table_name = JSON.parse(sessionStorage.getItem("name")) + "_new_" + JSON.parse(sessionStorage.getItem("func"));
+    this.raw_data = JSON.parse(sessionStorage.getItem("data"));
+    this.colNum = JSON.parse(sessionStorage.getItem("colNum"));
+    this.sampleNum = JSON.parse(sessionStorage.getItem("sampleNum"))
     this.setTableData();
   },
   methods: {
@@ -95,20 +100,22 @@ export default {
       this.setTableData()
     },
     setTableData() {
+      // this.loadSampleData();
+
+      // console.log(this.raw_data)
       /* 先动态生成表头 */
-      const colNum = sessionStorage.getItem("colNum");
       const tableHeader = [];
-      for (let i = 1; i <= colNum; i++) {
+      for (let i = 1; i <= this.colNum; i++) {
         const column = { label: `X${i}`, prop: `column${i}` };
         tableHeader.push(column);
       }
       this.colNames = tableHeader;
 
-      // console.log(this.colNames)
+      console.log(this.colNum)
 
       /* 然后填充数据 */
-      const dataList = JSON.parse(sessionStorage.getItem("data"));
-      this.sampleNum = sessionStorage.getItem("sampleNum");
+      const dataList = this.raw_data;
+      // console.log(this.raw_data)
       // console.log(this.sampleNum)
       this.data = []
       for (let i = 0; i < this.sampleNum; i ++) {
@@ -118,7 +125,7 @@ export default {
         sample['id'] =  i + 1;
         // sample.push({'id' : i + 1})
         // sample.push(number)
-        for (let j = 1; j <= colNum; j ++) {
+        for (let j = 1; j <= this.colNum; j ++) {
           // sample.push({[`column${j}`] : data[j - 1]})
           sample[`column${j}`] = data[j - 1];
           // sample.push(number)
@@ -128,8 +135,9 @@ export default {
       }
       // console.log(this.data)
       /* 把默认的string变成数字 */
-      this.total = this.sampleNum - 0;
+      this.total = this.sampleNum;
     },
+
   },
 
 }

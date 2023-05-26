@@ -75,6 +75,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
      * @author lmy
      */
 
+    @Override
     public Users updateUser(Users user) throws Exception {
         List<Users> list = getUserListByName(user.getUserName());
         //用户名存在(即id不一致)

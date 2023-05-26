@@ -80,7 +80,7 @@ public class IndexSymController {
         if (StringUtils.isNotBlank(queryContent) && !("null".equals(queryContent)))
             lambdaQueryWrapper.like(IndexSymNode::getNodeName, queryContent);
 
-        IPage result = indexSymService.pageCC(page,table_name,lambdaQueryWrapper);
+        IPage result = indexSymService.nodePaged(page,table_name,lambdaQueryWrapper);
         System.out.println("total=="+result.getTotal());
         return Result.success(result.getRecords(), result.getTotal());
     }
@@ -118,10 +118,11 @@ public class IndexSymController {
             /* 新指标体系中的叶子节点的id对应原本的指标中的叶子节点索引 */
             Map<Integer, Integer> node_map = caculateResult.getNodeMap();
 
-            int nodeNums = origin_sym.getNodeList().size();
+//            int nodeNums = origin_sym.getNodeList().size();
+            int nodeNums = new_sym.getNodeList().size();
             List<Integer> new_dataCols = new ArrayList<>();
             for (int i = 0; i < nodeNums; i++) {
-                int node_id = origin_sym.getNodeList().get(i).getNodeID();
+                int node_id = new_sym.getNodeList().get(i).getNodeID();
                 if (node_map.containsKey(node_id)) {
                     new_dataCols.add(node_map.get(node_id));
                 }
@@ -254,7 +255,7 @@ public class IndexSymController {
             }
         list.remove(0);
         Sample sample = new Sample(list);
-        System.out.println(sample.getData());
+//        System.out.println(sample.getData());
         IndexSym indexSym = new IndexSym(indexSymService.getIndex(table_name));
         return Result.success((new CaculateSample(indexSym, sample).caculate()));
     }

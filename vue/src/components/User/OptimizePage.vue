@@ -114,6 +114,7 @@ export default {
             });
           }
           else {
+            this.loadSampleData()
             this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName=' + name + "&func=" + func).then(res => res.data).then(res => {
               // console.log(res)
               if (res.code == 200) {
@@ -130,7 +131,7 @@ export default {
                 /* 旧指标体系的计算结果 */
                 // sessionStorage.setItem("originResult", JSON.stringify(res.data[2]))
                 /* 加载指标体系使用的数据 */
-                this.loadSampleData()
+                // this.loadSampleData()
                 this.$message({
                   message: '优化成功！',
                   type: 'success'
@@ -151,7 +152,7 @@ export default {
               func: func,
             }
           }).then(res => res.data).then(res => {
-            // console.log(res);
+            console.log(res);
             if(res.code == 200) {
               sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
               // console.log(res.data.sampleData)
