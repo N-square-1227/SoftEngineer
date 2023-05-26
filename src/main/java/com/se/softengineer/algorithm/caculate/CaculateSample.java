@@ -16,6 +16,8 @@ public class CaculateSample {
 
     private Double[] res_array;
 
+    private Map<Integer, Integer> id_idx_map;
+
     @Data
     class Result implements Serializable {
         Map<Integer, Double> res_map = new HashMap<>();
@@ -33,6 +35,15 @@ public class CaculateSample {
         res_array = new Double[indexSym.getNodeList().size() + 3];
         Arrays.fill(res_array, 0.0);
 //        System.out.println(visit.length);
+
+        map_id_idx();
+    }
+
+    public void map_id_idx() {
+        int nodeNum = indexSym.getNodeList().size();
+        for (int i = 0; i < nodeNum; i++) {
+            id_idx_map.put(indexSym.getNodeList().get(i).getNodeID(), i);
+        }
     }
 
     /*
@@ -93,7 +104,8 @@ public class CaculateSample {
         /* 子节点的id */
         for(int i : sons) {
             /* 这里既然这样根据nodeid从nodeList里获取节点，意味着限制节点id必须从1开始 */
-            result += caculateRecursion(indexSym.getNodeList().get(i - 1), leaf_map);
+            /* v2.0 添加了节点和下标的映射, 其他的地方忘了，最起码这里应该是可以节点id任意了，只要不重复就可以 */
+            result += caculateRecursion(indexSym.getNodeList().get(id_idx_map.get(i)), leaf_map);
         }
         visit[node.getNodeID()] = true;
         res_array[node.getNodeID()] = result * node.getNodeWeight();

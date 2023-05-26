@@ -59,12 +59,12 @@ export default {
     }
   },
   created() {
-    this.tableName = JSON.parse(sessionStorage.getItem("newTableName"));
+    this.tableName = JSON.parse(sessionStorage.getItem("name")) + "_new_" + JSON.parse(sessionStorage.getItem("func"));
     this.loadPost();
   },
   methods:{
     loadPost() {
-      // console.log(this.tableName)
+      console.log(this.tableName)
       this.$axios.post(this.$httpUrl+'/indexsym/nodeListPage',{
         pageSize:this.pageSize,
         pageNum:this.currentPage,

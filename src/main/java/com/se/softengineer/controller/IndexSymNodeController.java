@@ -77,8 +77,9 @@ public class IndexSymNodeController {
         // 转换成画树需要的类
         List<TreeData> treeData=indexSymNodeService.getIndexSymData(indexSymNodes);
         JSONArray jsonArray=getJsonList(treeData);
-        jsonArray.add(optimizeService.caculateResult(tableName + "_data", tableName, newindexname));
-        jsonArray.add(optimizeService.caculateResult(tableName + "_data", tableName, tableName));
+        /* 改到重新请求一次吧*/
+//        jsonArray.add(optimizeService.caculateResult(tableName + "_data", tableName, newindexname));
+//        jsonArray.add(optimizeService.caculateResult(tableName + "_data", tableName, tableName));
         // 返回构建好的数据
         return jsonArray.size()>0?Result.success(jsonArray):Result.fail();
     }

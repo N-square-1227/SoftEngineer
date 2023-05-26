@@ -77,7 +77,7 @@ public class IndexSymController {
 
         LambdaQueryWrapper<IndexSymNode> lambdaQueryWrapper = new LambdaQueryWrapper();
         /* 条件 */
-        if (StringUtils.isNotBlank(queryContent) && !("null" == queryContent))
+        if (StringUtils.isNotBlank(queryContent) && !("null".equals(queryContent)))
             lambdaQueryWrapper.like(IndexSymNode::getNodeName, queryContent);
 
         IPage result = indexSymService.pageCC(page,table_name,lambdaQueryWrapper);
@@ -213,8 +213,19 @@ public class IndexSymController {
         return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 
-    @GetMapping("/caculateResult")
-    public Result use_caculateResult(String dataName, String indexName, String newindexName){
+    /*
+    * http://localhost:8877/indexsym/caculateResult?dataName=wxy_indexsym_data&indexName=wxy_indexsym&newindexName=wxy_indexsym_new_entropy
+    * 这太长了，改post
+    **/
+    @PostMapping("/caculateResult")
+//    public Result use_caculateResult(String dataName, String indexName, String newindexName){
+    public Result use_caculateResult(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+
+        String dataName = (String) param.get("dataName");
+        String indexName = (String) param.get("indexName");
+        String newindexName = (String) param.get("newindexName");
+
         List<IndexSymResult> res = optimizeService.caculateResult(dataName, indexName, newindexName);
         return res != null ? Result.success(res) : Result.fail();
     }
@@ -232,7 +243,7 @@ public class IndexSymController {
         HashMap param = query.getParam();
 
         String table_name = (String) param.get("table_name");
-        System.out.println(table_name);
+//        System.out.println(table_name);
         LinkedHashMap data = ((LinkedHashMap) param.get("sample"));
         List<Double> list = new ArrayList<>();
         for(Object key : data.keySet())

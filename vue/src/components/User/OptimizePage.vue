@@ -28,7 +28,7 @@
 
 <script>
 let OP
-let name
+let name  // 初始的指标体系数据名
 let func
 export default {
     name: "OptimizePage",
@@ -79,13 +79,13 @@ export default {
             let values1;
             values1 = val1;
             name = val1
-            sessionStorage.setItem("name", JSON.stringify(val1))
+            sessionStorage.setItem("name", JSON.stringify(name))
         },
         getValue2(val2) {
             let values2;
             values2 = val2;
             func = val2;
-            sessionStorage.setItem("func", JSON.stringify(val2))
+            sessionStorage.setItem("func", JSON.stringify(func))
         },
         // sure() {
         //     this.$router.push("/DrawTree")
@@ -126,9 +126,9 @@ export default {
                 /* 优化结果 */
                 sessionStorage.setItem("TreeData", JSON.stringify(this.treeData))
                 /* 新指标体系的计算结果 */
-                sessionStorage.setItem("newResult", JSON.stringify(res.data[1]))
+                // sessionStorage.setItem("newResult", JSON.stringify(res.data[1]))
                 /* 旧指标体系的计算结果 */
-                sessionStorage.setItem("originResult", JSON.stringify(res.data[2]))
+                // sessionStorage.setItem("originResult", JSON.stringify(res.data[2]))
                 /* 加载指标体系使用的数据 */
                 this.loadSampleData()
                 this.$message({
