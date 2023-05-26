@@ -79,13 +79,21 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
                 sb.append(line);
             }
             List<IndexSymNode> nodeList = JSON.parseArray(sb.toString(), IndexSymNode.class);
-            for(IndexSymNode node : nodeList)
-                nodeMapper.insertIntoTable(tableName,node.getNodeName(),node.getNodeType(),node.getNodeWeight(),node.getParentID());   //插入数据
+            insertJson(tableName,nodeList);
         }catch (IOException e) {
             e.printStackTrace();
             return false;
         }
         return true;
+    }
+
+    public void insertJson(String tableName,List<IndexSymNode> nodeList){
+        for(IndexSymNode node : nodeList) {
+            System.out.println(node.toString());
+            nodeMapper.insertIntoTable2(tableName,node.getNodeID(),node.getNodeName(),node.getNodeType(),node.getNodeWeight(),node.getParentID());   //插入数据
+            if(node.getChildren().size()!=0)
+                insertJson(tableName,node.getChildren());
+        }
     }
 
     /**

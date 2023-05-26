@@ -2,12 +2,19 @@ package com.se.softengineer.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.TreeData;
+import com.se.softengineer.entity.Users;
 import com.se.softengineer.mapper.UsersDataMapper;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.service.IndexSymNodeService;
 import com.se.softengineer.service.SampleService;
+import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
 import com.se.softengineer.utils.AnalyExcel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -175,11 +183,7 @@ public class ImportController {
         System.out.println("文件类型:  "+fileType);
         if(fileType.equals("indexSym")) {
             //头结点
-            List<String> headNode=new ArrayList<>();
-            headNode.add(filesName);
-            headNode.add("0");
-            headNode.add("0");
-            headNode.add("0");
+
             //int headNodeID=nodeService.getHeadID(indexSymTableName,filesName);
             //拼接新表名
             indexSymTableName = userName+"_"+filesName; //+ "_IndexSym";
