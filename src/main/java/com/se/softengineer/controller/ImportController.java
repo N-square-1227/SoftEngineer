@@ -185,11 +185,11 @@ public class ImportController {
         System.out.println("文件类型:  "+fileType);
         if(fileType.equals("indexSym")) {
             //头结点
-            List<String> headNode=new ArrayList<>();
-            headNode.add(filesName);
-            headNode.add("0");
-            headNode.add("0");
-            headNode.add("0");
+//            List<String> headNode=new ArrayList<>();
+//            headNode.add(filesName);
+//            headNode.add("0");
+//            headNode.add("0");
+//            headNode.add("0");
             //int headNodeID=nodeService.getHeadID(indexSymTableName,filesName);
             //拼接新表名
             indexSymTableName = userName+"_"+filesName;
@@ -366,7 +366,9 @@ public class ImportController {
         headNode.add("0");
         headNode.add("0");
         IndexSymNode t=new IndexSymNode();
-        indexSymTableName = userName+"_"+filesName + "_IndexSym";
+        indexSymTableName = userName+"_"+filesName;
+        /* 如果上传了同名的指标体系，直接覆盖; 同时在user_data数据库中写入时也要判断是否有重复 by wxy*/
+        indexSymNodeService.dropExistTable(indexSymTableName);
         indexSymNodeService.createIndexSymTable(indexSymTableName);
         if(indexSymNodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
             return Result.fail();
