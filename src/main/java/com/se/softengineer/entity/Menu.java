@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Menu implements Serializable {
+public class Menu extends IndexSymNode implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
