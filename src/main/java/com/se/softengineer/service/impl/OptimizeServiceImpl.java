@@ -112,17 +112,14 @@ public class OptimizeServiceImpl implements OptimizeService {
      */
     @Override
     public IndexSym kmeans(String indexsym_name, String data_tablename) throws Exception {
-        List<Sample> sampleList,testList = new ArrayList<>();
-        List<IndexSymNode> indexList,leafindex = new ArrayList<>();
         IndexSym newIndexSym = new IndexSym();
         //这里的data需要从前端传回来
-        sampleList = sampleService.getData(data_tablename);
-        testList = sampleService.getData(data_tablename);
-        List<String> columnList = new ArrayList<>();
-        columnList = sampleService.getColName(data_tablename);
-        indexList = indexSymService.getIndex(indexsym_name);
+        List<Sample> sampleList = sampleService.getData(data_tablename);
+        List<Sample> testList = sampleService.getData(data_tablename);
+        List<String> columnList = sampleService.getColName(data_tablename);
+        List<IndexSymNode> indexList = indexSymService.getIndex(indexsym_name);
         IndexSym indexSym = new IndexSym(indexList);
-        leafindex = indexSym.get_leaves();//获取叶子节点
+        List<IndexSymNode> leafindex = indexSym.get_leaves();//获取叶子节点
 
         //手肘法获取最优K值
         int maxk = columnList.size()/2;
@@ -135,23 +132,26 @@ public class OptimizeServiceImpl implements OptimizeService {
         Kmeans kRun = new Kmeans(k,sampleList);
         Set<Cluster> clusterSet = kRun.run();
         List<IndexSymNode> nodeList = new ArrayList<>();
-        int centerNum = clusterSet.size();
+//        int centerNum = clusterSet.size();
+        //插入根节点
         IndexSymNode node = new IndexSymNode(1,indexsym_name,1,1.0,0);
         nodeList.add(node);
-        for(int i=2;i<=centerNum + 1;i++){
-            node = new IndexSymNode(i,"father"+(i-1),1,1.0,1);
-            nodeList.add(node);
-        }
-        int num = 1;
+
+        int num = 2,i=1;
         for(Cluster cluster:clusterSet){
+            System.out.println(cluster);
+            node = new IndexSymNode(num,"father"+i,1,1.0,1);
+            i += 1;
+            int fatherid = num;
+            nodeList.add(node);
+            num+=1;
             List<Point> pointList = cluster.getMembers();
             for(Point point:pointList){
                 int id = point.getId();
-                node = new IndexSymNode(centerNum+1+1,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),num+1 );
+                node = new IndexSymNode(num,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),fatherid );
                 nodeList.add(node);
-                centerNum += 1;
+                num += 1;
             }
-            num += 1;
         }
 
         String newIndexSymName = indexsym_name + "_new_kmeans";

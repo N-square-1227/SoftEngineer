@@ -25,10 +25,9 @@ public class Kmeans {
 
     public Kmeans(int k,List<Sample> datas){
         //首先对数据矩阵专职，每一行数据中的值对应每一个点的坐标
-        List<List<Double>> data= new ArrayList<>();
         this.datas = datas;
-        data = getDataList();
-        DataNumpy.transposition(datas);
+        DataNumpy.transposition(this.datas);
+        List<List<Double>> data = getDataList();
         this.kNum = k;
         this.len = data.get(0).size();
         Init(data);
