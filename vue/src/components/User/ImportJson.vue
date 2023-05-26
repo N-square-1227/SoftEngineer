@@ -160,17 +160,20 @@ export default {
             //     method:'get',
             //     url:'http://localhost:8877/import/keepExcel/'+this.user.userName
             // })
-            this.$axios.get(this.$httpUrl+'/import/keepExcel/'+this.user.userName).then(res=>res.data).then(res=>{
-                console.log(res)
-                if (res.code==200) {
-                    this.$message({
-                        message: '上传成功！',
-                        type: 'success'
-                    });
-                }
-                else
-                    this.$message.error('上传失败！');
+          if(this.$refs.nodeFileList.uploadFiles.length === 0)
+            this.$message.warning("请选择指标信息文件！")
+          else {
+            this.$axios.get(this.$httpUrl + '/import/keepExcel/' + this.user.userName).then(res => res.data).then(res => {
+              console.log(res)
+              if (res.code == 200) {
+                this.$message({
+                  message: '上传成功！',
+                  type: 'success'
+                });
+              } else
+                this.$message.error('上传失败！');
             })
+          }
         },
         clearAll1(){
             this.$refs.nodeFileList.clearFiles();

@@ -150,8 +150,6 @@ export default {
         jumpBehind() {
           if(this.$refs.nodeFileList.uploadFiles.length === 0)
             this.$message.warning("请选择指标信息文件！")
-          else if(this.$refs.dataFileList.uploadFiles.length === 0)
-            this.$message.warning("请选择数据文件！")
           else {
             //this.$router.push("/keepExcel")
             this.$axios.get(this.$httpUrl + '/import/keepExcel/' + this.user.userName).then(res => res.data).then(res => {

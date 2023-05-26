@@ -146,8 +146,6 @@ export default {
             /* 解决没有选择文件点击上传后仍然显示上传成功的问题 */
             if(this.$refs.nodeFileList.uploadFiles.length === 0)
               this.$message.warning("请选择指标信息文件！")
-            else if(this.$refs.dataFileList.uploadFiles.length === 0)
-              this.$message.warning("请选择数据文件！")
             else {
               //this.$router.push("/keepExcel")
               this.$axios.get(this.$httpUrl + '/import/keepExcel/' + this.user.userName).then(res => res.data).then(res => {
