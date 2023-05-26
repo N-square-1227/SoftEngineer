@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.se.softengineer.algorithm.caculate.CaculateSample;
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
@@ -32,6 +33,7 @@ import java.io.*;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -570,5 +572,35 @@ public class ImportController {
         }catch (Exception e){
             return Result.fail();
         }
+    }
+
+    /**
+     * @author xly
+     * @param query
+     * @return
+     * 获取某一组样例各个节点的计算结果
+     * 返回值为CaculateSample的内部类，包含一个Map和一个List
+     * res: List是各个节点的值，按照节点id排列
+     * res_map: map是节点id到节点值的映射，按需取用
+     */
+    @PostMapping("/caculateSample")
+    public Result caculateSample(@RequestBody QueryPageParam query) {
+        HashMap param = query.getParam();
+
+        String table_name = indexSymTableName;
+//        System.out.println(table_name);
+        LinkedHashMap data = ((LinkedHashMap) param.get("sample"));
+        List<Double> list = new ArrayList<>();
+        for(Object key : data.keySet())
+            try {
+                list.add((double) data.get(key));
+            }catch (Exception e) {    // 有整数类型，会报类型转换错误
+                list.add((double)(int) data.get(key));
+            }
+        list.remove(0);
+        Sample sample = new Sample(list);
+        System.out.println(sample.getData());
+        IndexSym indexSym = new IndexSym(indexSymService.getIndex(table_name));
+        return Result.success((new CaculateSample(indexSym, sample).caculate()));
     }
 }

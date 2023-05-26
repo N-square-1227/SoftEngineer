@@ -27,6 +27,9 @@ export default {
       console.log(tab, event);
     },
   },
+  beforeMount() {
+    sessionStorage.removeItem("sample_result")
+  },
   components:{
     drawOriginalTree,
     indexNode,

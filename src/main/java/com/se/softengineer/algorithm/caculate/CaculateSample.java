@@ -30,6 +30,7 @@ public class CaculateSample {
     public CaculateSample(IndexSym indexSym, Sample sample) {
         this.indexSym = indexSym;
         this.sample = sample;
+        id_idx_map = new HashMap<>();
         visit = new Boolean[indexSym.getNodeList().size() + 3]; // 初始化时全部为false
         Arrays.fill(visit, false);
         res_array = new Double[indexSym.getNodeList().size() + 3];
