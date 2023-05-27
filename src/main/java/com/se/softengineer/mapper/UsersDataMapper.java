@@ -1,7 +1,6 @@
 package com.se.softengineer.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.UsersData;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;

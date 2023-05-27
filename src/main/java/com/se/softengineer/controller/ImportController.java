@@ -11,6 +11,7 @@ import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
 import com.se.softengineer.entity.TreeData;
+import com.se.softengineer.mapper.IndexSymNodeMapper;
 import com.se.softengineer.service.IndexSymNodeService;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.SampleService;
@@ -63,6 +64,8 @@ public class ImportController {
     @Value("${file-save-path}")
     private String fileSavePath;
     private String file_Path;
+    //标记是否是XML类型
+    String FT="";
 
     @Autowired
     private IndexSymNodeService indexSymNodeService;
@@ -76,6 +79,8 @@ public class ImportController {
     @Autowired
     private IndexSymService indexSymService;
 
+    @Autowired
+    IndexSymNodeMapper indexSymNodeMapper;
 
     private IndexSym indexSym = new IndexSym();
 
@@ -87,6 +92,7 @@ public class ImportController {
     @PostMapping(value = "/excel/{value}")
     //@RequestParam("file") MultipartFile file
     public void uploadFileByExcel(@RequestParam(value = "file",required = false) MultipartFile file, @PathVariable("value") String v) throws IOException {
+        FT="";
         cells.clear();
         String filename = file.getOriginalFilename();
         fileType=v;
@@ -106,6 +112,7 @@ public class ImportController {
      */
     @RequestMapping("/xml/{value}")
     public void loadFileByXML(@RequestParam(value = "file",required = false) MultipartFile file, @PathVariable("value") String v) throws IOException {
+        FT="XML";
         //清空数组
         cells.clear();
         String filename = file.getOriginalFilename();
@@ -200,10 +207,18 @@ public class ImportController {
             /* 先插入根节点 */
             if(indexSymNodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
                 return Result.fail();
-            for (String[] l : list) {
-                System.out.println(l[0]+"  "+ Integer.parseInt(l[1])+"  "+ Double.parseDouble(l[2])+"  "+ Integer.parseInt(l[3])+1);
-                if(indexSymNodeService.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3])+1)<=0)
-                    return Result.fail();
+            if(FT.equals("XML")){
+                for (String[] l : list) {
+                    System.out.println("————————————————————————————————————"+l[0]+"  "+ Integer.parseInt(l[1])+"  "+ Double.parseDouble(l[2])+"  "+ Integer.parseInt(l[3])+1);
+                    indexSymNodeMapper.insertIntoSheet(indexSymTableName,Integer.parseInt(l[1])+1, l[0], Integer.parseInt(l[2]), Double.parseDouble(l[3]), Integer.parseInt(l[4])+1);
+                    //return Result.fail();
+                }
+            }else{
+                for (String[] l : list) {
+                    System.out.println(l[0]+"  "+ Integer.parseInt(l[1])+"  "+ Double.parseDouble(l[2])+"  "+ Integer.parseInt(l[3])+1);
+                    if(indexSymNodeService.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3])+1)<=0)
+                        return Result.fail();
+                }
             }
         }else if(fileType.equals("indexdata")){
             indexDataTableName=userName+"_"+filesName+"_data";
