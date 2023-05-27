@@ -2,158 +2,184 @@
 <indexSym name="指标体系">
   <nodeGroups id="1">
     <name>城市旅游竞争业绩</name>
+    <id>1</id>
     <type>1</type>
     <weight>1</weight>
     <parentID>0</parentID>
     <node>
       <name>国内旅游人数/万人次</name>
+      <id>4</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>8</parentID>
+      <parentID>1</parentID>
     </node>
     <node>
       <name>国内旅游收入/亿元</name>
+      <id>5</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>8</parentID>
+      <parentID>1</parentID>
     </node>
     <node>
       <name>入境旅游人数/万人次</name>
+      <id>6</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>8</parentID>
+      <parentID>1</parentID>
     </node>
     <node>
       <name>入境旅游收入/万人次</name>
+      <id>7</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>8</parentID>
+      <parentID>1</parentID>
     </node>
     <node>
       <name>旅游总收入占GDP的比例/%</name>
+      <id>8</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>8</parentID>
+      <parentID>1</parentID>
     </node>
     <node>
       <name>客房出租率/%</name>
+      <id>9</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>8</parentID>
+      <parentID>1</parentID>
     </node>
     <node>
       <name>餐饮住宿业销售额/亿元</name>
+      <id>10</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>8</parentID>
+      <parentID>1</parentID>
     </node>
   </nodeGroups>
   <nodeGroups id="2">
     <name>城市旅游竞争潜力</name>
+    <id>2</id>
     <type>1</type>
     <weight>1</weight>
     <parentID>0</parentID>
     <node>
       <name>接待过夜游客比率</name>
+      <id>11</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>19</parentID>
+      <parentID>2</parentID>
     </node>
     <node>
       <name>多次来浙游览游客比例/%</name>
+      <id>12</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>19</parentID>
+      <parentID>2</parentID>
     </node>
     <node>
       <name>游客评价满意度较高比例/%</name>
+      <id>13</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>19</parentID>
+      <parentID>2</parentID>
     </node>
     <node>
       <name>第三产业占GDP的比例/%</name>
+      <id>14</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>19</parentID>
+      <parentID>2</parentID>
     </node>
     <node>
       <name>星级饭店数量/个</name>
+      <id>15</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>19</parentID>
+      <parentID>2</parentID>
     </node>
     <node>
       <name>旅行社数量/个</name>
+      <id>16</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>19</parentID>
+      <parentID>2</parentID>
     </node>
     <node>
       <name>国家重点风景名胜区和4A级以上景点个数/个</name>
+      <id>17</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>19</parentID>
+      <parentID>2</parentID>
     </node>
     <node>
       <name>第三产业从业人数/万人</name>
+      <id>18</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>19</parentID>
+      <parentID>2</parentID>
     </node>
     <node>
       <name>导游数量/个 </name>
+      <id>19</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>19</parentID>
+      <parentID>2</parentID>
     </node>
     <node>
       <name>餐饮住宿业从业人数/万人</name>
+      <id>20</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>19</parentID>
+      <parentID>2</parentID>
     </node>
   </nodeGroups>
   <nodeGroups id="3">
     <name>城市旅游支撑力</name>
+    <id>3</id>
     <type>1</type>
     <weight>1</weight>
     <parentID>0</parentID>
     <node>
       <name>固定资产投资规模/公顷</name>
+      <id>21</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>26</parentID>
+      <parentID>3</parentID>
     </node>
     <node>
       <name>城市人均GDP/元</name>
+      <id>22</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>26</parentID>
+      <parentID>3</parentID>
     </node>
     <node>
       <name>公园绿地面积/公顷</name>
+      <id>23</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>26</parentID>
+      <parentID>3</parentID>
     </node>
     <node>
       <name>污水集中处理率/%</name>
+      <id>24</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>26</parentID>
+      <parentID>3</parentID>
     </node>
     <node>
       <name>生活垃圾无害化处理率/%</name>
+      <id>25</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>26</parentID>
+      <parentID>3</parentID>
     </node>
     <node>
       <name>年客运总量/万人次</name>
+      <id>26</id>
       <type>1</type>
       <weight>1</weight>
-      <parentID>26</parentID>
+      <parentID>3</parentID>
     </node>
   </nodeGroups>
 </indexSym>
