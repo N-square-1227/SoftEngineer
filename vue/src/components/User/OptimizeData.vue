@@ -64,9 +64,10 @@ export default {
   },
   created() {
     this.table_name = JSON.parse(sessionStorage.getItem("name")) + "_new_" + JSON.parse(sessionStorage.getItem("func"));
-    this.raw_data = JSON.parse(sessionStorage.getItem("data"));
-    this.colNum = JSON.parse(sessionStorage.getItem("colNum"));
-    this.sampleNum = JSON.parse(sessionStorage.getItem("sampleNum"))
+    // this.loadSampleData()
+    // this.raw_data = JSON.parse(sessionStorage.getItem("data"));
+    // this.colNum = JSON.parse(sessionStorage.getItem("colNum"));
+    // this.sampleNum = JSON.parse(sessionStorage.getItem("sampleNum"))
     this.setTableData();
   },
   methods: {
@@ -99,43 +100,71 @@ export default {
       this.currentPage=val
       this.setTableData()
     },
-    setTableData() {
-      // this.loadSampleData();
+    async setTableData() {
+      try {
+        await this.$axios.post(this.$httpUrl + '/indexsym/loadNewData', {
+          pageSize: this.pageSize,
+          pageNum: this.pageNum,
+          param: {
+            // basicTableName: name, // 这是原始指标体系的表名,优化后的表名添加使用的函数，数据表名添加后缀
+            // func: func,
+            basicTableName: JSON.parse(sessionStorage.getItem("name")),
+            func: JSON.parse(sessionStorage.getItem("func"))
+          }
+        }).then(res => res.data).then(res => {
+          console.log(res);
+          if (res.code === 200) {
+            // sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
+            // // console.log(res.data.sampleData)
+            // sessionStorage.setItem("colNum", res.data.colNum);
+            // sessionStorage.setItem("sampleNum", res.data.sampleNum);
+            this.raw_data = res.data.sampleData;
+            this.colNum = res.data.colNum
+            this.sampleNum = res.data.sampleNum
+          } else {
+            this.$message.error('数据加载出错！');
+          }
+        })
+        // this.loadSampleData();
 
-      // console.log(this.raw_data)
-      /* 先动态生成表头 */
-      const tableHeader = [];
-      for (let i = 1; i <= this.colNum; i++) {
-        const column = { label: `X${i}`, prop: `column${i}` };
-        tableHeader.push(column);
-      }
-      this.colNames = tableHeader;
-
-      console.log(this.colNum)
-
-      /* 然后填充数据 */
-      const dataList = this.raw_data;
-      // console.log(this.raw_data)
-      // console.log(this.sampleNum)
-      this.data = []
-      for (let i = 0; i < this.sampleNum; i ++) {
-        const data = dataList[i].data;
-        const sample = {};
-        // const number = {}
-        sample['id'] =  i + 1;
-        // sample.push({'id' : i + 1})
-        // sample.push(number)
-        for (let j = 1; j <= this.colNum; j ++) {
-          // sample.push({[`column${j}`] : data[j - 1]})
-          sample[`column${j}`] = data[j - 1];
-          // sample.push(number)
+        // console.log(this.raw_data)
+        /* 先动态生成表头 */
+        const tableHeader = [];
+        for (let i = 1; i <= this.colNum; i++) {
+          const column = {label: `X${i}`, prop: `column${i}`};
+          tableHeader.push(column);
         }
-        // console.log(sample)
-        this.data.push(sample);
+        this.colNames = tableHeader;
+
+        console.log(this.colNum)
+
+        /* 然后填充数据 */
+        const dataList = this.raw_data;
+        console.log(this.raw_data)
+        // console.log(this.sampleNum)
+        this.data = []
+        for (let i = 0; i < this.sampleNum; i++) {
+          const data = dataList[i].data;
+          const sample = {};
+          // const number = {}
+          sample['id'] = i + 1;
+          // sample.push({'id' : i + 1})
+          // sample.push(number)
+          for (let j = 1; j <= this.colNum; j++) {
+            // sample.push({[`column${j}`] : data[j - 1]})
+            sample[`column${j}`] = data[j - 1];
+            // sample.push(number)
+          }
+          // console.log(sample)
+          this.data.push(sample);
+        }
+        // console.log(this.data)
+        /* 把默认的string变成数字 */
+        this.total = this.sampleNum;
+      }catch (error) {
+        // console.log(error)
+        this.$message.error('数据加载出错！');
       }
-      // console.log(this.data)
-      /* 把默认的string变成数字 */
-      this.total = this.sampleNum;
     },
 
   },

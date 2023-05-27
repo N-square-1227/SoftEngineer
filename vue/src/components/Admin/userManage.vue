@@ -56,7 +56,7 @@
                 center>
             <el-form :model="form" :rules="rules" ref="registerForm" class="register-container">
                 <el-form-item prop="userName">
-                    <el-input type="text" v-model="form.userName" auto-complete="off" placeholder="用户名">
+                    <el-input :disabled="true" type="text" v-model="form.userName" auto-complete="off" placeholder="用户名">
                         <template slot="prepend"><i style="font-size:20px" class="el-icon-user"></i></template>
                     </el-input>
                 </el-form-item>
@@ -178,7 +178,7 @@ export default {
                     this.loadPost()
                 }
                 else
-                    this.$message.error('修改失败！');
+                    this.$message.error('删除失败！');
             })
         }
     },

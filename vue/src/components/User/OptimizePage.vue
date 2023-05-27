@@ -114,7 +114,6 @@ export default {
             });
           }
           else {
-            this.loadSampleData()
             this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName=' + name + "&func=" + func).then(res => res.data).then(res => {
               // console.log(res)
               if (res.code == 200) {
@@ -143,27 +142,27 @@ export default {
             })
           }
         },
-        loadSampleData(){
-          this.$axios.post(this.$httpUrl + '/indexsym/loadNewData', {
-            pageSize: this.pageSize,
-            pageNum : this.pageNum,
-            param:{
-              basicTableName: name, // 这是原始指标体系的表名,优化后的表名添加使用的函数，数据表名添加后缀
-              func: func,
-            }
-          }).then(res => res.data).then(res => {
-            console.log(res);
-            if(res.code == 200) {
-              sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
-              // console.log(res.data.sampleData)
-              sessionStorage.setItem("colNum", res.data.colNum);
-              sessionStorage.setItem("sampleNum", res.data.sampleNum);
-            }
-            else {
-              this.$message.error('数据加载出错！');
-            }
-          })
-        },
+        // loadSampleData(){
+        //   this.$axios.post(this.$httpUrl + '/indexsym/loadNewData', {
+        //     pageSize: this.pageSize,
+        //     pageNum : this.pageNum,
+        //     param:{
+        //       basicTableName: name, // 这是原始指标体系的表名,优化后的表名添加使用的函数，数据表名添加后缀
+        //       func: func,
+        //     }
+        //   }).then(res => res.data).then(res => {
+        //     console.log(res);
+        //     if(res.code == 200) {
+        //       sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
+        //       // console.log(res.data.sampleData)
+        //       sessionStorage.setItem("colNum", res.data.colNum);
+        //       sessionStorage.setItem("sampleNum", res.data.sampleNum);
+        //     }
+        //     else {
+        //       this.$message.error('数据加载出错！');
+        //     }
+        //   })
+        // },
     }
 }
 

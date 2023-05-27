@@ -47,7 +47,7 @@
                 center>
             <el-form ref="form" :rules="rulesModify" :model="form" label-width="80px">
                 <el-form-item prop="userName" label="用户名">
-                    <el-input v-model="form.userName"></el-input>
+                    <el-input :disabled="true" v-model="form.userName"></el-input>
                 </el-form-item>
                 <el-form-item prop="userEmail" label="邮箱">
                     <el-input v-model="form.userEmail"></el-input>
