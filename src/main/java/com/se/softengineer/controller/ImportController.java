@@ -510,17 +510,31 @@ public class ImportController {
         return Result.success();
     }
 
-    /**
-     * @author xiaxue
-     * 获取该用户所有上传的指标体系的名字
-     */
-    @RequestMapping("/getAllSyms/{userName}")
-    public Result getAllSyms(@PathVariable("userName")String userName){
-        //先找到userData表
-        String userData=userName+"_data";
-        List<String> indexSymDTNames=usersDataService.getIndexSymTableNames(userData);
-        Result result=new Result();
-        return indexSymDTNames==null?Result.fail():Result.success(indexSymDTNames);
+//    /**
+//     * @author xiaxue
+//     * 获取该用户所有上传的指标体系的名字
+//     */
+//    @RequestMapping("/getAllSyms/{userName}")
+//    public Result getAllSyms(@PathVariable("userName")String userName){
+//        //先找到userData表
+//        String userData=userName+"_data";
+//        List<String> indexSymDTNames=usersDataService.getIndexSymTableNames(userData);
+//        return indexSymDTNames==null?Result.fail():Result.success(indexSymDTNames);
+//    }
+
+    @PostMapping("/indexSymListPage")
+    public Result nodeListPage(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+        String tableName = (String)param.get("table_name");
+        System.out.println(tableName);
+
+        Page<UsersData> page = new Page();
+        page.setCurrent(query.getPageNum());
+        page.setSize(query.getPageSize());
+
+        IPage result = usersDataService.getISDTNamePage(page,tableName);
+        System.out.println("total=="+result.getTotal());
+        return Result.success(result.getRecords(), result.getTotal());
     }
     /**
      * @author

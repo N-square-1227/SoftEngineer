@@ -15,9 +15,6 @@ export default {
             xlist:[],
         }
     },
-    // computed: {
-    //
-    // },
     created() {
         this.getData()
         // this.showChart()

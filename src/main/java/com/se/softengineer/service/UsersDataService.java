@@ -1,5 +1,6 @@
 package com.se.softengineer.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.se.softengineer.entity.UsersData;
 import org.apache.ibatis.annotations.Insert;
@@ -17,8 +18,11 @@ public interface UsersDataService extends IService<UsersData> {
 
     int renameTable(String origin_table, String new_table);
 
+
     /**
      * @author xx
      */
     List<String> getIndexSymTableNames(String tableName);
+
+    IPage getISDTNamePage(IPage<UsersData> page, String tableName);
 }

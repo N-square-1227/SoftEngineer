@@ -1,6 +1,10 @@
 package com.se.softengineer.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.UsersData;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -28,6 +32,11 @@ public interface UsersDataMapper extends BaseMapper<UsersData> {
     int deleteTable(String table_name);
 
     List<String> getIndexSymTableNames(String tableName);
+
+    /**
+     * 分页查询指标体系数据表
+     **/
+    IPage getISDTNamePage(IPage<UsersData> page, String tableName);
 
     List<String> getDataTableNames(String tableName);
 

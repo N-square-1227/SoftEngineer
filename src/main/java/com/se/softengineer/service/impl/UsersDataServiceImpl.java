@@ -1,5 +1,6 @@
 package com.se.softengineer.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.se.softengineer.entity.Sample;
 import com.se.softengineer.entity.UsersData;
@@ -63,5 +64,10 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
     @Override
     public List<String> getIndexSymTableNames(String tableName) {
         return usersDataMapper.getIndexSymTableNames(tableName);
+    }
+
+    @Override
+    public IPage getISDTNamePage(IPage<UsersData> page, String tableName) {
+        return usersDataMapper.getISDTNamePage(page, tableName);
     }
 }
