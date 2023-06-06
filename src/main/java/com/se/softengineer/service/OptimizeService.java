@@ -12,7 +12,7 @@ public interface OptimizeService {
 
     IndexSym pca(String indexsym_name, String data_tablename);
 
-    IndexSym kmeans(String indexsym_name, String data_tablename) throws Exception;
+    IndexSym kmeans(String indexsym_name, String data_tablename,List<Double> sllList) throws Exception;
 
     List<IndexSymResult> caculateResult(String dataName, String indexName, String newindexName);
 }

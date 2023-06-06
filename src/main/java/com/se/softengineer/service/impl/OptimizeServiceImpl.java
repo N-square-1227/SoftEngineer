@@ -111,7 +111,7 @@ public class OptimizeServiceImpl implements OptimizeService {
      * @throws Exception
      */
     @Override
-    public IndexSym kmeans(String indexsym_name, String data_tablename) throws Exception {
+    public IndexSym kmeans(String indexsym_name, String data_tablename,List<Double> sslList) throws Exception {
         IndexSym newIndexSym = new IndexSym();
         //这里的data需要从前端传回来
         List<Sample> sampleList = sampleService.getData(data_tablename);
@@ -124,7 +124,11 @@ public class OptimizeServiceImpl implements OptimizeService {
         //手肘法获取最优K值
         int maxk = columnList.size()/2;
         ElbowMethod elbowMethod = new ElbowMethod();
-        int k =elbowMethod.getOptimalK(maxk,testList);
+        double[] wssList = elbowMethod.getSSl(maxk,testList);
+        for(int i=-0;i<wssList.length;i++)
+            sslList.add(wssList[i]);
+        int k =elbowMethod.getOptimalK(wssList);
+        System.out.println(sslList);
         System.out.println(columnList.size());
         System.out.println(k);
 

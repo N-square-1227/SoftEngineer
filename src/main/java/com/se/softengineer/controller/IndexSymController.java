@@ -209,8 +209,8 @@ public class IndexSymController {
      * @throws Exception
      */
     @GetMapping("/kmeans")
-    public Result use_kmeans(String indexsym_name, String data_tablename) throws Exception {
-        IndexSym newIndexSym = optimizeService.kmeans(indexsym_name, data_tablename);
+    public Result use_kmeans(String indexsym_name, String data_tablename,List<Double> sllList) throws Exception {
+        IndexSym newIndexSym = optimizeService.kmeans(indexsym_name, data_tablename,sllList);
         return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 

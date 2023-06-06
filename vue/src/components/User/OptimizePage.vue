@@ -38,6 +38,7 @@ export default {
             pageNum:1,
             user:JSON.parse(sessionStorage.getItem('CurUser')),
             treeData: [],
+            ssl: [],
             OP,
             //options1: [option],
             /* 算法名应该是改这里吧, by wxy */
@@ -121,10 +122,13 @@ export default {
                 //   this.treeData.push(res.data[i])
                 //   console.log(this.treeData)
                 // }
-                this.treeData.push(res.data[0])
+                this.treeData = res.data.treeData;
+                this.ssl = res.data.SSL;
+
                 // console.log(this.treeData)
                 /* 优化结果 */
-                sessionStorage.setItem("TreeData", JSON.stringify(this.treeData))
+                sessionStorage.setItem("TreeData", JSON.stringify(this.treeData));
+                sessionStorage.setItem("SSL",JSON.stringify(this.ssl));
                 /* 新指标体系的计算结果 */
                 // sessionStorage.setItem("newResult", JSON.stringify(res.data[1]))
                 /* 旧指标体系的计算结果 */
@@ -142,27 +146,7 @@ export default {
             })
           }
         },
-        // loadSampleData(){
-        //   this.$axios.post(this.$httpUrl + '/indexsym/loadNewData', {
-        //     pageSize: this.pageSize,
-        //     pageNum : this.pageNum,
-        //     param:{
-        //       basicTableName: name, // 这是原始指标体系的表名,优化后的表名添加使用的函数，数据表名添加后缀
-        //       func: func,
-        //     }
-        //   }).then(res => res.data).then(res => {
-        //     console.log(res);
-        //     if(res.code == 200) {
-        //       sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
-        //       // console.log(res.data.sampleData)
-        //       sessionStorage.setItem("colNum", res.data.colNum);
-        //       sessionStorage.setItem("sampleNum", res.data.sampleNum);
-        //     }
-        //     else {
-        //       this.$message.error('数据加载出错！');
-        //     }
-        //   })
-        // },
+
     }
 }
 
