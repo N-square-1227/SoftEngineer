@@ -37,6 +37,11 @@ const routes = [
                 component:()=>import("../components/User/OptimizeResultFrame")
             },
             {
+                path: '/KmeansResultFrame',
+                name: 'KmeansResultFrame',
+                component:()=>import("../components/User/KmeansResultFrame")
+            },
+            {
                 path :'/IndexSymManage',
                 name: 'IndexSymManage',
                 component:()=>import("../components/User/IndexSymManage"),

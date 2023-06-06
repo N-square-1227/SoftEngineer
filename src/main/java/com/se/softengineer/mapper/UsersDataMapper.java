@@ -36,7 +36,7 @@ public interface UsersDataMapper extends BaseMapper<UsersData> {
     /**
      * 分页查询指标体系数据表
      **/
-    IPage getISDTNamePage(IPage<UsersData> page, String tableName);
+    IPage getISDTNamePage(IPage<UsersData> page,String tableName,@Param(Constants.WRAPPER)Wrapper wrapper);
 
     List<String> getDataTableNames(String tableName);
 

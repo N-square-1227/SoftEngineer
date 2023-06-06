@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.se.softengineer.algorithm.caculate.CaculateSample;
-import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.entity.IndexSymNode;
-import com.se.softengineer.entity.Sample;
-import com.se.softengineer.entity.TreeData;
+import com.se.softengineer.entity.*;
 import com.se.softengineer.mapper.IndexSymNodeMapper;
 import com.se.softengineer.service.IndexSymNodeService;
 import com.se.softengineer.service.IndexSymService;
@@ -526,13 +523,20 @@ public class ImportController {
     public Result nodeListPage(@RequestBody QueryPageParam query){
         HashMap param = query.getParam();
         String tableName = (String)param.get("table_name");
+        String queryContent = (String)param.get("queryName");
         System.out.println(tableName);
 
         Page<UsersData> page = new Page();
         page.setCurrent(query.getPageNum());
         page.setSize(query.getPageSize());
 
-        IPage result = usersDataService.getISDTNamePage(page,tableName);
+        LambdaQueryWrapper<UsersData> lambdaQueryWrapper = new LambdaQueryWrapper();
+        /* 条件 */
+        if (StringUtils.isNotBlank(queryContent) && !("null".equals(queryContent)))
+            lambdaQueryWrapper.like(UsersData::getIndexSymDTName, queryContent);
+
+
+        IPage result = usersDataService.getISDTNamePage(page,tableName,lambdaQueryWrapper);
         System.out.println("total=="+result.getTotal());
         return Result.success(result.getRecords(), result.getTotal());
     }

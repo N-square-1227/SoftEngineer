@@ -34,7 +34,7 @@
             style="text-align: center"
         >
 
-          <el-button size="mini" type="primary"  >选择节点数据文件</el-button>
+          <el-button size="mini" type="primary"  >选择指标体系文件</el-button>
         </el-upload>
         <br>
 

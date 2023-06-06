@@ -80,12 +80,12 @@ public class IndexSymNodeController {
         List<TreeData> treeData=indexSymNodeService.getIndexSymData(indexSymNodes);
         JSONArray jsonArray=getJsonList(treeData);
 
-        if(jsonArray.size() == 0)
+        if(jsonArray.size() == 0 || sllList.size() == 0)
             return Result.fail();
 
         HashMap<String,Object> res_map = new HashMap<>();
         res_map.put("treeData",jsonArray);
-        res_map.put("SSL",sllList);
+        res_map.put("SSE",sllList);
         /* 改到重新请求一次吧*/
 //        jsonArray.add(optimizeService.caculateResult(tableName + "_data", tableName, newindexname));
 //        jsonArray.add(optimizeService.caculateResult(tableName + "_data", tableName, tableName));

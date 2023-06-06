@@ -33,7 +33,7 @@
             :on-change="handleChange"
             style="text-align: center"
         >
-          <el-button type="primary"  size="mini">选择节点数据文件</el-button><br><br>
+          <el-button type="primary"  size="mini">选择指标体系文件</el-button><br><br>
         </el-upload>
         <br>
 

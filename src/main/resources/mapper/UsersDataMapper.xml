@@ -34,7 +34,7 @@
 
     <select id="getISDTNamePage" resultType="com.se.softengineer.entity.UsersData">
         SELECT *
-        FROM ${tableName}
+        FROM ${tableName} ${ew.customSqlSegment}
     </select>
 
 </mapper>

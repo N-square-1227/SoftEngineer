@@ -1,5 +1,6 @@
 package com.se.softengineer.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.se.softengineer.entity.Sample;
@@ -67,7 +68,7 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
     }
 
     @Override
-    public IPage getISDTNamePage(IPage<UsersData> page, String tableName) {
-        return usersDataMapper.getISDTNamePage(page, tableName);
+    public IPage getISDTNamePage(IPage<UsersData> page, String tableName, Wrapper wrapper) {
+        return usersDataMapper.getISDTNamePage(page, tableName, wrapper);
     }
 }
