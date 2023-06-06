@@ -161,7 +161,8 @@ export default {
             this.$axios.get(this.$httpUrl+'/import/insertUsersData/').then(res=>res.data).then(res=>{
                 console.log(res)
                 if (res.code==200) {
-                    this.$axios.get(this.$httpUrl+'/import/getOrigTreeData/').then(res=>res.data).then(res=>{
+                    this.$axios.get(this.$httpUrl+'/import/getOrigTreeData/')
+                            .then(res=>res.data).then(res=>{
                         console.log(res)
                         if (res.code==200) {
                             for(let i=0;i<res.data.length;i++){

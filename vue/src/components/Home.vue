@@ -197,6 +197,7 @@ export default {
                             this.$message.error("修改失败");
                         }
                         this.resetFrom();
+                        this.reloadUser();
                     })
                 }
             })

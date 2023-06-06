@@ -1,5 +1,8 @@
 package com.se.softengineer.algorithm.dataprocess;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.se.softengineer.entity.Sample;
 import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.stat.correlation.Covariance;

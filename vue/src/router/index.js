@@ -16,17 +16,6 @@ const routes = [
                 name:'Home',
                 component:()=>import('../components/Home')
             },
-            // //导航跳转
-            // {
-            //     path:'/userManage',
-            //     name:'userManage',
-            //     component:()=>import('../components/Main')
-            // },
-            // {
-            //     path: '/ImportFiles',
-            //     name: 'ImportFiles',
-            //     component:()=>import("../components/User/ImportFiles")
-            // },
             {
                 path: '/ImportExcel',
                 name: 'ImportExcel',
@@ -43,19 +32,31 @@ const routes = [
                 component:()=>import("../components/User/ImportJson")
             },
             {
-                path: '/DrawTree',
-                name: 'DrawTree',
-                component:()=>import("../components/User/DrawTree")
+                path: '/OptimizeResultFrame',
+                name: 'OptimizeResultFrame',
+                component:()=>import("../components/User/OptimizeResultFrame")
             },
             {
                 path :'/IndexSymManage',
                 name: 'IndexSymManage',
-                component:()=>import("../components/User/IndexSymManage")
-            },
-            {
-                path: '/DrawOriginalTree',
-                name: 'DrawOriginalTree',
-                component:()=>import("../components/User/Comments/DrawOriginalTree")
+                component:()=>import("../components/User/IndexSymManage"),
+                children:[
+                    {
+                        path: '/DrawOriginalTree',
+                        name: 'DrawOriginalTree',
+                        component:()=>import("../components/User/Comments/DrawOriginalTree")
+                    },
+                    {
+                        path: '/IndexNode',
+                        name: 'IndexNode',
+                        component:()=>import("../components/User/Comments/IndexNode")
+                    },
+                    {
+                        path: '/IndexNodeData',
+                        name: 'IndexNodeData',
+                        component:()=>import("../components/User/Comments/IndexNodeData")
+                    }
+                ]
             }
         ]
     },

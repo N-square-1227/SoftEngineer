@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.se.softengineer.utils.AesTypeHandler;
 import lombok.AllArgsConstructor;
+import com.se.softengineer.utils.AesTypeHandler;
+//import io.github.encrypt.annotation.FieldEncrypt;
+//import io.github.encrypt.bean.Encrypted;
 import lombok.Data;
 
 import java.io.Serial;
@@ -30,20 +33,21 @@ public class Users implements Serializable {
      * 主键
      */
     // @TableId 用来映射表的主键(主键自增策略,type = IdType.AUTO)
-    @TableId(value = "userID")
+    @TableId(value = "userID", type = IdType.AUTO)
     private Integer userID;
 
-    @TableField(value = "userName",typeHandler = AesTypeHandler.class)
+    @TableField(value = "userName", typeHandler = AesTypeHandler.class)
     private String userName;
 
-    @TableField(value = "userPassword",typeHandler = AesTypeHandler.class)
+    @TableField(value = "userPassword", typeHandler = AesTypeHandler.class)
     private String userPassword;
 
-    @TableField(value = "userEmail",typeHandler = AesTypeHandler.class)
+    @TableField(value = "userEmail", typeHandler = AesTypeHandler.class)
     private String userEmail;
 
     @TableField("role")
     private Integer role;
+
 
     @Override
     public String toString() {

@@ -9,7 +9,7 @@ import lombok.Data;
 public class UsersData {
 
     @TableId(value = "id",type = IdType.AUTO)
-    int id;
+    Integer id;
 
     @TableField("dataTableName")
     String dataTableName;

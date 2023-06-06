@@ -1,7 +1,5 @@
 package com.se.softengineer.entity;
 
-import com.se.softengineer.entity.IndexSymNode;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
