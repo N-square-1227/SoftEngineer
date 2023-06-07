@@ -90,10 +90,22 @@ public class IndexSymController {
      * http://localhost:8877/indexsym/loadData?table_name=data
      * 后面也可以改成PostMapping
      **/
-    @GetMapping("/loadData")
-    private Result load_data(String table_name) {
-        data = sampleService.getData(table_name);
-        return data.size() != 0 ? Result.success(data) : Result.fail() ;
+    @PostMapping ("/loadData")
+    public Result loadData(@RequestBody QueryPageParam query) {
+        try {
+            HashMap param = query.getParam();
+            String table_name = (String) param.get("table_name");
+
+            List<Sample> sampleList = sampleService.getData(table_name+"_data");
+            List<Double> data = sampleList.get(0).getData();
+            HashMap<String, Object> res_map = new HashMap<>();
+            res_map.put("sampleData", sampleList);
+            res_map.put("colNum", data.size());
+            res_map.put("sampleNum", sampleList.size());
+            return Result.success(res_map);
+        }catch (Exception e){
+            return Result.fail();
+        }
     }
 
     /**

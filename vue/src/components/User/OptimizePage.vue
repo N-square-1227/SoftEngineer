@@ -36,7 +36,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[1, 5, 10]"
+        :page-sizes="[5, 10]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
@@ -53,7 +53,7 @@ export default {
     data() {
         return {
           currentPage : 1,
-          pageSize : 3,
+          pageSize : 5,
           total:0,
           user:JSON.parse(sessionStorage.getItem('CurUser')),
           treeData: [],

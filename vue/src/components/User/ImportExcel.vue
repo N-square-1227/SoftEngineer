@@ -177,15 +177,21 @@ export default {
       this.$axios.get(this.$httpUrl+'/import/insertUsersData/').then(res=>res.data).then(res=>{
         console.log(res)
         if (res.code==200) {
-          this.$message({
-            message: '成功！',
-            type: 'success'
-          });
+          this.$axios.get(this.$httpUrl+'/import/insertUsersData/').then(res=>res.data).then(res=>{
+            console.log(res)
+            if (res.code==200) {
+              this.$message({
+                message: '成功！',
+                type: 'success'
+              });
+            }
+            else
+              this.$message.error('失败！');
+          })
         }
         else
           this.$message.error('失败！');
       })
-
     },
   }
 }

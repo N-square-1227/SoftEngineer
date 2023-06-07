@@ -71,4 +71,9 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
     public IPage getISDTNamePage(IPage<UsersData> page, String tableName, Wrapper wrapper) {
         return usersDataMapper.getISDTNamePage(page, tableName, wrapper);
     }
+
+    @Override
+    public int delIndex(String userTable,String indexName){
+        return usersDataMapper.delIndex(userTable,indexName);
+    }
 }

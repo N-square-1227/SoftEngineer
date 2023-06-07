@@ -31,6 +31,8 @@ public interface UsersDataMapper extends BaseMapper<UsersData> {
 
     int deleteTable(String table_name);
 
+    int delIndex(@Param("table_name") String userTable,@Param("indexName") String indexName);
+
     List<String> getIndexSymTableNames(String tableName);
 
     /**
