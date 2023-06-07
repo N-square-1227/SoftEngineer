@@ -19,7 +19,6 @@
             </el-form>
           </template>
         </div>
-        <el-button type="primary"  @click="next">下一步</el-button>
       </div>
 
       <div v-if="active==1">
@@ -38,7 +37,7 @@
         </el-upload>
         <br>
 
-        <el-button  type="primary" @click="jumpBehind();next();clearAll1();clearAll2()">下一步</el-button>
+        <el-button  type="primary" @click="jumpBehind();clearAll1();clearAll2()">上传</el-button>
       </div>
       <div v-if="active==2">
 
@@ -56,8 +55,10 @@
         </el-upload>
         <br>
         <br><br>
-        <el-button  type="submit" @click="jumpBehind();insertUsersData()">确定</el-button>
+        <el-button  type="submit" @click="jumpBehind();insertUsersData()">上传</el-button>
       </div>
+
+      <el-button type="success" style="margin-top: 10px" @click="next">下一步</el-button>
 
     </el-main>
   </div>
@@ -184,6 +185,7 @@ export default {
                 message: '成功！',
                 type: 'success'
               });
+              this.$router.replace('/ImportFiles');
             }
             else
               this.$message.error('失败！');

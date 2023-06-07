@@ -7,6 +7,7 @@
         <el-step title="Step 3" description="上传指标数据文件" />
       </el-steps>
 
+
       <div v-if="active==0">
 
         <div style="width: 60%;margin-left: 20%" class="app-container">
@@ -19,7 +20,7 @@
             </el-form>
           </template>
         </div>
-        <el-button type="primary"  @click="next">下一步</el-button>
+
       </div>
 
       <div v-if="active==1">
@@ -38,8 +39,10 @@
         </el-upload>
         <br>
 
-        <el-button  type="primary" @click="jumpBehind();next();clearAll1();clearAll2()">下一步</el-button>
+        <el-button  type="primary" @click="jumpBehind();clearAll1();clearAll2()">上传</el-button>
       </div>
+
+
       <div v-if="active==2">
 
         <br><br>
@@ -57,8 +60,10 @@
         </el-upload>
         <br>
         <br><br>
-        <el-button  type="submit" @click="jumpBehind();insertUsersData()">确定</el-button>
+        <el-button  type="submit" @click="jumpBehind();insertUsersData()">上传</el-button>
       </div>
+
+      <el-button type="success" style="margin-top: 10px" @click="next">下一步</el-button>
 
     </el-main>
   </div>
@@ -76,7 +81,8 @@ export default {
   },
   methods: {
     next() {
-      if (this.active++ > 2) this.active = 0;
+      this.active+=1;
+      if (this.active > 2) this.active = 0;
 
     },
     handleChange(file, fileList) {
@@ -185,8 +191,9 @@ export default {
         if (res.code==200) {
           this.$message({
             message: '成功！',
-            type: 'success'
+            type: 'success',
           });
+          this.$router.replace('/ImportFiles');
         }
         else
           this.$message.error('失败！');

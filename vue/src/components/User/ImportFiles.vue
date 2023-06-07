@@ -1,23 +1,21 @@
 <template>
   <div style="position: fixed">
-    <div style="margin-bottom: 5px;text-align: left">
+    <div style="margin-bottom: 5px;text-align: left;">
       <el-input v-model="nodeName" placeholder="请输入节点名称" suffix-icon="el-icon-search" style="width: 200px;"
                 @keyup.enter.native="getAllSyms"></el-input>
       <el-button type="primary" style="margin-left: 10px;" @click="getAllSyms">查询</el-button>
-      <el-button type="success" @click="resetParam">重置</el-button>
-      <el-main style="margin-left: 50%">
-        <el-select v-model="value" placeholder="选择导入指标体系数据方式" @change="getValue" style="width: 250px">
-          <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-          </el-option>
-        </el-select>
-        <el-tooltip class="item" effect="dark" content="指标数据仅支持excel导入" placement="top-start">
-          <el-button @click="sure">确定</el-button>
-        </el-tooltip>
-      </el-main>
+      <el-button type="success" style="margin-right: 10px;" @click="resetParam">重置</el-button>
+      <el-select v-model="value" placeholder="选择导入指标体系数据方式" @change="getValue" style="width: 250px;margin-right: 10px">
+        <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+        </el-option>
+      </el-select>
+      <el-tooltip class="item" effect="dark" content="指标数据仅支持excel导入">
+        <el-button @click="sure">确定</el-button>
+      </el-tooltip>
     </div>
     <el-table :data="symList"
               :header-cell-style="{ background:'#f2f5fc',color:'#555555'}">

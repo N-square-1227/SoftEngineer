@@ -22,6 +22,11 @@ const routes = [
                 component:()=>import("../components/User/ImportExcel")
             },
             {
+                path: '/ImportFiles',
+                name: 'ImportFiles',
+                component:()=>import("../components/User/ImportFiles")
+            },
+            {
                 path: '/ImportXML',
                 name: 'ImportXML',
                 component:()=>import("../components/User/ImportXML")
