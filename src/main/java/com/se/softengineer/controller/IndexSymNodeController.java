@@ -18,9 +18,9 @@ import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/indexSymNode")
@@ -55,9 +55,12 @@ public class IndexSymNodeController {
          */
         IndexSym indexSym;
         String newindexname = "";
+        List<Double> sllList = new ArrayList<>();
         if(func.equals("kmeans")) {
-            indexSym = optimizeService.kmeans(tableName, tableName + "_data");
+            indexSym = optimizeService.kmeans(tableName, tableName + "_data",sllList);
             newindexname = tableName + "_new" + "_kmeans";
+            if(sllList.size()==0)
+                return Result.fail();
         } else if (func.equals("entropy")) {
             indexSym = optimizeService.entropy(tableName, tableName + "_data");
             newindexname = tableName + "_new" + "_entropy";
@@ -78,9 +81,27 @@ public class IndexSymNodeController {
         // 转换成画树需要的类
         List<TreeData> treeData=indexSymNodeService.getIndexSymData(indexSymNodes);
         JSONArray jsonArray=getJsonList(treeData);
+
+        if(jsonArray.size() == 0)
+            return Result.fail();
+
+        HashMap<String,Object> res_map = new HashMap<>();
+        res_map.put("treeData",jsonArray);
+        res_map.put("SSE",sllList);
         /* 改到重新请求一次吧*/
 //        jsonArray.add(optimizeService.caculateResult(tableName + "_data", tableName, newindexname));
 //        jsonArray.add(optimizeService.caculateResult(tableName + "_data", tableName, tableName));
+        // 返回构建好的数据
+        return Result.success(res_map);
+    }
+
+    @GetMapping("/getOriginalTreeData")
+    public Result getOriginalTreeData(@RequestParam("tableName") String tableName) throws Exception {
+
+        List<IndexSymNode> indexSym = indexSymNodeService.getIndex(tableName);
+        // 转换成画树需要的类
+        List<TreeData> treeData=indexSymNodeService.getIndexSymData(indexSym);
+        JSONArray jsonArray=JSONArray.parseArray(JSON.toJSONString(treeData));
         // 返回构建好的数据
         return jsonArray.size()>0?Result.success(jsonArray):Result.fail();
     }

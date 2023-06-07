@@ -67,8 +67,9 @@ export default {
   methods: {
     handleClick(row) {  // 计算并在树形结构中显示
       console.log(row);
-      this.$axios.post(this.$httpUrl+'/import/caculateSample',{
+      this.$axios.post(this.$httpUrl+'/indexsym/caculateSample',{
         param: {
+          table_name: JSON.parse(sessionStorage.getItem("IndexName")),
           sample: row,
         }
       }).then(res=>res.data).then(res=> {
@@ -94,9 +95,12 @@ export default {
       this.setTableData()
     },
     loadPost(){
-      this.$axios.post(this.$httpUrl + '/import/loadData', {
+      this.$axios.post(this.$httpUrl + '/indexsym/loadData', {
         pageSize: this.pageSize,
         pageNum : this.pageNum,
+        param:{
+          table_name:JSON.parse(sessionStorage.getItem("IndexName"))
+        }
       }).then(res => res.data).then(res => {
         // console.log(res);
         if(res.code == 200) {

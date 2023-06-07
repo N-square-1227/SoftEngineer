@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.se.softengineer.algorithm.caculate.CaculateSample;
-import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.entity.IndexSymNode;
-import com.se.softengineer.entity.Sample;
-import com.se.softengineer.entity.TreeData;
+import com.se.softengineer.entity.*;
 import com.se.softengineer.mapper.IndexSymNodeMapper;
 import com.se.softengineer.service.IndexSymNodeService;
 import com.se.softengineer.service.IndexSymService;
@@ -510,17 +507,38 @@ public class ImportController {
         return Result.success();
     }
 
-    /**
-     * @author xiaxue
-     * 获取该用户所有上传的指标体系的名字
-     */
-    @RequestMapping("/getAllSyms/{userName}")
-    public Result getAllSyms(@PathVariable("userName")String userName){
-        //先找到userData表
-        String userData=userName+"_data";
-        List<String> indexSymDTNames=usersDataService.getIndexSymTableNames(userData);
-        Result result=new Result();
-        return indexSymDTNames==null?Result.fail():Result.success(indexSymDTNames);
+//    /**
+//     * @author xiaxue
+//     * 获取该用户所有上传的指标体系的名字
+//     */
+//    @RequestMapping("/getAllSyms/{userName}")
+//    public Result getAllSyms(@PathVariable("userName")String userName){
+//        //先找到userData表
+//        String userData=userName+"_data";
+//        List<String> indexSymDTNames=usersDataService.getIndexSymTableNames(userData);
+//        return indexSymDTNames==null?Result.fail():Result.success(indexSymDTNames);
+//    }
+
+    @PostMapping("/indexSymListPage")
+    public Result nodeListPage(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+        String tableName = (String)param.get("table_name");
+        String queryContent = (String)param.get("queryName");
+        System.out.println(tableName);
+
+        Page<UsersData> page = new Page();
+        page.setCurrent(query.getPageNum());
+        page.setSize(query.getPageSize());
+
+        LambdaQueryWrapper<UsersData> lambdaQueryWrapper = new LambdaQueryWrapper();
+        /* 条件 */
+        if (StringUtils.isNotBlank(queryContent) && !("null".equals(queryContent)))
+            lambdaQueryWrapper.like(UsersData::getIndexSymDTName, queryContent);
+
+
+        IPage result = usersDataService.getISDTNamePage(page,tableName,lambdaQueryWrapper);
+        System.out.println("total=="+result.getTotal());
+        return Result.success(result.getRecords(), result.getTotal());
     }
     /**
      * @author
@@ -534,94 +552,5 @@ public class ImportController {
     public Result getAllNodeInfo(@PathVariable("dbName")String dbName){
         List<IndexSymNode> data= indexSymNodeService.getAllNodeInfo(dbName);
         return data==null?Result.fail():Result.trans(data);
-    }
-
-    /**
-     * @author lmy
-     */
-    @GetMapping("/getOrigTreeData")
-    public Result getOrigTreeData() throws Exception {
-        List<IndexSymNode> indexSym = indexSymNodeService.getIndex(indexSymTableName);
-        // 转换成画树需要的类
-        List<TreeData> treeData=indexSymNodeService.getIndexSymData(indexSym);
-        JSONArray jsonArray=JSONArray.parseArray(JSON.toJSONString(treeData));
-        // 返回构建好的数据
-        return jsonArray.size()>0?Result.success(jsonArray):Result.fail();
-    }
-
-    /**
-     * @author xly
-     * @param query
-     * @return
-     */
-    @PostMapping("/nodeQuery")
-    public Result listPage(@RequestBody QueryPageParam query){
-        HashMap param = query.getParam();
-        String table_name = indexSymTableName;
-        String queryContent = (String)param.get("name");
-//        System.out.println(table_name);
-
-        Page<IndexSymNode> page = new Page();
-        page.setCurrent(query.getPageNum());
-        page.setSize(query.getPageSize());
-
-        LambdaQueryWrapper<IndexSymNode> lambdaQueryWrapper = new LambdaQueryWrapper();
-        /* 条件 */
-        if (StringUtils.isNotBlank(queryContent) && !("null" == queryContent))
-            lambdaQueryWrapper.like(IndexSymNode::getNodeName, queryContent);
-
-        IPage result = indexSymService.nodePaged(page,table_name,lambdaQueryWrapper);
-        System.out.println("total=="+result.getTotal());
-        return Result.success(result.getRecords(), result.getTotal());
-    }
-
-    /**
-     * 获取指定数据表中的所有数据
-     * http://localhost:8877/indexsym/loadData?table_name=data
-     * 后面也可以改成PostMapping
-     **/
-    @PostMapping ("/loadData")
-    public Result loadData() {
-        try {
-            List<Sample> sampleList = sampleService.getData(indexDataTableName);
-            List<Double> data = sampleList.get(0).getData();
-            HashMap<String, Object> res_map = new HashMap<>();
-            res_map.put("sampleData", sampleList);
-            res_map.put("colNum", data.size());
-            res_map.put("sampleNum", sampleList.size());
-            return Result.success(res_map);
-        }catch (Exception e){
-            return Result.fail();
-        }
-    }
-
-    /**
-     * @author xly
-     * @param query
-     * @return
-     * 获取某一组样例各个节点的计算结果
-     * 返回值为CaculateSample的内部类，包含一个Map和一个List
-     * res: List是各个节点的值，按照节点id排列
-     * res_map: map是节点id到节点值的映射，按需取用
-     */
-    @PostMapping("/caculateSample")
-    public Result caculateSample(@RequestBody QueryPageParam query) {
-        HashMap param = query.getParam();
-
-        String table_name = indexSymTableName;
-//        System.out.println(table_name);
-        LinkedHashMap data = ((LinkedHashMap) param.get("sample"));
-        List<Double> list = new ArrayList<>();
-        for(Object key : data.keySet())
-            try {
-                list.add((double) data.get(key));
-            }catch (Exception e) {    // 有整数类型，会报类型转换错误
-                list.add((double)(int) data.get(key));
-            }
-        list.remove(0);
-        Sample sample = new Sample(list);
-        System.out.println(sample.getData());
-        IndexSym indexSym = new IndexSym(indexSymService.getIndex(table_name));
-        return Result.success((new CaculateSample(indexSym, sample).caculate()));
     }
 }

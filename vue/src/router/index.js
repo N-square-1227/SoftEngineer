@@ -22,6 +22,11 @@ const routes = [
                 component:()=>import("../components/User/ImportExcel")
             },
             {
+                path: '/ImportFiles',
+                name: 'ImportFiles',
+                component:()=>import("../components/User/ImportFiles")
+            },
+            {
                 path: '/ImportXML',
                 name: 'ImportXML',
                 component:()=>import("../components/User/ImportXML")
@@ -35,6 +40,11 @@ const routes = [
                 path: '/OptimizeResultFrame',
                 name: 'OptimizeResultFrame',
                 component:()=>import("../components/User/OptimizeResultFrame")
+            },
+            {
+                path: '/KmeansResultFrame',
+                name: 'KmeansResultFrame',
+                component:()=>import("../components/User/KmeansResultFrame")
             },
             {
                 path :'/IndexSymManage',

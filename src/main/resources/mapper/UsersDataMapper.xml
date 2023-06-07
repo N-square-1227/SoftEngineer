@@ -7,11 +7,11 @@
 
     <update id="createTable" parameterType="String">
         CREATE TABLE ${tableName} (
-            `id` int NOT NULL AUTO_INCREMENT,
-            `dataTableName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-            `indexSymDTName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-            PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+                                      `id` int NOT NULL AUTO_INCREMENT,
+                                      `dataTableName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+                                      `indexSymDTName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+                                      PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
     </update>
 
     <update id="deleteTable" parameterType="String">
@@ -22,14 +22,23 @@
         ALTER TABLE ${origin_name} RENAME TO ${new_name}
     </update>
 
+    <update id="delIndex" parameterType="String">
+        DELETE FROM ${table_name} WHERE indexSymDTName = "${indexName}"
+    </update>
+
     <select id="getIndexSymTableNames" resultType="string">
         SELECT indexSymDTName
         FROM ${tableName}
     </select>
 
     <select id="getDataTableNames" resultType="string">
-        SELECT dataTableName
+        SELECT indexSymDTName
         FROM ${tableName}
+    </select>
+
+    <select id="getISDTNamePage" resultType="com.se.softengineer.entity.UsersData">
+        SELECT *
+        FROM ${tableName} ${ew.customSqlSegment}
     </select>
 
 </mapper>
