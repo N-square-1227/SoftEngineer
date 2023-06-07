@@ -29,7 +29,7 @@
       </el-table-column>
       <el-table-column label="操作" width="600">
         <template slot-scope="scope">
-          <el-button slot="reference" size="mini" type="success" style="margin-right:10px" @click="detail(scope.row)">详细信息</el-button>
+          <el-button slot="reference" size="mini" type="primary" style="margin-right:10px" @click="detail(scope.row)">详细信息</el-button>
           <el-popconfirm
               title="确定删除吗？"
               @confirm="del(scope.row)"
