@@ -38,7 +38,8 @@
                   v-for="item in algorithmOptions"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value">
+                  :value="item.value"
+                  style="font-size: 10px">
               </el-option>
             </el-select>
             <el-button type="primary"
@@ -109,8 +110,11 @@ export default {
                 }
             }).then(res=>res.data).then(res=>{
                 if (res.code==200) {
-                    this.symList = res.data
-                    this.total = res.total;
+                  this.total = res.total;
+                  for(let i = 0; i < this.total; i ++)
+                    res.data[i].indexSymDTName = res.data[i].indexSymDTName.substring(this.user.userName.length + 1)
+                  // console.log(res.data)
+                  this.symList = res.data
                 }
                 else
                     this.$message.error('数据加载失败！');
@@ -121,9 +125,9 @@ export default {
         this.getAllSyms()
       },
       setSession(tableName,alg){
-          func=alg,
-                  name=tableName,
-                  sessionStorage.setItem("name", JSON.stringify(name))
+          func=alg
+          name=tableName
+          sessionStorage.setItem("name", JSON.stringify(name))
           sessionStorage.setItem("func", JSON.stringify(func))
       },
       chooseAlgorithm(row) {
@@ -138,9 +142,11 @@ export default {
         }
       },
       KMeans(row){
-          this.setSession(row.indexSymDTName,"kmeans")
-          this.loadSampleData()
-          this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName=' + row.indexSymDTName + "&func=kmeans").then(res => res.data).then(res => {
+          this.setSession(this.user.userName + "_" + row.indexSymDTName,"kmeans")
+          // this.loadSampleData()
+          this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName='
+                              + this.user.userName + "_" + row.indexSymDTName
+                              + "&func=kmeans").then(res => res.data).then(res => {
               // console.log(res)
               if (res.code == 200) {
                   this.treeData= res.data.treeData
@@ -158,9 +164,11 @@ export default {
           })
       },
       entropy(row){
-          this.setSession(row.indexSymDTName,"entropy")
-          this.loadSampleData()
-          this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName=' + row.indexSymDTName + "&func=entropy").then(res => res.data).then(res => {
+          this.setSession(this.user.userName + "_" + row.indexSymDTName,"entropy")
+          // this.loadSampleData()
+          this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName='
+                              + this.user.userName + "_" + row.indexSymDTName
+                              + "&func=entropy").then(res => res.data).then(res => {
               // console.log(res)
               if (res.code == 200) {
                 this.treeData= res.data.treeData
@@ -176,9 +184,10 @@ export default {
           })
       },
       pca(row){
-          this.setSession(row.indexSymDTName,"pca")
-          this.loadSampleData()
-          this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName=' + row.indexSymDTName + "&func=pca").then(res => res.data).then(res => {
+          this.setSession(this.user.userName + "_" + row.indexSymDTName,"pca");
+          this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName='
+                              + this.user.userName + "_" + row.indexSymDTName
+                              + "&func=pca").then(res => res.data).then(res => {
               // console.log(res)
               if (res.code == 200) {
                 this.treeData= res.data.treeData
@@ -192,28 +201,29 @@ export default {
               } else
                   this.$message.error('优化失败！');
           })
+        // this.loadSampleData()
       },
-      loadSampleData(){
-          this.$axios.post(this.$httpUrl + '/indexsym/loadNewData', {
-              pageSize:this.pageSize,
-              pageNum:this.currentPage,
-              param:{
-                  basicTableName: name, // 这是原始指标体系的表名,优化后的表名添加使用的函数，数据表名添加后缀
-                  func: func,
-              }
-          }).then(res => res.data).then(res => {
-              console.log(res);
-              if(res.code == 200) {
-                  sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
-                  // console.log(res.data.sampleData)
-                  sessionStorage.setItem("colNum", res.data.colNum);
-                  sessionStorage.setItem("sampleNum", res.data.sampleNum);
-              }
-              else {
-                  this.$message.error('数据加载出错！');
-              }
-          })
-      },
+      // loadSampleData(){
+      //     this.$axios.post(this.$httpUrl + '/indexsym/loadNewData', {
+      //         pageSize:this.pageSize,
+      //         pageNum:this.currentPage,
+      //         param:{
+      //             basicTableName: name, // 这是原始指标体系的表名,优化后的表名添加使用的函数，数据表名添加后缀
+      //             func: func,
+      //         }
+      //     }).then(res => res.data).then(res => {
+      //         console.log(res);
+      //         if(res.code == 200) {
+      //             sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
+      //             // console.log(res.data.sampleData)
+      //             sessionStorage.setItem("colNum", res.data.colNum);
+      //             sessionStorage.setItem("sampleNum", res.data.sampleNum);
+      //         }
+      //         else {
+      //             this.$message.error('数据加载出错！');
+      //         }
+      //     })
+      // },
       handleSizeChange(val) {
           console.log(`每页 ${val} 条`);
           this.currentPage=1
