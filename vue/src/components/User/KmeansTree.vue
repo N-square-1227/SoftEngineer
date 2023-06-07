@@ -1,9 +1,35 @@
 <template>
   <div id="container" style="width:100%; height: auto;display: flex">
-    <div id="treeChart" style="height: 70vh;width: 70%"></div>
-    <div id ='sslChart' style="height:70vh;width: 30%;float: right"></div>
+    <div id="treeChart" style="height: 70vh;width: 70%;overflow-x: auto;overflow-y: auto"></div>
+    <div id ='sslChart' style="height:70vh;width: 30%;float: right;overflow-x: auto;overflow-y: auto"></div>
   </div>
 </template>
+
+<style>
+/*修改表格的滚动条*/
+#treeChart::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+/*滚动条的滑块*/
+#treeChart::-webkit-scrollbar-thumb {
+  background-color: #a1a3a9;
+  border-radius: 3px;
+}
+
+/*修改表格的滚动条*/
+#sslChart::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+/*滚动条的滑块*/
+#sslChart::-webkit-scrollbar-thumb {
+  background-color: #a1a3a9;
+  border-radius: 3px;
+}
+
+
+</style>
 
 <script>
 export default {

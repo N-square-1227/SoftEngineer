@@ -91,8 +91,8 @@ export default {
       },
         setSession(tableName,alg){
             func=alg,
-                    name=tableName,
-                    sessionStorage.setItem("name", JSON.stringify(name))
+            name=tableName,
+            sessionStorage.setItem("name", JSON.stringify(name))
             sessionStorage.setItem("func", JSON.stringify(func))
         },
         KMeans(row){
