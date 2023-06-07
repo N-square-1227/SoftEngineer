@@ -4,8 +4,8 @@
     <div style="margin-bottom: 5px;text-align: left">
       <el-input v-model="nodeName" placeholder="请输入节点名称" suffix-icon="el-icon-search" style="width: 200px;"
                 @keyup.enter.native="loadPost"></el-input>
-      <el-button type="primary" style="margin-left: 10px;" @click="loadPost">查询</el-button>
-      <el-button type="success" @click="resetParam">重置</el-button>
+      <el-button style="margin-left: 10px;" @click="loadPost">查询</el-button>
+      <el-button type="primary" plain @click="resetParam">重置</el-button>
     </div>
     <el-table :data="tableData"
               :header-cell-style="{ background:'#f2f5fc',color:'#555555'}">

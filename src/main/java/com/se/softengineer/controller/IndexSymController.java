@@ -231,7 +231,6 @@ public class IndexSymController {
     * 这太长了，改post
     **/
     @PostMapping("/caculateResult")
-//    public Result use_caculateResult(String dataName, String indexName, String newindexName){
     public Result use_caculateResult(@RequestBody QueryPageParam query){
         HashMap param = query.getParam();
 

@@ -1,21 +1,25 @@
 <template>
   <div style="position: fixed">
-    <div style="margin-bottom: 5px;text-align: left;">
-      <el-input v-model="nodeName" placeholder="请输入节点名称" suffix-icon="el-icon-search" style="width: 200px;"
-                @keyup.enter.native="getAllSyms"></el-input>
-      <el-button type="primary" style="margin-left: 10px;" @click="getAllSyms">查询</el-button>
-      <el-button type="success" style="margin-right: 10px;" @click="resetParam">重置</el-button>
-      <el-select v-model="value" placeholder="选择导入指标体系数据方式" @change="getValue" style="width: 250px;margin-right: 10px">
-        <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-        </el-option>
-      </el-select>
-      <el-tooltip class="item" effect="dark" content="指标数据仅支持excel导入">
-        <el-button @click="sure">确定</el-button>
-      </el-tooltip>
+    <div style="margin-bottom: 5px;overflow: hidden">
+      <div style="text-align: left;float: left">
+        <el-input v-model="nodeName" placeholder="请输入指标体系名称" suffix-icon="el-icon-search" style="width: 200px;"
+                  @keyup.enter.native="getAllSyms"></el-input>
+        <el-button style="margin-left: 10px;" @click="getAllSyms">查询</el-button>
+        <el-button type="primary" plain style="margin-right: 10px;" @click="resetParam">重置</el-button>
+      </div>
+      <div style="text-align: right;float:right;">
+        <el-select v-model="value" placeholder="选择导入指标体系数据方式" @change="getValue" style="width: 250px;margin-right: 10px">
+          <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+          </el-option>
+        </el-select>
+        <el-tooltip class="item" effect="dark" content="指标数据仅支持excel导入">
+          <el-button @click="sure" type="success">导入新数据</el-button>
+        </el-tooltip>
+      </div>
     </div>
     <el-table :data="symList"
               :header-cell-style="{ background:'#f2f5fc',color:'#555555'}">
@@ -25,7 +29,7 @@
       </el-table-column>
       <el-table-column label="操作" width="600">
         <template slot-scope="scope">
-          <el-button slot="reference" size="mini" type="success" style="margin-right:10px" @click="detail(scope.row)">详细信息</el-button>
+          <el-button slot="reference" size="mini" type="primary" style="margin-right:10px" @click="detail(scope.row)">详细信息</el-button>
           <el-popconfirm
               title="确定删除吗？"
               @confirm="del(scope.row)"
@@ -88,11 +92,13 @@ export default {
         if(values=="excel"){
             this.$router.push({name:'ImportExcel',params: {values}})
         }
-        if(values=="xml"){
+        else if(values=="xml"){
             this.$router.push({name:'ImportXML',params: {values}})
         }
-        if(values=="json"){
+        else if(values=="json"){
             this.$router.push({name:'ImportJson',params: {values}})
+        } else{
+          this.$message.warning("请选择数据导入格式！")
         }
     },
     getAllSyms(){
@@ -105,8 +111,11 @@ export default {
         }
       }).then(res=>res.data).then(res=>{
         if (res.code==200) {
-          this.symList = res.data
           this.total = res.total;
+          for(let i = 0; i < this.total; i ++)
+            res.data[i].indexSymDTName = res.data[i].indexSymDTName.substring(this.user.userName.length + 1)
+          // console.log(res.data)
+          this.symList = res.data
         }
         else
           this.$message.error('数据加载失败！');

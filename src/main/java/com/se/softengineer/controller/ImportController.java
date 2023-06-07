@@ -523,6 +523,7 @@ public class ImportController {
     public Result nodeListPage(@RequestBody QueryPageParam query){
         HashMap param = query.getParam();
         String tableName = (String)param.get("table_name");
+        String userName = tableName.substring(0, tableName.length() - 5);
         String queryContent = (String)param.get("queryName");
         System.out.println(tableName);
 
