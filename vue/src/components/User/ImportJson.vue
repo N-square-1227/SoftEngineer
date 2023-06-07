@@ -1,13 +1,13 @@
 <template>
   <div>
     <el-main style="text-align: center">
-      <el-steps :active="1" align-center :aria-current="current">
+      <el-steps :active="active" align-center finish-status="success">
         <el-step title="Step 1" description="下载模板文件" />
         <el-step title="Step 2" description="上传结点数据文件" />
         <el-step title="Step 3" description="上传指标数据文件" />
       </el-steps>
 
-      <div v-if="active==0">
+      <div v-if="active==1">
 
         <div style="width: 60%;margin-left: 20%" class="app-container">
 
@@ -19,9 +19,10 @@
             </el-form>
           </template>
         </div>
+        <el-button type="primary"  @click="next">下一步</el-button>
       </div>
 
-      <div v-if="active==1">
+      <div v-if="active==2">
         <br><br><br>
         <el-upload
             accept=".json"
@@ -32,13 +33,13 @@
             :on-change="handleChange"
             style="text-align: center"
         >
-          <el-button type="primary"  size="mini">选择指标体系文件</el-button><br><br>
+          <el-button type="primary"  size="mini">选择节点数据文件</el-button><br><br>
         </el-upload>
         <br>
 
-        <el-button  type="primary" @click="jumpBehind();clearAll1();clearAll2()">上传</el-button>
+        <el-button  type="primary" @click="jumpBehind();next();clearAll1();clearAll2()">下一步</el-button>
       </div>
-      <div v-if="active==2">
+      <div v-if="active==3">
 
         <br><br>
         <el-upload
@@ -54,10 +55,8 @@
         </el-upload>
         <br>
         <br><br>
-        <el-button  type="submit" @click="jumpBehind2();insertUsersData()">上传</el-button>
+        <el-button  type="submit" @click="jumpBehind2();insertUsersData()">确定</el-button>
       </div>
-
-      <el-button type="success" style="margin-top: 10px"  @click="next">下一步</el-button>
 
     </el-main>
   </div>
@@ -69,7 +68,7 @@ export default {
   data() {
     return{
       user:JSON.parse(sessionStorage.getItem('CurUser')),
-      active:0,
+      active:1,
       file: {
         name: 'example.json'
       }
@@ -203,11 +202,11 @@ export default {
             message: '成功！',
             type: 'success'
           });
+          this.$router.replace("/ImportFiles");
         }
         else
           this.$message.error('失败！');
       })
-      this.$router.replace('/ImportFiles');
 
     }
   }
