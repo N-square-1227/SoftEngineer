@@ -144,7 +144,9 @@ export default {
       })
     },
     del(row){
-      this.$axios.get(this.$httpUrl+'/user/delTable?tableName='+ row.indexSymDTName+"&user="+this.user.userName).then(res=>res.data).then(res=>{
+      this.$axios.get(this.$httpUrl+'/user/delTable?tableName='
+                        + this.user.userName + "_" + row.indexSymDTName
+                        +"&user="+this.user.userName).then(res=>res.data).then(res=>{
         console.log(res)
         if(res.code==200){
           this.$message({
