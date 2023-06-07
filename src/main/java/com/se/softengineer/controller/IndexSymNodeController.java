@@ -49,16 +49,19 @@ public class IndexSymNodeController {
         if(func == null || func.equals(""))
             return Result.fail();
 
+        HashMap<String,Object> res_map = new HashMap<>();
+
         /**
          * 判断func 调用算法 接收 List<IndexSymNode>数据
          * by wxy
          */
         IndexSym indexSym;
         String newindexname = "";
-        List<Double> sllList = new ArrayList<>();
         if(func.equals("kmeans")) {
+            List<Double> sllList = new ArrayList<>();
             indexSym = optimizeService.kmeans(tableName, tableName + "_data",sllList);
             newindexname = tableName + "_new" + "_kmeans";
+            res_map.put("SSE",sllList);
             if(sllList.size()==0)
                 return Result.fail();
         } else if (func.equals("entropy")) {
@@ -85,9 +88,8 @@ public class IndexSymNodeController {
         if(jsonArray.size() == 0)
             return Result.fail();
 
-        HashMap<String,Object> res_map = new HashMap<>();
+
         res_map.put("treeData",jsonArray);
-        res_map.put("SSE",sllList);
         /* 改到重新请求一次吧*/
 //        jsonArray.add(optimizeService.caculateResult(tableName + "_data", tableName, newindexname));
 //        jsonArray.add(optimizeService.caculateResult(tableName + "_data", tableName, tableName));
