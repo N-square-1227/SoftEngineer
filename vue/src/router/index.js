@@ -17,11 +17,6 @@ const routes = [
                 component:()=>import('../components/Home')
             },
             {
-                path: "/userManage",
-                name: 'userManage',
-                component:()=>import('../components/Admin/userManage')
-            },
-            {
                 path: '/ImportExcel',
                 name: 'ImportExcel',
                 component:()=>import("../components/User/ImportExcel")

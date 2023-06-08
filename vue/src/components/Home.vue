@@ -35,9 +35,6 @@
         </el-descriptions>
 
         <div style="margin-top: 20px">
-            <el-button v-if="user.role===1" @click="toUser" type="success" size="big">用户管理</el-button>
-            <el-button v-else type="success" @click="toIndex" size="big">指标体系管理</el-button>
-
             <el-button type="primary" @click="modify" size="big">修改个人信息</el-button>
             <el-button type="danger" @click="changePwd" size="big">修改密码</el-button>
         </div>
@@ -123,12 +120,6 @@ export default {
     methods:{
         init(){
             this.user = JSON.parse(sessionStorage.getItem('CurUser'))
-        },
-        toUser(){
-          this.$router.replace("/userManage")
-        },
-        toIndex(){
-          this.$router.replace("/ImportFiles")
         },
         modify() {
             this.form = this.user;

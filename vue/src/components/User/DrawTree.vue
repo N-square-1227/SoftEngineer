@@ -24,7 +24,7 @@ export default {
     this.showChart();
     this.resizefun = ()=>{
       this.$echarts.init(document.getElementById('treeChart')).resize();
-      //多个echarts则在此处添加
+      //多个 echarts 则在此处添加
     };
     window.addEventListener('resize',this.resizefun);
   },

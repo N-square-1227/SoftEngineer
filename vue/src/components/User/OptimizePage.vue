@@ -14,6 +14,21 @@
       </el-table-column>
       <el-table-column label="选择优化算法" width="600">
         <template slot-scope="scope">
+<!--          <el-button-->
+<!--              slot="reference"-->
+<!--              size="mini"-->
+<!--              type="primary"-->
+<!--              @click="KMeans(scope.row)">K-Means聚类</el-button>-->
+<!--          <el-button-->
+<!--              slot="reference"-->
+<!--              size="mini"-->
+<!--              type="danger"-->
+<!--              @click="entropy(scope.row)">熵权法调整指标权重</el-button>-->
+<!--          <el-button-->
+<!--              slot="reference"-->
+<!--              size="mini"-->
+<!--              type="success"-->
+<!--              @click="pca(scope.row)">主成分分析法</el-button>-->
           <el-popover
               placement="bottom"
               width="160"
@@ -194,6 +209,27 @@ export default {
           })
         // this.loadSampleData()
       },
+      // loadSampleData(){
+      //     this.$axios.post(this.$httpUrl + '/indexsym/loadNewData', {
+      //         pageSize:this.pageSize,
+      //         pageNum:this.currentPage,
+      //         param:{
+      //             basicTableName: name, // 这是原始指标体系的表名,优化后的表名添加使用的函数，数据表名添加后缀
+      //             func: func,
+      //         }
+      //     }).then(res => res.data).then(res => {
+      //         console.log(res);
+      //         if(res.code == 200) {
+      //             sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
+      //             // console.log(res.data.sampleData)
+      //             sessionStorage.setItem("colNum", res.data.colNum);
+      //             sessionStorage.setItem("sampleNum", res.data.sampleNum);
+      //         }
+      //         else {
+      //             this.$message.error('数据加载出错！');
+      //         }
+      //     })
+      // },
       handleSizeChange(val) {
           console.log(`每页 ${val} 条`);
           this.currentPage=1
