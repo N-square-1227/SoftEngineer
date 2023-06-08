@@ -17,12 +17,15 @@ public class CaculateResult {
 
     private List<Integer>  visit;       // 记忆化搜索(没实现)
 
+    private Map<Integer, Integer> id_idx_map;
+
     public CaculateResult(List<Double> data, IndexSym indexSym, IndexSym newIndexSym) {
         this.data = data;
         this.indexSym = indexSym;
         this.newIndexSym = newIndexSym;
         visit = new ArrayList<>();
         nodeMap = new HashMap<>();
+        id_idx_map = new HashMap<>();
         //原来指标体系的叶子节点
         List<IndexSymNode> leafNode = this.indexSym.get_leaves();
         int leaf_num = indexSym.getLeaf_num();
@@ -39,6 +42,15 @@ public class CaculateResult {
                     break;
                 }
 //        System.out.println(nodeMap);
+
+        map_id_idx();
+    }
+
+    public void map_id_idx() {
+        int nodeNum = newIndexSym.getNodeList().size();
+        for (int i = 0; i < nodeNum; i++) {
+            id_idx_map.put(newIndexSym.getNodeList().get(i).getNodeID(), i);
+        }
     }
 
     public double caculateValue(){
@@ -62,7 +74,8 @@ public class CaculateResult {
         /* 子节点的id */
         for(int i : sonNode) {
             /* 这里既然这样根据nodeid从nodeList里获取节点，意味着限制节点id必须从1开始 */
-            result += caculate_value(newIndexSym.getNodeList().get(i - 1)) * indexSymNode.getNodeWeight();
+            /* v2.0 添加了节点和下标的映射, 其他的地方忘了，最起码这里应该是可以节点id任意了，只要不重复就可以 */
+            result += caculate_value(newIndexSym.getNodeList().get(id_idx_map.get(i))) * indexSymNode.getNodeWeight();
         }
         return result * indexSymNode.getNodeWeight();
     }

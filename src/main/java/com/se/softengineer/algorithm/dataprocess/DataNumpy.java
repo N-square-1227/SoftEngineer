@@ -9,6 +9,9 @@ import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 还没写完私密马赛
  * 处理数据的类，定义的都是static的方法

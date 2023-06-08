@@ -34,10 +34,11 @@ public class IndexSymNode implements Serializable, Comparable<IndexSymNode> {
     private Double nodeWeight;
 
     @TableField("parent_id")
+    private Integer ParentID;
 
     private List<IndexSymNode> children = new ArrayList<>();
 
-    private Integer ParentID;
+
 
     public IndexSymNode() {}
 

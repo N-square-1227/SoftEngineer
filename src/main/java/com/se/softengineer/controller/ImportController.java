@@ -1,10 +1,19 @@
 package com.se.softengineer.controller;
 
-import com.se.softengineer.entity.IndexSym;
-import com.se.softengineer.entity.IndexSymNode;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.se.softengineer.algorithm.caculate.CaculateSample;
+import com.se.softengineer.entity.*;
+import com.se.softengineer.mapper.IndexSymNodeMapper;
 import com.se.softengineer.service.IndexSymNodeService;
+import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.SampleService;
 import com.se.softengineer.service.UsersDataService;
+import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
 import com.se.softengineer.utils.AnalyExcel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +30,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -50,6 +61,8 @@ public class ImportController {
     @Value("${file-save-path}")
     private String fileSavePath;
     private String file_Path;
+    //标记是否是XML类型
+    String FT="";
 
     @Autowired
     private IndexSymNodeService indexSymNodeService;
@@ -60,6 +73,11 @@ public class ImportController {
     @Autowired
     private SampleService sampleService;
 
+    @Autowired
+    private IndexSymService indexSymService;
+
+    @Autowired
+    IndexSymNodeMapper indexSymNodeMapper;
 
     private IndexSym indexSym = new IndexSym();
 
@@ -71,6 +89,7 @@ public class ImportController {
     @PostMapping(value = "/excel/{value}")
     //@RequestParam("file") MultipartFile file
     public void uploadFileByExcel(@RequestParam(value = "file",required = false) MultipartFile file, @PathVariable("value") String v) throws IOException {
+        FT="";
         cells.clear();
         String filename = file.getOriginalFilename();
         fileType=v;
@@ -90,6 +109,7 @@ public class ImportController {
      */
     @RequestMapping("/xml/{value}")
     public void loadFileByXML(@RequestParam(value = "file",required = false) MultipartFile file, @PathVariable("value") String v) throws IOException {
+        FT="XML";
         //清空数组
         cells.clear();
         String filename = file.getOriginalFilename();
@@ -169,11 +189,11 @@ public class ImportController {
         System.out.println("文件类型:  "+fileType);
         if(fileType.equals("indexSym")) {
             //头结点
-            List<String> headNode=new ArrayList<>();
-            headNode.add(filesName);
-            headNode.add("0");
-            headNode.add("0");
-            headNode.add("0");
+//            List<String> headNode=new ArrayList<>();
+//            headNode.add(filesName);
+//            headNode.add("0");
+//            headNode.add("0");
+//            headNode.add("0");
             //int headNodeID=nodeService.getHeadID(indexSymTableName,filesName);
             //拼接新表名
             indexSymTableName = userName+"_"+filesName;
@@ -184,10 +204,18 @@ public class ImportController {
             /* 先插入根节点 */
             if(indexSymNodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
                 return Result.fail();
-            for (String[] l : list) {
-                System.out.println(l[0]+"  "+ Integer.parseInt(l[1])+"  "+ Double.parseDouble(l[2])+"  "+ Integer.parseInt(l[3])+1);
-                if(indexSymNodeService.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3])+1)<=0)
-                    return Result.fail();
+            if(FT.equals("XML")){
+                for (String[] l : list) {
+                    System.out.println("————————————————————————————————————"+l[0]+"  "+ Integer.parseInt(l[1])+"  "+ Double.parseDouble(l[2])+"  "+ Integer.parseInt(l[3])+1);
+                    indexSymNodeMapper.insertIntoSheet(indexSymTableName,Integer.parseInt(l[1])+1, l[0], Integer.parseInt(l[2]), Double.parseDouble(l[3]), Integer.parseInt(l[4])+1);
+                    //return Result.fail();
+                }
+            }else{
+                for (String[] l : list) {
+                    System.out.println(l[0]+"  "+ Integer.parseInt(l[1])+"  "+ Double.parseDouble(l[2])+"  "+ Integer.parseInt(l[3])+1);
+                    if(indexSymNodeService.insertIntoTable(indexSymTableName, l[0], Integer.parseInt(l[1]), Double.parseDouble(l[2]), Integer.parseInt(l[3])+1)<=0)
+                        return Result.fail();
+                }
             }
         }else if(fileType.equals("indexdata")){
             indexDataTableName=userName+"_"+filesName+"_data";
@@ -195,7 +223,11 @@ public class ImportController {
             //拼接sql语句，因为指标个数不确定。
             String[] temp=list.get(1);
             int column=temp.length-1;//指标个数
-            create_data_table(indexSymTableName);
+            try {
+                create_data_table(indexSymTableName);
+            }catch (Exception e){
+                return Result.fail();
+            }
             String name = null;
             int i=0;
             for (String[] l : list) {
@@ -346,8 +378,8 @@ public class ImportController {
         headNode.add("0");
         headNode.add("0");
         IndexSymNode t=new IndexSymNode();
-//        indexSymTableName = userName+"_"+filesName + "_IndexSym";
         indexSymTableName = userName+"_"+filesName;
+        /* 如果上传了同名的指标体系，直接覆盖; 同时在user_data数据库中写入时也要判断是否有重复 by wxy*/
         indexSymNodeService.dropExistTable(indexSymTableName);
         indexSymNodeService.createIndexSymTable(indexSymTableName);
         if(indexSymNodeService.insertIntoTable(indexSymTableName,filesName,1,1,0)<=0)
@@ -443,17 +475,17 @@ public class ImportController {
     @RequestMapping("/insertUsersData")
     public Result insertUsersData()  {
         /** v 1.0 点击确认后创建表并插入数据
-        int flag=0;
-        try{
-            usersDataMapper.createTable(userName+"_Data");
-        }catch (Exception e){
-            flag=-1;
-            usersDataMapper.insertIntoTable(userName+"_Data",indexDataTableName,indexSymTableName);
-        }
-        if(flag==0){
-            usersDataMapper.insertIntoTable(userName+"_Data",indexDataTableName,indexSymTableName);
-        }
-        */
+         int flag=0;
+         try{
+         usersDataMapper.createTable(userName+"_Data");
+         }catch (Exception e){
+         flag=-1;
+         usersDataMapper.insertIntoTable(userName+"_Data",indexDataTableName,indexSymTableName);
+         }
+         if(flag==0){
+         usersDataMapper.insertIntoTable(userName+"_Data",indexDataTableName,indexSymTableName);
+         }
+         */
 
         /** v 2.0
          * 调整为：
@@ -475,17 +507,39 @@ public class ImportController {
         return Result.success();
     }
 
-    /**
-     * @author xiaxue
-     * 获取该用户所有上传的指标体系的名字
-     */
-    @RequestMapping("/getAllSyms/{userName}")
-    public Result getAllSyms(@PathVariable("userName")String userName){
-        //先找到userData表
-        String userData=userName+"_data";
-        List<String> indexSymDTNames=usersDataService.getIndexSymTableNames(userData);
-        Result result=new Result();
-        return indexSymDTNames==null?Result.fail():Result.success(indexSymDTNames);
+//    /**
+//     * @author xiaxue
+//     * 获取该用户所有上传的指标体系的名字
+//     */
+//    @RequestMapping("/getAllSyms/{userName}")
+//    public Result getAllSyms(@PathVariable("userName")String userName){
+//        //先找到userData表
+//        String userData=userName+"_data";
+//        List<String> indexSymDTNames=usersDataService.getIndexSymTableNames(userData);
+//        return indexSymDTNames==null?Result.fail():Result.success(indexSymDTNames);
+//    }
+
+    @PostMapping("/indexSymListPage")
+    public Result nodeListPage(@RequestBody QueryPageParam query){
+        HashMap param = query.getParam();
+        String tableName = (String)param.get("table_name");
+        String userName = tableName.substring(0, tableName.length() - 5);
+        String queryContent = (String)param.get("queryName");
+        System.out.println(tableName);
+
+        Page<UsersData> page = new Page();
+        page.setCurrent(query.getPageNum());
+        page.setSize(query.getPageSize());
+
+        LambdaQueryWrapper<UsersData> lambdaQueryWrapper = new LambdaQueryWrapper();
+        /* 条件 */
+        if (StringUtils.isNotBlank(queryContent) && !("null".equals(queryContent)))
+            lambdaQueryWrapper.like(UsersData::getIndexSymDTName, queryContent);
+
+
+        IPage result = usersDataService.getISDTNamePage(page,tableName,lambdaQueryWrapper);
+        System.out.println("total=="+result.getTotal());
+        return Result.success(result.getRecords(), result.getTotal());
     }
     /**
      * @author

@@ -59,6 +59,8 @@ public class OptimizeServiceImpl implements OptimizeService {
         // 计算每个指标子指标的个数并填充到 entropy 中
 
         List<IndexSymNode> node = indexSymService.getIndex(indexsym_name);
+        // 添加父节点
+        //node.add(new IndexSymNode(1, indexsym_name, 1, 1.0, 0));
         entropy.setNode(node);
         entropy.fillMap(node);
 
@@ -77,29 +79,41 @@ public class OptimizeServiceImpl implements OptimizeService {
     }
 
     @Override
-    public IndexSym pca(String indexsym_name, String data_tablename) {
+    public Map<String, Object> pca(String indexsym_name, String data_tablename) {
+        Map<String, Object> res = new HashMap<>();
+
         List<Sample> data = sampleService.getData(data_tablename);
         IndexSym indexSym = new IndexSym(indexSymService.getIndex(indexsym_name));
         List<IndexSymNode> leaves = indexSym.get_leaves();
-        PCA pca = new PCA(data);
+        String newIndexSymName = indexsym_name + "_new_pca";
+        PCA pca = new PCA(data, indexsym_name);
         pca.solve();
         int node_num = pca.getNew_sym().getNodeList().size();
+        /* 把新得到的指标体系和原本的指标体系中的指标对应 */
         for(int i = 0; i < node_num; i ++) {
             List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(i + 1);
             if(son_nodes.size() != 0) continue;
-            System.out.println(pca.getNew_sym().getNodeList().get(i).getNodeName());
+//            System.out.println(pca.getNew_sym().getNodeList().get(i).getNodeName());
             /* 第idx个子节点*/
             int idx = Integer.parseInt(pca.getNew_sym().getNodeList().get(i).getNodeName());
             pca.getNew_sym().getNodeList().get(i).setNodeName(leaves.get(idx - 1).getNodeName());
         }
-        String newIndexSymName = indexsym_name + "_new_pca";
 
         indexSymService.dropExistTable(newIndexSymName);
         indexSymService.createTable(newIndexSymName);
         // 将新的指标体系存到数据库的新表里
         indexSymService.insertIntoSheet(newIndexSymName, pca.getNew_sym().getNodeList());
 
-        return pca.getNew_sym();
+        /* 返回叶子结点指标名列表 */
+        List<String> leaves_names = new ArrayList<>();
+        for(IndexSymNode index : leaves)
+            leaves_names.add(index.getNodeName());
+
+        res.put("indexsym", pca.getNew_sym());
+        res.put("loadmatrix", pca.getLoad_matrix());
+        res.put("threshold", pca.getThreshold());
+        res.put("indicators", leaves_names);
+        return res;
     }
 
     /**
@@ -109,23 +123,24 @@ public class OptimizeServiceImpl implements OptimizeService {
      * @throws Exception
      */
     @Override
-    public IndexSym kmeans(String indexsym_name, String data_tablename) throws Exception {
-        List<Sample> sampleList,testList = new ArrayList<>();
-        List<IndexSymNode> indexList,leafindex = new ArrayList<>();
+    public IndexSym kmeans(String indexsym_name, String data_tablename,List<Double> sslList) throws Exception {
         IndexSym newIndexSym = new IndexSym();
         //这里的data需要从前端传回来
-        sampleList = sampleService.getData(data_tablename);
-        testList = sampleService.getData(data_tablename);
-        List<String> columnList = new ArrayList<>();
-        columnList = sampleService.getColName(data_tablename);
-        indexList = indexSymService.getIndex(indexsym_name);
+        List<Sample> sampleList = sampleService.getData(data_tablename);
+        List<Sample> testList = sampleService.getData(data_tablename);
+        List<String> columnList = sampleService.getColName(data_tablename);
+        List<IndexSymNode> indexList = indexSymService.getIndex(indexsym_name);
         IndexSym indexSym = new IndexSym(indexList);
-        leafindex = indexSym.get_leaves();//获取叶子节点
+        List<IndexSymNode> leafindex = indexSym.get_leaves();//获取叶子节点
 
         //手肘法获取最优K值
         int maxk = columnList.size()/2;
         ElbowMethod elbowMethod = new ElbowMethod();
-        int k =elbowMethod.getOptimalK(maxk,testList);
+        double[] wssList = elbowMethod.getSSl(maxk,testList);
+        for(int i=-0;i<wssList.length;i++)
+            sslList.add(wssList[i]);
+        int k =elbowMethod.getOptimalK(wssList);
+        System.out.println(sslList);
         System.out.println(columnList.size());
         System.out.println(k);
 
@@ -133,23 +148,26 @@ public class OptimizeServiceImpl implements OptimizeService {
         Kmeans kRun = new Kmeans(k,sampleList);
         Set<Cluster> clusterSet = kRun.run();
         List<IndexSymNode> nodeList = new ArrayList<>();
-        int centerNum = clusterSet.size();
+//        int centerNum = clusterSet.size();
+        //插入根节点
         IndexSymNode node = new IndexSymNode(1,indexsym_name,1,1.0,0);
         nodeList.add(node);
-        for(int i=2;i<=centerNum + 1;i++){
-            node = new IndexSymNode(i,"father"+i,1,1.0,1);
-            nodeList.add(node);
-        }
-        int num = 1;
+
+        int num = 2,i=1;
         for(Cluster cluster:clusterSet){
+            System.out.println(cluster);
+            node = new IndexSymNode(num,"father"+i,1,1.0,1);
+            i += 1;
+            int fatherid = num;
+            nodeList.add(node);
+            num+=1;
             List<Point> pointList = cluster.getMembers();
             for(Point point:pointList){
                 int id = point.getId();
-                node = new IndexSymNode(centerNum+1 + 1,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),num + 1);
+                node = new IndexSymNode(num,leafindex.get(id).getNodeName(),leafindex.get(id).getNodeType(),leafindex.get(id).getNodeWeight(),fatherid );
                 nodeList.add(node);
-                centerNum += 1;
+                num += 1;
             }
-            num += 1;
         }
 
         String newIndexSymName = indexsym_name + "_new_kmeans";

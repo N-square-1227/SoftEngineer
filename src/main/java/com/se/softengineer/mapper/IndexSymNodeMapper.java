@@ -30,9 +30,6 @@ public interface IndexSymNodeMapper extends BaseMapper<IndexSymNode> {
     @Update({"DROP TABLE IF ESIXTS #{tableName}"})
     void dropExistTable(@Param("tableName") String tableName);
 
-
-    int getHeadID(@Param("table_name")String table_name, @Param("name") String name);
-
     /**
      * @author xy
      */
@@ -55,6 +52,21 @@ public interface IndexSymNodeMapper extends BaseMapper<IndexSymNode> {
             "values(#{node_name},${node_type},${node_weight},${parent_id});"
     })
     int insertIntoTable(@Param("tableName")String tableName,@Param("node_name")String name,@Param("node_type")int type,@Param("node_weight")double weight,@Param("parent_id")int id);
+
+    /**
+     * author lmy
+     * @param tableName
+     * @param nodeID
+     * @param name
+     * @param type
+     * @param weight
+     * @param id
+     * @return
+     */
+    @Insert({"insert into ${tableName}(node_id,node_name,node_type,node_weight,parent_id) " +
+            "values(#{node_id},#{node_name},${node_type},${node_weight},${parent_id});"
+    })
+    int insertIntoTable2(@Param("tableName")String tableName,@Param("node_id")Integer nodeID,@Param("node_name")String name,@Param("node_type")int type,@Param("node_weight")double weight,@Param("parent_id")int id);
 
     /**
      * @author xy

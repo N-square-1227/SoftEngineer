@@ -1,14 +1,11 @@
 package com.se.softengineer.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-//import sun.misc.BASE64Decoder;
-//import sun.misc.BASE64Encoder;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.tomcat.util.*;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;

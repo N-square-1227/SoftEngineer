@@ -6,9 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.se.softengineer.entity.Menu;
 import com.se.softengineer.entity.Users;
-import com.se.softengineer.service.MenuService;
-import com.se.softengineer.service.UsersDataService;
-import com.se.softengineer.service.UsersService;
+import com.se.softengineer.service.*;
 import com.se.softengineer.utils.AesTypeHandler;
 import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
@@ -33,7 +31,13 @@ public class UsersController {
     @Autowired
     private UsersDataService usersDataService;
 
-    private AesTypeHandler handler;
+    @Autowired
+    private SampleService sampleService;
+
+    @Autowired
+    private IndexSymService indexSymService;
+
+    private AesTypeHandler handler = new AesTypeHandler();
 
     /**
      * 时间格式化
@@ -54,10 +58,6 @@ public class UsersController {
     public Result login(@RequestBody Users user) throws Exception {
         Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
         if(curUser!=null){
-            /* 删除管理员的user_data表 */
-//            if(curUser.getRole() == 1)
-//                usersDataService.deleteTable(curUser.getUserName() + "_data");
-
             List menuList = menuService.lambdaQuery().like(Menu::getMenuRight,curUser.getRole()).list();
             HashMap res = new HashMap();
             res.put("user",curUser);
@@ -134,6 +134,7 @@ public class UsersController {
      */
     @GetMapping("/delete")
     public Result delete(@RequestParam Integer userID){
+
         Users user = usersService.getById(userID);
         //管理员用户不可删除
         if(user.getRole()==1)
@@ -184,5 +185,25 @@ public class UsersController {
             lambdaQueryWrapper.like(Users::getUserName,name);
         IPage result = usersService.page(page,lambdaQueryWrapper);
         return Result.success(result.getRecords(),result.getTotal());
+    }
+
+    /*
+    删除指标体系
+    @author xly
+     */
+    @GetMapping("/delTable")
+    public Result delTable(@RequestParam String tableName,@RequestParam String user){
+        String userTable = user + "_data";
+        try {
+            usersDataService.delIndex(userTable,tableName);
+            sampleService.dropExistTable(tableName+"_data");
+            indexSymService.dropExistTable(tableName);
+            indexSymService.dropExistTable(tableName+"_new_kmeans");
+            indexSymService.dropExistTable(tableName+"_new_pca");
+            indexSymService.dropExistTable(tableName+"_new_entropy");
+        }catch (Exception e){
+            return Result.fail();
+        }
+        return Result.success();
     }
 }

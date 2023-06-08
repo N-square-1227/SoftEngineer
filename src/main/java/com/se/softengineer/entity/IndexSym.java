@@ -108,4 +108,3 @@ public class IndexSym {
         this.leaf_num = leaf_num;
     }
 }
-

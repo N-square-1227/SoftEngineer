@@ -59,7 +59,7 @@ export default {
     }
   },
   created() {
-    this.tableName = JSON.parse(sessionStorage.getItem("name")) + "_new_" + JSON.parse(sessionStorage.getItem("func"));
+    this.tableName = JSON.parse(sessionStorage.getItem("IndexName"));
     this.loadPost();
   },
   methods:{
