@@ -7,7 +7,7 @@
         <el-button style="margin-left: 10px;" @click="getAllSyms">查询</el-button>
         <el-button type="primary" plain style="margin-right: 10px;" @click="resetParam">重置</el-button>
       </div>
-      <div style="text-align: right;float:right;">
+      <div>
         <el-select v-model="value" placeholder="选择导入指标体系数据方式" @change="getValue" style="width: 250px;margin-right: 10px">
           <el-option
               v-for="item in options"
@@ -126,12 +126,12 @@ export default {
       this.getAllSyms()
     },
     detail(row){
-      this.$axios.get(this.$httpUrl + '/indexSymNode/getOriginalTreeData?tableName=' + row.indexSymDTName).then(res => res.data).then(res => {
+      this.$axios.get(this.$httpUrl + '/indexSymNode/getOriginalTreeData?tableName='+this.user.userName +"_"+ row.indexSymDTName).then(res => res.data).then(res => {
         // console.log(res)
         if (res.code == 200) {
           this.treeData= res.data
           sessionStorage.setItem("OriginalTreeData",JSON.stringify(this.treeData))
-          sessionStorage.setItem("IndexName",JSON.stringify(row.indexSymDTName))
+          sessionStorage.setItem("IndexName",JSON.stringify(this.user.userName +"_"+row.indexSymDTName))
           this.$message({
             message: '成功！',
             type: 'success'
@@ -143,7 +143,7 @@ export default {
       })
     },
     del(row){
-      this.$axios.get(this.$httpUrl+'/user/delTable?tableName='+ row.indexSymDTName+"&user="+this.user.userName).then(res=>res.data).then(res=>{
+      this.$axios.get(this.$httpUrl+'/user/delTable?tableName='+this.user.userName+"_"+row.indexSymDTName+"&user="+this.user.userName).then(res=>res.data).then(res=>{
         console.log(res)
         if(res.code==200){
           this.$message({
