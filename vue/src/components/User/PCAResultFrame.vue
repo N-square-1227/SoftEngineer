@@ -1,5 +1,6 @@
 <template>
   <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+    <el-page-header @back="goBack" content="PCA优化" style="margin-bottom: 5px"> </el-page-header>
     <el-tab-pane label="指标体系优化结果" name="first">
 <!--      <DrawTree></DrawTree>-->
       <PCATree></PCATree>
@@ -34,6 +35,9 @@ export default {
   methods: {
     handleClick(tab, event) {
       console.log(tab, event);
+    },
+    goBack() {
+      this.$router.replace("/ImportFiles")
     }
   }
 }

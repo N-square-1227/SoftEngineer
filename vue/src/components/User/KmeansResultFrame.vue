@@ -1,5 +1,6 @@
 <template>
   <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+    <el-page-header @back="goBack" content="Kmeas优化" style="margin-bottom: 5px"> </el-page-header>
     <el-tab-pane label="指标体系优化结果" name="first">
 <!--      好神奇，这里是为什么可以import DrawTree from KmeansTree啊-->
       <DrawTree></DrawTree>
@@ -34,6 +35,9 @@ export default {
   methods: {
     handleClick(tab, event) {
       console.log(tab, event);
+    },
+    goBack(){
+      this.$router.replace("/ImportFiles")
     }
   }
 }
