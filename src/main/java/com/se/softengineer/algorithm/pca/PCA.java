@@ -124,6 +124,22 @@ public class PCA {
         }
 
         factor_num = factor_id - 1;
+
+        /* 权重归一化 */
+        List<IndexSymNode> new_nodeList = new_sym.getNodeList();
+        for(IndexSymNode node : new_nodeList) {
+            if ( new_sym.getNodeTree().get(node.getNodeID()).size() != 0 ) {    // 是一级指标
+                List<Integer> sons = new_sym.getNodeTree().get(node.getNodeID());
+                double weight_sum = 0.0;
+                for(int son : sons) {
+                    weight_sum += Math.abs(new_nodeList.get(son - 1).getNodeWeight());
+                }
+                for(int son : sons) {
+                    new_nodeList.get(son - 1).setNodeWeight(new_nodeList.get(son - 1).getNodeWeight() / weight_sum);
+                }
+            }
+        }
+
         return true;
 
         /**
