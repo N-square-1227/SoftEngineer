@@ -1,7 +1,7 @@
 <template>
   <div style="position: fixed">
     <div style="margin-bottom: 5px;text-align: left">
-      <el-input v-model="nodeName" placeholder="请输入节点名称" suffix-icon="el-icon-search" style="width: 200px;"
+      <el-input v-model="nodeName" placeholder="请输入指标体系名称" suffix-icon="el-icon-search" style="width: 200px;"
                 @keyup.enter.native="getAllSyms"></el-input>
       <el-button style="margin-left: 10px;" @click="getAllSyms">查询</el-button>
       <el-button type="primary" plain @click="resetParam">重置</el-button>
@@ -178,6 +178,7 @@ export default {
                 this.treeData= res.data.treeData
                   /* 优化结果 */
                   sessionStorage.setItem("TreeData", JSON.stringify(this.treeData))
+                  sessionStorage.setItem("loadmatrix",JSON.stringify(this.loadmatrix))
                   this.$message({
                       message: '优化成功！',
                       type: 'success'
