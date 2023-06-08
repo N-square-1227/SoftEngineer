@@ -1,10 +1,10 @@
 <template>
-    <el-container style="height:100%; border: 1px solid #eee">
-        <el-aside width="200px" style="background-color: rgb(238,241,246);height: 100%;margin-left: -1px">
-            <Aside></Aside>
-        </el-aside>
+    <el-container style="height:100%;">
+<!--        <el-aside width="200px" style="background-color: rgb(238,241,246);height: 100%;margin-left: -1px">-->
+<!--            <Aside></Aside>-->
+<!--        </el-aside>-->
         <el-container style="height: 100%;">
-            <el-header style="text-align: right;font-size: 12px;height: 100%;border-bottom: rgb(168,168,168,0.5) 1px solid;">
+            <el-header style="font-size: 12px;height: 100%;border-bottom: rgb(168,168,168,0.5) 1px solid;">
                 <Header></Header>
             </el-header>
             <el-main style="height: 100%;">
@@ -16,11 +16,10 @@
 </template>
 
 <script>
-import Aside from "@/components/Aside";
 import Header from "@/components/Header";
 export default {
     name: 'UserHomePage',
-    components: { Header, Aside},
+    components: { Header},
 
     methods: {},
     activated() {

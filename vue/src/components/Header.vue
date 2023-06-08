@@ -53,7 +53,7 @@ export default {
     },
     created(){
         console.log("toHome")
-        this.$router.push("/Home")
+        this.$router.push("/ImportFiles")
     }
 }
 </script>
