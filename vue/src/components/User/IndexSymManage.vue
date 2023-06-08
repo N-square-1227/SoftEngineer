@@ -1,6 +1,7 @@
 <template>
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-        <el-tab-pane label="指标体系树" name="first">
+      <el-page-header @back="goBack" content="详情页面" style="margin-bottom: 5px"> </el-page-header>
+      <el-tab-pane label="指标体系树" name="first">
             <drawOriginalTree></drawOriginalTree>
         </el-tab-pane>
         <el-tab-pane label="节点信息" name="second">
@@ -26,6 +27,9 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
+    goBack() {
+      this.$router.replace("/ImportFiles")
+    }
   },
   beforeMount() {
     sessionStorage.removeItem("sample_result")

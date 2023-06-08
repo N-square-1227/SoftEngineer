@@ -1,6 +1,7 @@
 <template>
 <!--  <div style="width:100%; height: auto">-->
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+      <el-page-header @back="goBack" content="熵权法优化" style="margin-bottom: 5px"> </el-page-header>
       <el-tab-pane label="指标体系优化结果" name="first">
         <DrawTree></DrawTree>
       </el-tab-pane>
@@ -33,6 +34,9 @@ export default {
   methods: {
     handleClick(tab, event) {
       console.log(tab, event);
+    },
+    goBack() {
+      this.$router.replace("/ImportFiles")
     }
   }
 };
