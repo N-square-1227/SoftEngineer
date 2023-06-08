@@ -47,6 +47,11 @@ const routes = [
                 component:()=>import("../components/User/KmeansResultFrame")
             },
             {
+                path: '/PCAResultFrame',
+                name: 'PCAResultFrame',
+                component:()=>import("../components/User/PCAResultFrame")
+            },
+            {
                 path :'/IndexSymManage',
                 name: 'IndexSymManage',
                 component:()=>import("../components/User/IndexSymManage"),

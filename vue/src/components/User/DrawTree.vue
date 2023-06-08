@@ -106,7 +106,7 @@ export default {
             top: '1%',
             left: '10%',
             bottom: '1%',
-            right: '25%',
+            right: '32%',
 
             symbolSize: 7,
 

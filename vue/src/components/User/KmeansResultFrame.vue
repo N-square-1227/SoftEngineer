@@ -1,6 +1,7 @@
 <template>
   <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
     <el-tab-pane label="指标体系优化结果" name="first">
+<!--      好神奇，这里是为什么可以import DrawTree from KmeansTree啊-->
       <DrawTree></DrawTree>
     </el-tab-pane>
     <el-tab-pane label="指标列表" name="second">
@@ -21,9 +22,10 @@ import DrawTree from "@/components/User/KmeansTree";
 import OptimizeResult from "@/components/User/OptimizeResult";
 import OptimizeData from "@/components/User/OptimizeData";
 import OptimizeNodeList from "@/components/User/OptimizeNodeList";
+import KmeansTree from "@/components/User/KmeansTree";
 export default {
   name: "KmeansResultFrame",
-  components: {OptimizeNodeList, OptimizeData, OptimizeResult, DrawTree, OptimizePage},
+  components: {KmeansTree, OptimizeNodeList, OptimizeData, OptimizeResult, DrawTree, OptimizePage},
   data() {
     return {
       activeName: 'first'

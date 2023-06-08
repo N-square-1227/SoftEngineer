@@ -196,7 +196,7 @@ public class IndexSymController {
      **/
     @GetMapping("/pca")
     public Result use_PCA(String indexsym_name, String data_tablename) {
-        IndexSym newIndexSym = optimizeService.pca(indexsym_name, data_tablename);
+        Map<String, Object> newIndexSym = optimizeService.pca(indexsym_name, data_tablename);
         return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 
