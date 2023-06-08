@@ -5,55 +5,31 @@ import com.se.softengineer.algorithm.dataprocess.DataNumpy;
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
 import com.se.softengineer.entity.Sample;
+import lombok.Data;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import java.util.*;
 
+@Data
 public class PCA {
 
     private List<Sample> data;
 
     private IndexSym new_sym;
 
+    private double[][] load_matrix;
+
+    private double threshold = 0.7;
+
+    private int factor_num;
+
+    private String indexsym_name;
+
     public List<Sample> getData() {
         return data;
     }
-
-    /**
-     * 换了xml之后把一条样本数据包装在一个类里了
-     * 原来的算法是按List<List>写的，加一个接口换到List<List>
-     **/
-    public List<List<Double>> getDataList() {
-        List<List<Double>> result = new ArrayList<>();
-        for(Sample sample : data) {
-            result.add(sample.getData());
-        }
-        return result;
-    }
-
-    public void setData(List<Sample> data) {
-        this.data = data;
-    }
-
-    public IndexSym getNew_sym() {
-        return new_sym;
-    }
-
-    public void setNew_sym(IndexSym new_sym) {
-        this.new_sym = new_sym;
-    }
-
-    public int getFactor_num() {
-        return factor_num;
-    }
-
-    public void setFactor_num(int factor_num) {
-        this.factor_num = factor_num;
-    }
-
-    private int factor_num;
 
     public  PCA() {
         data = new ArrayList<>();
@@ -61,10 +37,11 @@ public class PCA {
         factor_num = 0;
     }
 
-    public PCA(List<Sample> data) {
+    public PCA(List<Sample> data, String indexsym_name) {
         this.data = data;
         this.new_sym = new IndexSym();
         factor_num = 0;
+        this.indexsym_name = indexsym_name;
     }
 
     public boolean solve() {
@@ -110,7 +87,7 @@ public class PCA {
                 eigenMatrix[i][j] *= -Math.sqrt(eigenvalued[j]);
         }
 
-
+        this.load_matrix = eigenMatrix;
 //        for(int i = 0; i < numCols; i ++) {
 //            for(int j = 0; j < factor_num; j ++)
 //                System.out.print(eigenMatrix[i][j]);
@@ -122,7 +99,8 @@ public class PCA {
         /* 对每一个主成分而言（每一列），因子载荷矩阵的值越大，说明对这个主成分的影响越大，并且对应因子载荷矩阵的值就是权值 */
         int id_no = 1;
         int factor_id = 1;
-        IndexSymNode root = new IndexSymNode(id_no, "root", 1, 1.0, 0);
+        this.indexsym_name = this.indexsym_name.substring(this.indexsym_name.indexOf('_') + 1);
+        IndexSymNode root = new IndexSymNode(id_no, this.indexsym_name, 1, 1.0, 0);
         new_sym.addNode(root);
         id_no ++;
         for(int i = 0; i < factor_num; i ++) {
@@ -130,7 +108,7 @@ public class PCA {
             boolean factorin = false;
             for(int j = 1; j <=numRows; j ++) {
                 /* 数据不太好感觉 */
-                if(Math.abs(eigenMatrix[j - 1][i]) >= 0.7) {
+                if(Math.abs(eigenMatrix[j - 1][i]) >= threshold) {
                     if(!factorin) {
                         new_sym.addNode(factor);
                         id_no++;

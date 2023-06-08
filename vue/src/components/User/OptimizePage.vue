@@ -168,22 +168,27 @@ export default {
                   this.$message.error('优化失败！');
           })
       },
+
       pca(row){
           this.setSession(this.user.userName + "_" + row.indexSymDTName,"pca");
           this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData?tableName='
                               + this.user.userName + "_" + row.indexSymDTName
                               + "&func=pca").then(res => res.data).then(res => {
-              // console.log(res)
+              console.log(res)
               if (res.code == 200) {
                 this.treeData= res.data.treeData
                   /* 优化结果 */
                   sessionStorage.setItem("TreeData", JSON.stringify(this.treeData))
-                  sessionStorage.setItem("loadmatrix",JSON.stringify(this.loadmatrix))
+                  sessionStorage.setItem("loadmatrix",JSON.stringify(res.data.loadmatrix))
+                // console.log(res.data.loadmatrix)
+                  sessionStorage.setItem("threshold", JSON.stringify(res.data.threshold))
+                  sessionStorage.setItem("indicators", JSON.stringify(res.data.indicators))
+                // console.log(res.data.indicators)
                   this.$message({
                       message: '优化成功！',
                       type: 'success'
                   });
-                  this.$router.replace('/OptimizeResultFrame');
+                  this.$router.replace('/PCAResultFrame');
               } else
                   this.$message.error('优化失败！');
           })

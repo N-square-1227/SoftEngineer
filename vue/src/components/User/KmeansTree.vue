@@ -121,9 +121,9 @@ export default {
             data: this.treeData,
 
             top: '1%',
-            left: '10%',
+            left: '12%',
             bottom: '1%',
-            right: '25%',
+            right: '32%',
 
             symbolSize: 7,
 

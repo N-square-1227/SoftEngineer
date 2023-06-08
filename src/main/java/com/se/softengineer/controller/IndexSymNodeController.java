@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/indexSymNode")
@@ -68,7 +69,13 @@ public class IndexSymNodeController {
             indexSym = optimizeService.entropy(tableName, tableName + "_data");
             newindexname = tableName + "_new" + "_entropy";
         }else if(func.equals("pca")){
-            indexSym = optimizeService.pca(tableName, tableName + "_data");
+            Map<String, Object> pca_res = optimizeService.pca(tableName, tableName + "_data");
+            indexSym = (IndexSym) pca_res.get("indexsym");
+            /* 返回载荷矩阵和阈值到前端 */
+            /* 救命感觉前端越来越慢了 */
+            res_map.put("loadmatrix", (double[][]) pca_res.get("loadmatrix"));
+            res_map.put("threshold", (double)pca_res.get("threshold"));
+            res_map.put("indicators", pca_res.get("indicators"));
             newindexname = tableName + "_new" + "_pca";
         }else {
             return Result.fail();
