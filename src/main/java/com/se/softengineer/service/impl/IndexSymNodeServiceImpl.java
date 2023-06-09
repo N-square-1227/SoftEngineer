@@ -50,6 +50,21 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
         }
     }
 
+    public Boolean isContainNull(List<IndexSymNode> nodeList){
+        System.out.println("isContainNull");
+        for(IndexSymNode node : nodeList) {
+            System.out.println(node.toString());
+            if (node.getNodeID() == null || node.getNodeName() == null || node.getNodeType() == null || node.getNodeWeight() == null || node.getParentID() == null) {
+                System.out.println("true");
+                return true;
+            }
+            if(node.getChildren().size()!=0)
+                if(isContainNull(node.getChildren()))
+                    return true;
+        }
+        return false;
+    }
+
     /**
      * @author lmy
      */
@@ -64,9 +79,15 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
                 sb.append(line);
             }
             List<IndexSymNode> nodeList = JSON.parseArray(sb.toString(), IndexSymNode.class);
+            //判断数据是否正确
+            if(isContainNull(nodeList))
+                return false;
 //            for(IndexSymNode node : nodeList)
 //                nodeMapper.insertIntoTable(tableName,node.getNodeName(),node.getNodeType(),node.getNodeWeight(),node.getParentID());   //插入数据
-            insertJson(tableName,nodeList);
+            if(!insertJson(tableName,nodeList,false,0)){
+                nodeMapper.dropExistTable(tableName);
+                return false;
+            }
         }catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -74,13 +95,22 @@ public class IndexSymNodeServiceImpl  extends ServiceImpl<IndexSymNodeMapper, In
         return true;
     }
 
-    public void insertJson(String tableName,List<IndexSymNode> nodeList){
+    public boolean insertJson(String tableName,List<IndexSymNode> nodeList,boolean isChild,int parentID){
         for(IndexSymNode node : nodeList) {
-//            System.out.println(node.toString());
-            nodeMapper.insertIntoTable2(tableName,node.getNodeID(),node.getNodeName(),node.getNodeType(),node.getNodeWeight(),node.getParentID());   //插入数据
+            System.out.println(parentID);
+            System.out.println(node.toString());
+            if(isChild && node.getParentID()==parentID)
+                nodeMapper.insertIntoTable2(tableName,node.getNodeID(),node.getNodeName(),node.getNodeType(),node.getNodeWeight(),node.getParentID());   //插入数据
+            else if(!isChild)
+                nodeMapper.insertIntoTable2(tableName,node.getNodeID(),node.getNodeName(),node.getNodeType(),node.getNodeWeight(),node.getParentID());   //插入数据
+            else
+                return false;
+            //如果有子节点
             if(node.getChildren().size()!=0)
-                insertJson(tableName,node.getChildren());
+                if(!insertJson(tableName,node.getChildren(),true,node.getNodeID()))
+                    return false;
         }
+        return true;
     }
 
     /**

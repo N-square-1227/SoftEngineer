@@ -503,7 +503,7 @@ public class ImportController {
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
             String format = dateFormat.format(date);
-            usersDataService.insertIntoTable(userName + "_data", indexDataTableName, indexSymTableName, format);
+            usersDataService.insertIntoTable(this.userName + "_data", indexDataTableName, indexSymTableName, format);
         } catch (Exception e) {
             /* 插入不成功返回前端提示错误信息 */
             return Result.fail();
