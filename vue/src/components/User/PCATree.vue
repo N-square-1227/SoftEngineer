@@ -1,15 +1,17 @@
 <template>
   <div>
-    <div id="container" style="width:100%; height: auto;display: flex">
-      <div id="treeChart" style="height: 70vh;width: 70%;overflow-x: visible;overflow-y: auto">
-<!--        <div class="chart-title" @click="toggleDrawer">优化结果</div>-->
+    <div id="container" style="width:100%; height: 72vh;display: flex">
+      <div id="treeChartWrapper" style="width: 70%; overflow: auto;">
+        <div id="treeChart" :style="{ height: treeHeight + 'px',overflowX: 'auto',overflowY: 'auto', width: '100%',  }">
+  <!--        <div class="chart-title" @click="toggleDrawer">优化结果</div>-->
+        </div>
       </div>
 
 <!--      <el-drawer-->
 <!--          title="因子载荷矩阵"-->
 <!--          :visible.sync="tablevisible"-->
 <!--          :with-header="false">-->
-        <div id ='loadmatrix' style="height:70vh;width: 30%;float: left;overflow-x: auto;overflow-y: auto">
+        <div id ='loadmatrix' style="height:72vh;width: 30%;float: left;overflow-x: auto;overflow-y: auto">
           <div style="position: sticky; top: 0;">
             <p style="float: left;margin-left: 20px" >因子载荷矩阵</p>
             <el-tooltip
@@ -65,6 +67,13 @@ export default {
       colNames :[], // 表头
       indicators: [],
       tablevisible: false,
+      leaf_num: 0,
+    }
+  },
+  computed: {
+    treeHeight() {
+      console.log(this.leaf_num)
+      return this.leaf_num * 130;
     }
   },
   created() {
@@ -125,7 +134,7 @@ export default {
 
     },
     updateTreeValue(value) {
-      console.log("监听有用？")
+      // console.log("监听有用？")
       this.treeValue = value; // 更新treeValue的值
       this.showChart();
     },
@@ -142,6 +151,7 @@ export default {
       this.threshold = JSON.parse(sessionStorage.getItem("threshold"))    // 这里可能类型转换错误，我不知道
       /* 动态生成表头 */
       let colNum = this.raw_loadmatrix[0].length;
+      this.leaf_num = colNum;
       this.loadmatrix = []
       for (let i = 1; i <= colNum; i++) {
         const column = {label: `factor${i}`, prop: `factor${i}`};
@@ -186,7 +196,7 @@ export default {
             top: '1%',
             left: '10%',
             bottom: '1%',
-            right: '32%',
+            right: '25%',
 
             symbolSize: 7,
 
@@ -194,7 +204,7 @@ export default {
               position: 'left',
               verticalAlign: 'middle',
               align: 'right',
-              fontSize: 13,
+              fontSize: 10,
               formatter: function(params) {
                 var originalLabel = params.name; // 获取原始的节点标签内容
                 var newLabel = originalLabel + ' \n(' + parseFloat(this.treeValue()[params.data.id]).toFixed(4) + ')'; // 修改标签内容
@@ -206,7 +216,7 @@ export default {
               label: {
                 position: 'right',
                 verticalAlign: 'middle',
-                align: 'left'
+                align: 'left',
               }
             },
 

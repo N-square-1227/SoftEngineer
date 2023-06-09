@@ -1,6 +1,8 @@
 <template>
+  <div>
+    <el-page-header @back="goBack" content="详情页面" style="margin-bottom: 5px"> </el-page-header>
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-      <el-page-header @back="goBack" content="详情页面" style="margin-bottom: 5px"> </el-page-header>
+
       <el-tab-pane label="指标体系树" name="first">
             <drawOriginalTree></drawOriginalTree>
         </el-tab-pane>
@@ -11,6 +13,7 @@
             <indexNodeData></indexNodeData>
         </el-tab-pane>
     </el-tabs>
+  </div>
 </template>
 
 <script>

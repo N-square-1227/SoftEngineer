@@ -1,21 +1,23 @@
 <template>
-  <div id="container" style="width:100%; height: auto;display: flex">
-    <div id="treeChart" style="height: 70vh;width: 70%;overflow-x: auto;overflow-y: auto"></div>
+  <div id="container" style="width:100%; height: 72vh;display: flex">
+    <div id="treeChartWrapper" style="width: 70%; overflow: auto;">
+      <div id="treeChart" :style="{ height: treeHeight + 'px',overflowX: 'auto',overflowY: 'auto', width: '100%',}"></div>
+    </div>
     <div id ='sslChart' style="height:70vh;width: 30%;float: right;overflow-x: auto;overflow-y: auto"></div>
   </div>
 </template>
 
 <style>
-/*修改表格的滚动条*/
-#treeChart::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-/*滚动条的滑块*/
-#treeChart::-webkit-scrollbar-thumb {
-  background-color: #a1a3a9;
-  border-radius: 3px;
-}
+/*!*修改表格的滚动条*!*/
+/*#treeChart::-webkit-scrollbar {*/
+/*  width: 10px;*/
+/*  height: 10px;*/
+/*}*/
+/*!*滚动条的滑块*!*/
+/*#treeChart::-webkit-scrollbar-thumb {*/
+/*  background-color: #a1a3a9;*/
+/*  border-radius: 3px;*/
+/*}*/
 
 /*修改表格的滚动条*/
 #sslChart::-webkit-scrollbar {
@@ -27,8 +29,6 @@
   background-color: #a1a3a9;
   border-radius: 3px;
 }
-
-
 </style>
 
 <script>
@@ -41,6 +41,13 @@ export default {
       treeData:[],
       ssl:[],
       xlist:[],
+      leaf_num: sessionStorage.getItem("colNum"),
+    }
+  },
+  computed: {
+    treeHeight() {
+      console.log(this.leaf_num)
+      return this.leaf_num * 25;
     }
   },
   created() {
@@ -98,6 +105,7 @@ export default {
     },
     getData(){
       this.treeData = JSON.parse(sessionStorage.getItem('TreeData'))
+      console.log(this.treeData)
       this.ssl = JSON.parse(sessionStorage.getItem('SSE'))
       for(var i=1;i<=this.ssl.length;i++)
         this.xlist.push(i);
@@ -125,9 +133,9 @@ export default {
             data: this.treeData,
 
             top: '1%',
-            left: '12%',
+            left: '10%',
             bottom: '1%',
-            right: '32%',
+            right: '25%',
 
             symbolSize: 7,
 
@@ -135,7 +143,7 @@ export default {
               position: 'left',
               verticalAlign: 'middle',
               align: 'right',
-              fontSize: 13,
+              fontSize: 10,
               formatter: function(params) {
                 const originalLabel = params.name; // 获取原始的节点标签内容
                 const newLabel = originalLabel + ' \n(' + parseFloat(this.treeValue()[params.data.id]).toFixed(4) + ')'; // 修改标签内容
@@ -251,7 +259,4 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
 

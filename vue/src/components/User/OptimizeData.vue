@@ -124,6 +124,7 @@ export default {
             // sessionStorage.setItem("sampleNum", res.data.sampleNum);
             this.raw_data = res.data.sampleData;
             this.colNum = res.data.colNum
+            sessionStorage.setItem("colNum", this.colNum);
             this.sampleNum = res.data.sampleNum
           } else {
             this.$message.error('数据加载出错！');

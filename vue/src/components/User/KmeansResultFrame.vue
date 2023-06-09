@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-page-header @back="goBack" content="Kmeas优化" style="margin-bottom: 10px"> </el-page-header>
+    <el-page-header @back="goBack" content="K-means优化" style="margin-bottom: 10px"> </el-page-header>
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
 
       <el-tab-pane label="指标体系优化结果" name="first">
-        <DrawTree></DrawTree>
+        <KmeansTree></KmeansTree>
       </el-tab-pane>
       <el-tab-pane label="指标列表" name="second">
         <OptimizeNodeList></OptimizeNodeList>
@@ -21,14 +21,13 @@
 
 <script>
 import OptimizePage from "@/components/User/OptimizePage";
-import DrawTree from "@/components/User/KmeansTree";
 import OptimizeResult from "@/components/User/OptimizeResult";
 import OptimizeData from "@/components/User/OptimizeData";
 import OptimizeNodeList from "@/components/User/OptimizeNodeList";
 import KmeansTree from "@/components/User/KmeansTree";
 export default {
   name: "KmeansResultFrame",
-  components: {KmeansTree, OptimizeNodeList, OptimizeData, OptimizeResult, DrawTree, OptimizePage},
+  components: {KmeansTree, OptimizeNodeList, OptimizeData, OptimizeResult, OptimizePage},
   data() {
     return {
       activeName: 'first'

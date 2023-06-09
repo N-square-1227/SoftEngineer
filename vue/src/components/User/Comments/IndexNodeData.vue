@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import {eventBus} from "@/main";
+
 export default {
   data() {
     return {
@@ -78,6 +80,7 @@ export default {
           sessionStorage.setItem("sample_result", JSON.stringify(res.data));
           // console.log(sessionStorage.getItem("sample_result"))
           this.$message.success("计算完成！\n您可以在指标体系树型结构中查看！")
+          eventBus.$emit('updateTreeValue', res.data);
         }else{
           this.$message.error('数据计算出错！');
         }

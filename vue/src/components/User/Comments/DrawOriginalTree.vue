@@ -1,27 +1,43 @@
 <template>
     <div style="width:100%; height: auto">
-        <div id="treeChart" style="height: 70vh;width: 100%"></div>
+        <div id="treeChart" :style="{ height: treeHeight + 'px',overflowX: 'auto',overflowY: 'auto', width: '100%',}"></div>
     </div>
 </template>
 
 <script>
+import {eventBus} from "@/main";
+
 export default {
     name: "DrawOriginalTree",
     data() {
         return {
-            treeData:[]
+            treeData:[],
+            leaf_num: sessionStorage.getItem("colNum"),
         }
     },
+    computed: {
+      treeHeight() {
+        console.log(this.leaf_num)
+        return this.leaf_num * 30;
+      }
+    },
     created() {
-        this.getTreeData()
+        this.getTreeData();
+        eventBus.$on('updateTreeValue', (treeValue) => {
+          this.showChart()
+        });
     },
     mounted() {
+        this.treeValue();
         this.showChart();
         this.resizefun = ()=>{
             this.$echarts.init(document.getElementById('treeChart')).resize();
             //多个echarts则在此处添加
         };
         window.addEventListener('resize',this.resizefun);
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize',this.resizefun);
     },
     watch: {
         treeData: {
@@ -50,23 +66,23 @@ export default {
           // console.log(params);
           var id = params.data.id;
           var name = params.data.name;
-          //图片地址截取，因为echarts修改图片的时候有一个------image://---前缀，前缀后面的才是图片真正的地址
-          //var imgPathSrc = imgPath.split("image://")[1];
-          // console.log('str',imgPathSrc);
           if (id === 1) {
             return '<span style="position: relative;top: -10px;padding: 0 5px;">ID：' + params.data.id + '</span>' + '<br>'
-                + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>'
-                + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">指标值：' + this.treeValue()[params.data.id] + '</span>';
+                + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>';
           }
           else {
             return '<span style="position: relative;top: -10px;padding: 0 5px;">ID：' + params.data.id + '</span>' + '<br>'
                 + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>'
                 + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">类型：' + params.data.type + '</span>' + '<br>'
                 + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">权重：' + params.data.weight + '</span>' + '<br>'
-                + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">父节点ID：' + params.data.parentID + '</span>' + '<br>'
-                + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">指标值：' + this.treeValue()[params.data.id] + '</span>';
+                + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">父节点ID：' + params.data.parentID + '</span>' + '<br>';
             // + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">最后登录时间：' + params.data.lastLoginTime + '</span>';
           }
+        },
+        updateTreeValue(value) {
+          // console.log("监听有用？")
+          this.treeValue = value; // 更新treeValue的值
+          this.showChart();
         },
         showChart() {
             //console.log("sss")
@@ -90,9 +106,9 @@ export default {
                         data: this.treeData,
 
                         top: '1%',
-                        left: '7%',
+                        left: '10%',
                         bottom: '1%',
-                        right: '20%',
+                        right: '25%',
 
                         symbolSize: 5,
 
@@ -100,7 +116,12 @@ export default {
                             position: 'left',
                             verticalAlign: 'middle',
                             align: 'right',
-                            fontSize: 14
+                            fontSize: 12,
+                            formatter: function(params) {
+                              var originalLabel = params.name; // 获取原始的节点标签内容
+                              var newLabel = originalLabel + ' \n(' + parseFloat(this.treeValue()[params.data.id]).toFixed(4) + ')'; // 修改标签内容
+                              return newLabel;
+                            }.bind(this)
                         },
 
                         leaves: {
