@@ -13,7 +13,7 @@ public interface UsersDataService extends IService<UsersData> {
 
     int createTable(String tableName);
 
-    int insertIntoTable(String tableName,String dataTableName,String indexSymDTName);
+    int insertIntoTable(String tableName,String dataTableName,String indexSymDTName, String date);
 
     int deleteTable(String table_name);
 

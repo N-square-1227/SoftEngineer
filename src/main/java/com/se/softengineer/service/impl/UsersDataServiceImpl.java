@@ -26,15 +26,16 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
 
     @Override
     public int createTable(String tableName) {
+        System.out.println("掉这里");
         return usersDataMapper.createTable(tableName);
     }
 
     @Override
-    public int insertIntoTable(String tableName, String dataTableName, String indexSymDTName) {
+    public int insertIntoTable(String tableName, String dataTableName, String indexSymDTName, String date) {
         List<String> indexTables = usersDataMapper.getIndexSymTableNames(tableName);
-        if(indexTables.contains(indexSymDTName))    /* 如果已经包含就不再写入新记录 */
-            return 0;
-        return usersDataMapper.insertIntoTable(tableName, dataTableName, indexSymDTName);
+        if(indexTables.contains(indexSymDTName))    /* 如果已经包含应该删除原来的*/
+            usersDataMapper.delIndex(tableName, indexSymDTName);
+        return usersDataMapper.insertIntoTable(tableName, dataTableName, indexSymDTName, date);
     }
 
     @Override
