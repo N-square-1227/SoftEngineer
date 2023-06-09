@@ -1,20 +1,23 @@
 <template>
-  <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-    <el-page-header @back="goBack" content="PCA优化" style="margin-bottom: 5px"> </el-page-header>
-    <el-tab-pane label="指标体系优化结果" name="first">
-<!--      <DrawTree></DrawTree>-->
-      <PCATree></PCATree>
-    </el-tab-pane>
-    <el-tab-pane label="指标列表" name="second">
-      <OptimizeNodeList></OptimizeNodeList>
-    </el-tab-pane>
-    <el-tab-pane label="指标数据" name="third">
-      <OptimizeData></OptimizeData>
-    </el-tab-pane>
-    <el-tab-pane label="对比结果" name="forth">
-      <OptimizeResult></OptimizeResult>
-    </el-tab-pane>
-  </el-tabs>
+  <div>
+    <el-page-header @back="goBack" content="PCA优化" style="margin-bottom: 10px"> </el-page-header>
+    <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+
+      <el-tab-pane label="指标体系优化结果" name="first">
+  <!--      <DrawTree></DrawTree>-->
+        <PCATree></PCATree>
+      </el-tab-pane>
+      <el-tab-pane label="指标列表" name="second">
+        <OptimizeNodeList></OptimizeNodeList>
+      </el-tab-pane>
+      <el-tab-pane label="指标数据" name="third">
+        <OptimizeData></OptimizeData>
+      </el-tab-pane>
+      <el-tab-pane label="对比结果" name="forth">
+        <OptimizeResult></OptimizeResult>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 
 <script>

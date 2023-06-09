@@ -9,6 +9,8 @@ import store from "./store";
 import './assets/global.css'
 import * as echarts from 'echarts'
 
+export const eventBus = new Vue();
+
 Vue.prototype.$axios =axios;
 Vue.config.productionTip = false
 Vue.prototype.$echarts=echarts

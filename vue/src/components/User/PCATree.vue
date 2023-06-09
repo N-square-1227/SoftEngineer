@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="container" style="width:100%; height: auto;display: flex">
-      <div id="treeChart" style="height: 75vh;width: 70%;overflow-x: visible;overflow-y: auto">
+      <div id="treeChart" style="height: 70vh;width: 70%;overflow-x: visible;overflow-y: auto">
 <!--        <div class="chart-title" @click="toggleDrawer">优化结果</div>-->
       </div>
 
@@ -9,7 +9,7 @@
 <!--          title="因子载荷矩阵"-->
 <!--          :visible.sync="tablevisible"-->
 <!--          :with-header="false">-->
-        <div id ='loadmatrix' style="height:75vh;width: 30%;float: left;overflow-x: auto;overflow-y: auto">
+        <div id ='loadmatrix' style="height:70vh;width: 30%;float: left;overflow-x: auto;overflow-y: auto">
           <div style="position: sticky; top: 0;">
             <p style="float: left;margin-left: 20px" >因子载荷矩阵</p>
             <el-tooltip
@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import {eventBus} from "@/main";
+
 export default {
   name: "PCATree",
   data() {
@@ -65,12 +67,12 @@ export default {
       tablevisible: false,
     }
   },
-  // computed: {
-  //
-  // },
   created() {
     this.getTreeData()
     this.getLoadMatrix();
+    eventBus.$on('updateTreeValue', (treeValue) => {
+      this.showChart()
+    });
   },
   mounted() {
     this.treeValue();
@@ -80,6 +82,9 @@ export default {
       //多个echarts则在此处添加
     };
     window.addEventListener('resize',this.resizefun);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize',this.resizefun);
   },
   watch: {
     treeData: {
@@ -103,33 +108,27 @@ export default {
       var name = params.data.name;
       if (id === 1) {
         return '<span style="position: relative;top: -10px;padding: 0 5px;">ID：' + params.data.id + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">指标值：' + this.treeValue()[params.data.id] + '</span>';
+            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>';
       }
       else {
         return '<span style="position: relative;top: -10px;padding: 0 5px;">ID：' + params.data.id + '</span>' + '<br>'
             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>'
             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">类型：' + (params.data.type === 0 ? "定量负向指标" : "定量正向指标")+ '</span>' + '<br>'
             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">权重：' + params.data.weight + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">父节点ID：' + params.data.parentID + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">指标值：' + this.treeValue()[params.data.id] + '</span>';
+            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">父节点ID：' + params.data.parentID + '</span>' + '<br>';
         // + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">最后登录时间：' + params.data.lastLoginTime + '</span>';
       }
     },
 
     getTreeData(){
       this.treeData = JSON.parse(sessionStorage.getItem('TreeData'))
+
     },
-    // when_overflow(row, column) {
-    //   const value = row[column.property];
-    //   if (!isNaN(value)) {
-    //     return `<span title="${formattedValue}">${formattedValue}</span>`;
-    //   }
-    //   return '';
-    // },
-    // toggleDrawer() {
-    //   this.tablevisible = true;
-    // },
+    updateTreeValue(value) {
+      console.log("监听有用？")
+      this.treeValue = value; // 更新treeValue的值
+      this.showChart();
+    },
     formatCell(value) {
       if (Math.abs(value) > this.threshold) {
         return 'color: red;';
@@ -196,6 +195,11 @@ export default {
               verticalAlign: 'middle',
               align: 'right',
               fontSize: 13,
+              formatter: function(params) {
+                var originalLabel = params.name; // 获取原始的节点标签内容
+                var newLabel = originalLabel + ' \n(' + parseFloat(this.treeValue()[params.data.id]).toFixed(4) + ')'; // 修改标签内容
+                return newLabel;
+              }.bind(this)
             },
 
             leaves: {

@@ -32,6 +32,8 @@
 </style>
 
 <script>
+import {eventBus} from "@/main";
+
 export default {
   name: "KmeansTree",
   data() {
@@ -44,6 +46,10 @@ export default {
   created() {
     this.getData()
     // this.showChart()
+    /* 更新treeValue */
+    eventBus.$on('updateTreeValue', (treeValue) => {
+      this.showChart()
+    });
   },
   mounted() {
     this.treeValue();
@@ -79,16 +85,14 @@ export default {
       var name = params.data.name;
       if (id === 1) {
         return '<span style="position: relative;top: -10px;padding: 0 5px;">ID：' + params.data.id + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">指标值：' + this.treeValue()[params.data.id] + '</span>';
+            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>';
       }
       else {
         return '<span style="position: relative;top: -10px;padding: 0 5px;">ID：' + params.data.id + '</span>' + '<br>'
             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>'
             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">类型：' + (params.data.type === 0 ? "定量负向指标" : "定量正向指标")+ '</span>' + '<br>'
             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">权重：' + params.data.weight + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">父节点ID：' + params.data.parentID + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">指标值：' + this.treeValue()[params.data.id] + '</span>';
+            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">父节点ID：' + params.data.parentID + '</span>' + '<br>';
         // + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">最后登录时间：' + params.data.lastLoginTime + '</span>';
       }
     },
@@ -132,6 +136,11 @@ export default {
               verticalAlign: 'middle',
               align: 'right',
               fontSize: 13,
+              formatter: function(params) {
+                const originalLabel = params.name; // 获取原始的节点标签内容
+                const newLabel = originalLabel + ' \n(' + parseFloat(this.treeValue()[params.data.id]).toFixed(4) + ')'; // 修改标签内容
+                return newLabel;
+              }.bind(this)
             },
 
             leaves: {
