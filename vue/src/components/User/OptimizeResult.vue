@@ -5,7 +5,8 @@
         <el-tag type="info">优化前各样本总指标计算值排序</el-tag>
         <el-table
             :data="originResult"
-            style="width: 100%">
+            style="width: 100%;"
+            size="small">
           <el-table-column
               prop="value"
               label="计算值"
@@ -26,7 +27,8 @@
         <el-tag type="success">优化后各样本总指标计算值排序</el-tag>
         <el-table
             :data="newResult"
-            style="width: 100%">
+            style="width: 100%"
+            size="small">
           <el-table-column
               prop="value"
               label="计算值"

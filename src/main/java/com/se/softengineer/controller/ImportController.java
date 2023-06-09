@@ -29,10 +29,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author xiaxue
@@ -93,9 +92,9 @@ public class ImportController {
         cells.clear();
         String filename = file.getOriginalFilename();
         fileType=v;
-        System.out.println("类型："+fileType);
+//        System.out.println("类型："+fileType);
         filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
-        System.out.println(filesName);
+//        System.out.println(filesName);
         //保存到本地
         String filePath = savaFileByNio((FileInputStream) file.getInputStream(), filename);
         List<String[]> l=AnalyExcel.readExcelFile(file,1);
@@ -116,7 +115,7 @@ public class ImportController {
 
         fileType=v;
         filesName=file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf("."));
-        System.out.println("文件名："+filesName);
+//        System.out.println("文件名："+filesName);
         //保存到本地
         String filePath = savaFileByNio((FileInputStream) file.getInputStream(), filename);
         try {
@@ -127,7 +126,7 @@ public class ImportController {
             Document doc = db.parse(filePath);
             NodeList indexSymList = doc.getElementsByTagName("nodeGroups");
             // 获取节点个数
-            System.out.println("一共有" + indexSymList.getLength() + "结点");
+//            System.out.println("一共有" + indexSymList.getLength() + "结点");
 
             // 遍历每个book节点
             for (int i = 0; i < indexSymList.getLength(); i++) {
@@ -158,9 +157,9 @@ public class ImportController {
 
                     else if (childNodes.item(k).getNodeType() == Node.ELEMENT_NODE) {
                         // 获取element类型的节点和节点值
-                        System.out.print("节点名：" + childNodes.item(k).getNodeName());
+//                        System.out.print("节点名：" + childNodes.item(k).getNodeName());
                         //System.out.print(" --- 节点值：" + childNodes.item(k).getFirstChild().getNodeValue());
-                        System.out.println(" --- 节点值："+childNodes.item(k).getTextContent());
+//                        System.out.println(" --- 节点值："+childNodes.item(k).getTextContent());
                         temp[j++]=childNodes.item(k).getTextContent();
                     }
                 }
@@ -206,7 +205,7 @@ public class ImportController {
                 return Result.fail();
             if(FT.equals("XML")){
                 for (String[] l : list) {
-                    System.out.println("————————————————————————————————————"+l[0]+"  "+ Integer.parseInt(l[1])+"  "+ Double.parseDouble(l[2])+"  "+ Integer.parseInt(l[3])+1);
+//                    System.out.println("————————————————————————————————————"+l[0]+"  "+ Integer.parseInt(l[1])+"  "+ Double.parseDouble(l[2])+"  "+ Integer.parseInt(l[3])+1);
                     indexSymNodeMapper.insertIntoSheet(indexSymTableName,Integer.parseInt(l[1])+1, l[0], Integer.parseInt(l[2]), Double.parseDouble(l[3]), Integer.parseInt(l[4])+1);
                     //return Result.fail();
                 }
@@ -499,7 +498,12 @@ public class ImportController {
          **/
         try{
             /* 相同名字的指标体系上传时覆盖原有的指标体系，记录写入user_data表时也应该去重 */
-            usersDataService.insertIntoTable(userName + "_data", indexDataTableName, indexSymTableName);
+            Date date = new Date(System.currentTimeMillis());
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+            String format = dateFormat.format(date);
+            usersDataService.insertIntoTable(userName + "_data", indexDataTableName, indexSymTableName, format);
         } catch (Exception e) {
             /* 插入不成功返回前端提示错误信息 */
             return Result.fail();

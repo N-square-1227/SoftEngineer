@@ -1,5 +1,5 @@
 <template>
-  <div style="position: fixed">
+  <div style="margin-right:0">
     <div style="margin-bottom: 5px;overflow: hidden">
       <div style="text-align: left;float: left">
         <el-input v-model="nodeName" placeholder="请输入指标体系名称" suffix-icon="el-icon-search" style="width: 200px;"
@@ -21,54 +21,58 @@
         </el-tooltip>
       </div>
     </div>
-    <el-table :data="symList"
-              :header-cell-style="{ background:'#f2f5fc',color:'#555555'}">
-      <el-table-column prop="id" label="ID" width="200">
-      </el-table-column>
-      <el-table-column prop="indexSymDTName" label="指标体系" width="400">
-      </el-table-column>
-      <el-table-column label="操作" width="600">
-        <template slot-scope="scope">
-          <el-button slot="reference" size="mini" type="primary" style="margin-right:10px" @click="detail(scope.row)">详细信息</el-button>
-          <el-popover
-              placement="bottom"
-              width="160"
-              trigger="click">
-            <el-select placeholder="请选择" v-model="algorithmValue" size="mini">
-              <el-option
-                  v-for="item in algorithmOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                  style="font-size: 10px">
-              </el-option>
-            </el-select>
-            <el-button type="primary"
-                       @click="chooseAlgorithm(scope.row)"
-                       size="mini"
-                       style="margin-top: 5px;float: right">确认</el-button>
-            <template #reference>
-              <el-button type="success" size="mini">优化</el-button>
-            </template>
-          </el-popover>
-          <el-popconfirm
-              title="确定删除吗？"
-              @confirm="del(scope.row)"
-          >
-            <el-button slot="reference" size="mini" type="danger" style="margin-left: 10px">删除</el-button>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[5, 10]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
-    </el-pagination>
+    <div style="width: 100%">
+      <el-table :data="symList"
+                :header-cell-style="{ background:'#f2f5fc',color:'#555555'}">
+        <el-table-column prop="id" label="ID" align="center">
+        </el-table-column>
+        <el-table-column prop="indexSymDTName" label="指标体系" align="center">
+        </el-table-column>
+        <el-table-column prop="uploadTime" label="上传时间" align="center">
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button slot="reference" size="small" type="primary" style="margin-right:10px" @click="detail(scope.row)">详细信息</el-button>
+            <el-popover
+                placement="bottom"
+                width="160"
+                trigger="click">
+              <el-select placeholder="请选择" v-model="algorithmValue" size="mini">
+                <el-option
+                    v-for="item in algorithmOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                    style="font-size: 10px">
+                </el-option>
+              </el-select>
+              <el-button type="primary"
+                         @click="chooseAlgorithm(scope.row)"
+                         size="mini"
+                         style="margin-top: 5px;float: right">确认</el-button>
+              <template #reference>
+                <el-button type="success" size="small">优化</el-button>
+              </template>
+            </el-popover>
+            <el-popconfirm
+                title="确定删除吗？"
+                @confirm="del(scope.row)"
+            >
+              <el-button slot="reference" size="small" type="danger" style="margin-left: 10px">删除</el-button>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[5, 10]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 

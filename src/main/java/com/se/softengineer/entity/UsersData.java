@@ -17,4 +17,7 @@ public class UsersData {
     @TableField("indexSymDTName")
     String indexSymDTName;
 
+    @TableField("uploadTime")
+    String uploadTime;
+
 }

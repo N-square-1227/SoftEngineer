@@ -15,19 +15,14 @@ import java.util.List;
 
 @Mapper
 public interface UsersDataMapper extends BaseMapper<UsersData> {
-    @Update({"CREATE TABLE ${tableName} (" +
-            "  `id` int NOT NULL AUTO_INCREMENT," +
-            "  `dataTableName` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL," +
-            "  `indexSymDTName` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL," +
-            "  PRIMARY KEY (`id`)" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
-    })
+
     int createTable(@Param("tableName") String tableName);
 
-    @Insert({"insert into ${tableName}(dataTableName,indexSymDTName) " +
-            "values(#{dataTableName},#{indexSymDTName});"
+    @Insert({"insert into ${tableName}(dataTableName,indexSymDTName,uploadTime) " +
+            "values(#{dataTableName},#{indexSymDTName},#{uploadTime});"
     })
-    int insertIntoTable(@Param("tableName")String tableName,@Param("dataTableName")String type,@Param("indexSymDTName")String weight);
+    int insertIntoTable(@Param("tableName")String tableName,@Param("dataTableName")String dataTableName,
+                        @Param("indexSymDTName")String indexSymDTName, @Param("uploadTime")String uploadTime);
 
     int deleteTable(String table_name);
 
