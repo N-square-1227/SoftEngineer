@@ -2,10 +2,12 @@ package com.se.softengineer.algorithm.caculate;
 
 import com.se.softengineer.entity.IndexSym;
 import com.se.softengineer.entity.IndexSymNode;
-import com.se.softengineer.entity.Sample;
 import lombok.Data;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Data
 public class CaculateResult {

@@ -35,6 +35,9 @@
         </el-descriptions>
 
         <div style="margin-top: 20px">
+            <el-button v-if="user.role===1" @click="toUser" type="success" size="big">用户管理</el-button>
+            <el-button v-else type="success" @click="toIndex" size="big">指标体系管理</el-button>
+
             <el-button type="primary" @click="modify" size="big">修改个人信息</el-button>
             <el-button type="danger" @click="changePwd" size="big">修改密码</el-button>
         </div>
@@ -47,7 +50,7 @@
                 center>
             <el-form ref="form" :rules="rulesModify" :model="form" label-width="80px">
                 <el-form-item prop="userName" label="用户名">
-                    <el-input v-model="form.userName"></el-input>
+                    <el-input :disabled="true" v-model="form.userName"></el-input>
                 </el-form-item>
                 <el-form-item prop="userEmail" label="邮箱">
                     <el-input v-model="form.userEmail"></el-input>
@@ -66,7 +69,7 @@
                 center>
             <el-form ref="pwdForm" :rules="rulesModifyPwd" :model="pwdForm" label-width="100px">
                 <el-form-item label="旧密码" prop="oldUserPassword">
-                    <el-input :disabled="true" v-model="pwdForm.oldUserPassword"></el-input>
+                    <el-input v-model="pwdForm.oldUserPassword"></el-input>
                 </el-form-item>
                 <el-form-item label="新密码" prop="newPwd">
                     <el-input v-model="pwdForm.newPwd"></el-input>
@@ -117,40 +120,46 @@ export default {
             }
         }
     },
-    methods:{
-        init(){
+    methods: {
+        init() {
             this.user = JSON.parse(sessionStorage.getItem('CurUser'))
+        },
+        toUser() {
+            this.$router.replace("/userManage")
+        },
+        toIndex() {
+            this.$router.replace("/ImportFiles")
         },
         modify() {
             this.form = this.user;
             this.ModifyInfoDialog = true;
         },
-        resetFrom(){
-            this.form.userName=''
-            this.form.userEmail=''
-            this.pwdForm.newPwd=''
+        resetFrom() {
+            this.form.userName = ''
+            this.form.userEmail = ''
+            this.pwdForm.newPwd = ''
         },
-        modifySave(){
+        modifySave() {
             this.$refs.form.validate((valid) => {
                 if (valid) {
                     this.$axios.post(this.$httpUrl + '/user/updateInfo', {
                         param: {
                             userName: this.form.userName,
-                            userEmail:this.form.userEmail,
+                            userEmail: this.form.userEmail,
                             userID: this.user.userID
                         }
-                    }).then(res=>res.data).then(res=>{
+                    }).then(res => res.data).then(res => {
                         console.log(res)
-                        if(res.code == 200) {
+                        if (res.code === 200) {
                             this.$message({
                                 showClose: true,
                                 message: '操作成功',
                                 type: 'success'
                             });
-                            this.ModifyInfoDialog=false;
+                            this.ModifyInfoDialog = false;
                             this.resetFrom();
                             this.reloadUser();
-                        }else {
+                        } else {
                             this.$message({
                                 showClose: true,
                                 message: '操作失败!',
@@ -165,12 +174,12 @@ export default {
             });
         },
         reloadUser() {
-            this.$axios.get(this.$httpUrl + '/user/userDetail?userID=' +this.user.userID ).then(res=>res.data).then(res=>{
+            this.$axios.get(this.$httpUrl + '/user/userDetail?userID=' + this.user.userID).then(res => res.data).then(res => {
                 console.log(res);
-                if(res.code==200){
-                    sessionStorage.setItem("CurUser",JSON.stringify(res.data))
+                if (res.code == 200) {
+                    sessionStorage.setItem("CurUser", JSON.stringify(res.data))
                     this.init();
-                }else {
+                } else {
                     this.$message.error("上传失败");
                 }
             })
@@ -178,27 +187,30 @@ export default {
         changePwd() {
             this.ModifyPwdDialog = true;
             this.pwdForm.userPassword = '';
-            this.pwdForm.oldUserPassword = this.user.userPassword;
+            this.pwdForm.oldUserPassword = '';
         },
         modifyPwdSave() {
-            this.$refs.pwdForm.validate((valid)=>{
-                if(valid) {
-                    this.$axios.post(this.$httpUrl + '/user/updatePwd', {
-                        param: {
-                            newPwd: this.pwdForm.newPwd,
-                            userID: this.user.userID,
-                        }
-                    }).then(res=>res.data).then(res=>{
-                        console.log(res);
-                        if(res.code==200){
-                            this.ModifyPwdDialog = false;
-                            this.$message.success("修改成功");
-                        }else {
-                            this.$message.error("修改失败");
-                        }
-                        this.resetFrom();
-                        this.reloadUser();
-                    })
+            this.$refs.pwdForm.validate((valid) => {
+                if (valid) {
+                    if (this.pwdForm.oldUserPassword == this.user.userPassword) {
+                        this.$axios.post(this.$httpUrl + '/user/updatePwd', {
+                            param: {
+                                newPwd: this.pwdForm.newPwd,
+                                userID: this.user.userID,
+                            }
+                        }).then(res => res.data).then(res => {
+                            console.log(res);
+                            if (res.code == 200) {
+                                this.ModifyPwdDialog = false;
+                                this.$message.success("修改成功");
+                            } else {
+                                this.$message.error("修改失败");
+                            }
+                            this.resetFrom();
+                            this.reloadUser();
+                        })
+                    } else
+                        this.$message.error("修改失败");
                 }
             })
         },

@@ -2,12 +2,12 @@
     <div>
         <div style="margin-bottom: 5px;text-align: left">
             <el-input v-model="name" placeholder="请输入名字" suffix-icon="el-icon-search" style="width: 200px;"
-                        @keyup.enter.native="loadPost"></el-input>
+                      @keyup.enter.native="loadPost"></el-input>
             <el-button type="primary" style="margin-left: 10px;" @click="loadPost">查询</el-button>
             <el-button type="success" @click="resetParam">重置</el-button>
         </div>
         <el-table :data="tableData"
-            :header-cell-style="{ background:'#f2f5fc',color:'#555555'}">
+                  :header-cell-style="{ background:'#f2f5fc',color:'#555555'}">
             <el-table-column prop="userID" label="ID" width="100">
             </el-table-column>
             <el-table-column prop="userName" label="用户名" width="180">
@@ -17,9 +17,9 @@
             <el-table-column prop="userEmail" label="邮箱" width="180">
             </el-table-column>
             <el-table-column
-                prop="role" label="角色" width="180"
-                :filters="[{ text: '管理员', value: '1' }, { text: '用户', value: '2' }]"
-                :filter-method="filterRole" filter-placement="bottom-end">
+                    prop="role" label="角色" width="180"
+                    :filters="[{ text: '管理员', value: '1' }, { text: '用户', value: '2' }]"
+                    :filter-method="filterRole" filter-placement="bottom-end">
                 <template slot-scope="scope">
                     <el-tag
                             :type="scope.row.role == 1 ? 'primary' : 'success'"
@@ -122,7 +122,7 @@ export default {
                 console.log(res)
                 if (res.code==200) {
                     this.tableData = res.data,
-                    this.total = res.total
+                            this.total = res.total
                 }
                 else
                     this.$message.error('用户名或密码错误！');

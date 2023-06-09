@@ -1,5 +1,7 @@
 package com.se.softengineer.service.impl;
 
+
+
 import com.se.softengineer.algorithm.EntropyWeight.Entropy;
 import com.se.softengineer.algorithm.Kmeans.Cluster;
 import com.se.softengineer.algorithm.Kmeans.ElbowMethod;
@@ -79,29 +81,41 @@ public class OptimizeServiceImpl implements OptimizeService {
     }
 
     @Override
-    public IndexSym pca(String indexsym_name, String data_tablename) {
+    public Map<String, Object> pca(String indexsym_name, String data_tablename) {
+        Map<String, Object> res = new HashMap<>();
+
         List<Sample> data = sampleService.getData(data_tablename);
         IndexSym indexSym = new IndexSym(indexSymService.getIndex(indexsym_name));
         List<IndexSymNode> leaves = indexSym.get_leaves();
-        PCA pca = new PCA(data);
+        String newIndexSymName = indexsym_name + "_new_pca";
+        PCA pca = new PCA(data, indexsym_name);
         pca.solve();
         int node_num = pca.getNew_sym().getNodeList().size();
+        /* 把新得到的指标体系和原本的指标体系中的指标对应 */
         for(int i = 0; i < node_num; i ++) {
             List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(i + 1);
             if(son_nodes.size() != 0) continue;
-            System.out.println(pca.getNew_sym().getNodeList().get(i).getNodeName());
+//            System.out.println(pca.getNew_sym().getNodeList().get(i).getNodeName());
             /* 第idx个子节点*/
             int idx = Integer.parseInt(pca.getNew_sym().getNodeList().get(i).getNodeName());
             pca.getNew_sym().getNodeList().get(i).setNodeName(leaves.get(idx - 1).getNodeName());
         }
-        String newIndexSymName = indexsym_name + "_new_pca";
 
         indexSymService.dropExistTable(newIndexSymName);
         indexSymService.createTable(newIndexSymName);
         // 将新的指标体系存到数据库的新表里
         indexSymService.insertIntoSheet(newIndexSymName, pca.getNew_sym().getNodeList());
 
-        return pca.getNew_sym();
+        /* 返回叶子结点指标名列表 */
+        List<String> leaves_names = new ArrayList<>();
+        for(IndexSymNode index : leaves)
+            leaves_names.add(index.getNodeName());
+
+        res.put("indexsym", pca.getNew_sym());
+        res.put("loadmatrix", pca.getLoad_matrix());
+        res.put("threshold", pca.getThreshold());
+        res.put("indicators", leaves_names);
+        return res;
     }
 
     /**
@@ -111,7 +125,7 @@ public class OptimizeServiceImpl implements OptimizeService {
      * @throws Exception
      */
     @Override
-    public IndexSym kmeans(String indexsym_name, String data_tablename) throws Exception {
+    public IndexSym kmeans(String indexsym_name, String data_tablename,List<Double> sslList) throws Exception {
         IndexSym newIndexSym = new IndexSym();
         //这里的data需要从前端传回来
         List<Sample> sampleList = sampleService.getData(data_tablename);
@@ -124,7 +138,11 @@ public class OptimizeServiceImpl implements OptimizeService {
         //手肘法获取最优K值
         int maxk = columnList.size()/2;
         ElbowMethod elbowMethod = new ElbowMethod();
-        int k =elbowMethod.getOptimalK(maxk,testList);
+        double[] wssList = elbowMethod.getSSl(maxk,testList);
+        for(int i=-0;i<wssList.length;i++)
+            sslList.add(wssList[i]);
+        int k =elbowMethod.getOptimalK(wssList);
+        System.out.println(sslList);
         System.out.println(columnList.size());
         System.out.println(k);
 

@@ -90,10 +90,22 @@ public class IndexSymController {
      * http://localhost:8877/indexsym/loadData?table_name=data
      * 后面也可以改成PostMapping
      **/
-    @GetMapping("/loadData")
-    private Result load_data(String table_name) {
-        data = sampleService.getData(table_name);
-        return data.size() != 0 ? Result.success(data) : Result.fail() ;
+    @PostMapping ("/loadData")
+    public Result loadData(@RequestBody QueryPageParam query) {
+        try {
+            HashMap param = query.getParam();
+            String table_name = (String) param.get("table_name");
+
+            List<Sample> sampleList = sampleService.getData(table_name+"_data");
+            List<Double> data = sampleList.get(0).getData();
+            HashMap<String, Object> res_map = new HashMap<>();
+            res_map.put("sampleData", sampleList);
+            res_map.put("colNum", data.size());
+            res_map.put("sampleNum", sampleList.size());
+            return Result.success(res_map);
+        }catch (Exception e){
+            return Result.fail();
+        }
     }
 
     /**
@@ -106,8 +118,6 @@ public class IndexSymController {
             HashMap param = params.getParam();
             String table_name = (String) param.get("basicTableName");
             String func = (String) param.get("func");
-            System.out.println(table_name+", "+func);
-
 
             String new_tablename = table_name + "_new" + "_" + func;
             String data_tablename = table_name + "_data";
@@ -186,7 +196,7 @@ public class IndexSymController {
      **/
     @GetMapping("/pca")
     public Result use_PCA(String indexsym_name, String data_tablename) {
-        IndexSym newIndexSym = optimizeService.pca(indexsym_name, data_tablename);
+        Map<String, Object> newIndexSym = optimizeService.pca(indexsym_name, data_tablename);
         return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 
@@ -211,8 +221,8 @@ public class IndexSymController {
      * @throws Exception
      */
     @GetMapping("/kmeans")
-    public Result use_kmeans(String indexsym_name, String data_tablename) throws Exception {
-        IndexSym newIndexSym = optimizeService.kmeans(indexsym_name, data_tablename);
+    public Result use_kmeans(String indexsym_name, String data_tablename,List<Double> sllList) throws Exception {
+        IndexSym newIndexSym = optimizeService.kmeans(indexsym_name, data_tablename,sllList);
         return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 
@@ -221,7 +231,6 @@ public class IndexSymController {
      * 这太长了，改post
      **/
     @PostMapping("/caculateResult")
-//    public Result use_caculateResult(String dataName, String indexName, String newindexName){
     public Result use_caculateResult(@RequestBody QueryPageParam query){
         HashMap param = query.getParam();
 

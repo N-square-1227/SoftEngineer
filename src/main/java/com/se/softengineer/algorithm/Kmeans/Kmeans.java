@@ -23,7 +23,7 @@ public class Kmeans {
     private Double disdiff = (Double) 0.01;//单次迭代终止体哦阿健，两次运行中类中心的距离差
     //处理数据的类
 
-    public Kmeans(int k,List<Sample> datas){
+    public Kmeans(int k, List<Sample> datas){
         //首先对数据矩阵专职，每一行数据中的值对应每一个点的坐标
         this.datas = datas;
         DataNumpy.transposition(this.datas);

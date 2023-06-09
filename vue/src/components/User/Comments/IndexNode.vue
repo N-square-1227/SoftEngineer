@@ -1,10 +1,11 @@
+
 <template>
     <div>
         <div style="margin-bottom: 5px;text-align: left">
-            <el-input v-model="name" placeholder="请输入节点名称" suffix-icon="el-icon-search" style="width: 200px;"
+            <el-input v-model="nodeName" placeholder="请输入节点名称" suffix-icon="el-icon-search" style="width: 200px;"
                       @keyup.enter.native="loadPost"></el-input>
-            <el-button type="primary" style="margin-left: 10px;" @click="loadPost">查询</el-button>
-            <el-button type="success" @click="resetParam">重置</el-button>
+            <el-button style="margin-left: 10px;" @click="loadPost">查询</el-button>
+            <el-button type="primary" plain @click="resetParam">重置</el-button>
         </div>
         <el-table :data="tableData"
                   :header-cell-style="{ background:'#f2f5fc',color:'#555555'}">
@@ -30,7 +31,7 @@
         <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-                :current-page="pageNum"
+                :current-page="currentPage"
                 :page-sizes="[5, 7, 10, 20]"
                 :page-size="pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
@@ -41,74 +42,63 @@
 </template>
 
 <script>
+import OptimizePage from "@/components/User/OptimizePage";
+
 export default {
-    name: "IndexNode",
-    data(){
+    name: "OptimizeNodeList",
+
+    data() {
         return {
-            tableData: [],
-            pageSize:5,
-            pageNum:1,
-            total:0,
-            name:'',
-            centerDialogVisible: false,
-            form:{
-                nodeID:'',
-                nodeName:'',
-                nodeWeight:'',
-                nodeType:'',
-                parentID:'',
-            },
+            tableData:[],
+            currentPage : 1,
+            pageSize : 5,
+            total: 1,
+            tableName: "",
+
+            nodeName: "",
         }
     },
+    created() {
+        this.tableName = JSON.parse(sessionStorage.getItem("IndexName"));
+        this.loadPost();
+    },
     methods:{
-        loadPost(){
-            this.$axios.post(this.$httpUrl+'/import/nodeQuery',{
+        loadPost() {
+            console.log(this.tableName)
+            this.$axios.post(this.$httpUrl+'/indexsym/nodeListPage',{
                 pageSize:this.pageSize,
-                pageNum:this.pageNum,
+                pageNum:this.currentPage,
                 param:{
-                    name:this.name,
+                    table_name:this.tableName,
+                    query_nodeName : this.nodeName,
                 }
             }).then(res=>res.data).then(res=>{
-                console.log(res)
+                // console.log(res)
                 if (res.code==200) {
-                    this.tableData = res.data,
-                            this.total = res.total
+                    // console.log(res.data)
+                    // console.log(res.total)
+                    this.tableData = res.data
+                    this.total = res.total;
                 }
                 else
-                    this.$message.error('无相关数据');
+                    this.$message.error('数据载入失败！');
             })
         },
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
-            this.pageNum=1
+            this.currentPage=1
             this.pageSize=val
             this.loadPost()
         },
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
-            this.pageNum=val
+            this.currentPage=val
             this.loadPost()
         },
         resetParam(){
-            this.name=''
+            this.nodeName=''
             this.loadPost()
         },
-        filterRole(value, row) {
-            return row.role === value;
-        },
-        handleEdit(row){
-            //赋值数据到表单
-            this.form=row
-            //展示表单
-            this.centerDialogVisible=true
-        },
-    },
-    beforeMount() {
-        this.loadPost()
     }
 }
 </script>
-
-<style scoped>
-
-</style>

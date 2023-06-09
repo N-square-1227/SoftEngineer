@@ -1,10 +1,9 @@
 package com.se.softengineer.algorithm.dataprocess;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.se.softengineer.entity.Sample;
-import org.apache.commons.math3.linear.*;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;

@@ -31,12 +31,14 @@ public interface UsersDataMapper extends BaseMapper<UsersData> {
 
     int deleteTable(String table_name);
 
+    int delIndex(@Param("table_name") String userTable,@Param("indexName") String indexName);
+
     List<String> getIndexSymTableNames(String tableName);
 
     /**
      * 分页查询指标体系数据表
      **/
-    IPage getISDTNamePage(IPage<UsersData> page, String tableName);
+    IPage getISDTNamePage(IPage<UsersData> page,String tableName,@Param(Constants.WRAPPER)Wrapper wrapper);
 
     List<String> getDataTableNames(String tableName);
 

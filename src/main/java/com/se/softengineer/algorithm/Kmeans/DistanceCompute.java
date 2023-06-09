@@ -1,7 +1,5 @@
 package com.se.softengineer.algorithm.Kmeans;
 
-import java.util.List;
-
 /**
  * @author xly
  * 求欧几里得距离

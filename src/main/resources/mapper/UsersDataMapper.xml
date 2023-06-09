@@ -22,6 +22,10 @@
         ALTER TABLE ${origin_name} RENAME TO ${new_name}
     </update>
 
+    <update id="delIndex" parameterType="String">
+        DELETE FROM ${table_name} WHERE indexSymDTName = "${indexName}"
+    </update>
+
     <select id="getIndexSymTableNames" resultType="string">
         SELECT indexSymDTName
         FROM ${tableName}
@@ -34,7 +38,7 @@
 
     <select id="getISDTNamePage" resultType="com.se.softengineer.entity.UsersData">
         SELECT *
-        FROM ${tableName}
+        FROM ${tableName} ${ew.customSqlSegment}
     </select>
 
 </mapper>

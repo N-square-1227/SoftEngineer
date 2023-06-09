@@ -17,9 +17,19 @@ const routes = [
                 component:()=>import('../components/Home')
             },
             {
+                path: "/userManage",
+                name: 'userManage',
+                component:()=>import('../components/Admin/userManage')
+            },
+            {
                 path: '/ImportExcel',
                 name: 'ImportExcel',
                 component:()=>import("../components/User/ImportExcel")
+            },
+            {
+                path: '/ImportFiles',
+                name: 'ImportFiles',
+                component:()=>import("../components/User/ImportFiles")
             },
             {
                 path: '/ImportXML',
@@ -35,6 +45,16 @@ const routes = [
                 path: '/OptimizeResultFrame',
                 name: 'OptimizeResultFrame',
                 component:()=>import("../components/User/OptimizeResultFrame")
+            },
+            {
+                path: '/KmeansResultFrame',
+                name: 'KmeansResultFrame',
+                component:()=>import("../components/User/KmeansResultFrame")
+            },
+            {
+                path: '/PCAResultFrame',
+                name: 'PCAResultFrame',
+                component:()=>import("../components/User/PCAResultFrame")
             },
             {
                 path :'/IndexSymManage',

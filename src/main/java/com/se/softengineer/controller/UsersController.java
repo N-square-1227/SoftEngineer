@@ -6,9 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.se.softengineer.entity.Menu;
 import com.se.softengineer.entity.Users;
-import com.se.softengineer.service.MenuService;
-import com.se.softengineer.service.UsersDataService;
-import com.se.softengineer.service.UsersService;
+import com.se.softengineer.service.*;
 import com.se.softengineer.utils.AesTypeHandler;
 import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
@@ -32,6 +30,12 @@ public class UsersController {
 
     @Autowired
     private UsersDataService usersDataService;
+
+    @Autowired
+    private SampleService sampleService;
+
+    @Autowired
+    private IndexSymService indexSymService;
 
     private AesTypeHandler handler = new AesTypeHandler();
 
@@ -181,5 +185,25 @@ public class UsersController {
             lambdaQueryWrapper.like(Users::getUserName,name);
         IPage result = usersService.page(page,lambdaQueryWrapper);
         return Result.success(result.getRecords(),result.getTotal());
+    }
+
+    /*
+    删除指标体系
+    @author xly
+     */
+    @GetMapping("/delTable")
+    public Result delTable(@RequestParam String tableName,@RequestParam String user){
+        String userTable = user + "_data";
+        try {
+            usersDataService.delIndex(userTable,tableName);
+            sampleService.dropExistTable(tableName+"_data");
+            indexSymService.dropExistTable(tableName);
+            indexSymService.dropExistTable(tableName+"_new_kmeans");
+            indexSymService.dropExistTable(tableName+"_new_pca");
+            indexSymService.dropExistTable(tableName+"_new_entropy");
+        }catch (Exception e){
+            return Result.fail();
+        }
+        return Result.success();
     }
 }
