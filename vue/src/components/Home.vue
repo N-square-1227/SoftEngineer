@@ -62,24 +62,24 @@
             </span>
         </el-dialog>
         <!--   修改密码-->
-        <el-dialog
-                title="修改密码"
-                :visible.sync="ModifyPwdDialog"
-                width="30%"
-                center>
-            <el-form ref="pwdForm" :rules="rulesModifyPwd" :model="pwdForm" label-width="100px">
-                <el-form-item label="旧密码" prop="oldUserPassword">
-                    <el-input :disabled="true" v-model="pwdForm.oldUserPassword"></el-input>
-                </el-form-item>
-                <el-form-item label="新密码" prop="newPwd">
-                    <el-input v-model="pwdForm.newPwd"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
+      <el-dialog
+          title="修改密码"
+          :visible.sync="ModifyPwdDialog"
+          width="30%"
+          center>
+        <el-form ref="pwdForm" :rules="rulesModifyPwd" :model="pwdForm" label-width="100px">
+          <el-form-item label="旧密码" prop="oldUserPassword">
+            <el-input v-model="pwdForm.oldUserPassword"></el-input>
+          </el-form-item>
+          <el-form-item label="新密码" prop="newPwd">
+            <el-input v-model="pwdForm.newPwd"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
                 <el-button @click="ModifyPwdDialog = false">取 消</el-button>
                 <el-button type="primary" @click="modifyPwdSave()" >确 定</el-button>
             </span>
-        </el-dialog>
+      </el-dialog>
 
     </div>
 </template>
@@ -187,29 +187,32 @@ export default {
         changePwd() {
             this.ModifyPwdDialog = true;
             this.pwdForm.userPassword = '';
-            this.pwdForm.oldUserPassword = this.user.userPassword;
+            this.pwdForm.oldUserPassword = '';
         },
         modifyPwdSave() {
-            this.$refs.pwdForm.validate((valid)=>{
-                if(valid) {
-                    this.$axios.post(this.$httpUrl + '/user/updatePwd', {
-                        param: {
-                            newPwd: this.pwdForm.newPwd,
-                            userID: this.user.userID,
-                        }
-                    }).then(res=>res.data).then(res=>{
-                        console.log(res);
-                        if(res.code==200){
-                            this.ModifyPwdDialog = false;
-                            this.$message.success("修改成功");
-                        }else {
-                            this.$message.error("修改失败");
-                        }
-                        this.resetFrom();
-                        this.reloadUser();
-                    })
-                }
-            })
+          this.$refs.pwdForm.validate((valid) => {
+            if (valid) {
+              if (this.pwdForm.oldUserPassword == this.user.userPassword) {
+                this.$axios.post(this.$httpUrl + '/user/updatePwd', {
+                  param: {
+                    newPwd: this.pwdForm.newPwd,
+                    userID: this.user.userID,
+                  }
+                }).then(res => res.data).then(res => {
+                  console.log(res);
+                  if (res.code == 200) {
+                    this.ModifyPwdDialog = false;
+                    this.$message.success("修改成功");
+                  } else {
+                    this.$message.error("修改失败");
+                  }
+                  this.resetFrom();
+                  this.reloadUser();
+                })
+              } else
+                this.$message.error("修改失败");
+            }
+          })
         },
     },
     created(){
