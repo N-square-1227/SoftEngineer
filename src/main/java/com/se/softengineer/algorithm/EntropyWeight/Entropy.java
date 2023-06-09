@@ -246,23 +246,6 @@ public class Entropy {
             WList.add(Wj);
             sumWj += Wj;
         }
-//
-//        // 初始化数组
-//        WList = new ArrayList<>(indexNumber);
-//        resultMap = new HashMap<>();
-//        int i = 1;
-//        for (Double aDouble : EList) {
-//            // 这里 k 指的是指标个数
-//            double Wi = (1 - aDouble) / (indexNumber - sumEj);
-//            WList.add(Wi);
-//
-//            resultMap.put("X" + i, Wi);
-//            i++;
-//
-//            sumWj += Wi;
-//        }
-
-
     }
 
     /**
@@ -344,7 +327,8 @@ public class Entropy {
             map.put(key, map.get(key) - 1);
             num--;
         }
-
+        // 主键不能重复
+        maxFather += 1;
         // 求各级指标的权重
         // map:"{0=3,1=6,2=10,3=6}"
         Map<Integer, Double> weight = new HashMap<>();
@@ -367,38 +351,5 @@ public class Entropy {
             maxFather ++;
             i++;
         }
-//        System.out.println("hello");
-//        // 一级指标个数，到时候修改这个值
-//        int oneIndexNum = 3;
-//        for (int i = 0; i < WList.size(); i++) {
-//            node.get(i + oneIndexNum).setNodeWeight(WList.get(i));
-//        }
-//        // System.out.println(node);
-//        // 算 3 个一级指标的权重,左闭右开！！！
-//        int begin = 3, end = 10;
-//        int j = 0;
-//        node.get(j).setNodeWeight(0.0);
-//        for (int i = begin; i < end; i++) {
-//            node.get(j).setNodeWeight(node.get(j).getNodeWeight() +
-//                    node.get(i).getNodeWeight());
-//        }
-//
-//        j = j + 1;
-//        begin = 10; end = 20;
-//        node.get(j).setNodeWeight(0.0);
-//        for (int i = begin; i < end; i++) {
-//            node.get(j).setNodeWeight(node.get(j).getNodeWeight() +
-//                    node.get(i).getNodeWeight());
-//        }
-//
-//        j = j + 1;
-//        begin = 20; end = 26;
-//        node.get(j).setNodeWeight(0.0);
-//        for (int i = begin; i < end; i++) {
-//            node.get(j).setNodeWeight(node.get(j).getNodeWeight() +
-//                    node.get(i).getNodeWeight());
-//        }
-
-
     }
 }

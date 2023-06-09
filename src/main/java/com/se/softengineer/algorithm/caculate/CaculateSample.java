@@ -25,8 +25,6 @@ public class CaculateSample {
     }
 
 
-    public CaculateSample() {}
-
     public CaculateSample(IndexSym indexSym, Sample sample) {
         this.indexSym = indexSym;
         this.sample = sample;

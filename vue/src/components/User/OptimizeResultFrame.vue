@@ -23,6 +23,7 @@ import DrawTree from "@/components/User/DrawTree";
 import OptimizeResult from "@/components/User/OptimizeResult";
 import OptimizeData from "@/components/User/OptimizeData";
 import OptimizeNodeList from "@/components/User/OptimizeNodeList";
+
 export default {
   name:"OptimizeResultFrame",
   components: {OptimizeNodeList, OptimizeData, OptimizeResult, DrawTree, OptimizePage},

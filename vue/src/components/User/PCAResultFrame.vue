@@ -20,10 +20,11 @@
 <script>
 import OptimizePage from "@/components/User/OptimizePage";
 import DrawTree from "@/components/User/PCATree";
+import PCATree from "@/components/User/PCATree";
 import OptimizeResult from "@/components/User/OptimizeResult";
 import OptimizeData from "@/components/User/OptimizeData";
 import OptimizeNodeList from "@/components/User/OptimizeNodeList";
-import PCATree from "@/components/User/PCATree";
+
 export default {
   name: "PCAResultFrame",
   components: {PCATree, OptimizeNodeList, OptimizeData, OptimizeResult, DrawTree, OptimizePage},

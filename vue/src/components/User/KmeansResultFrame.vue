@@ -20,10 +20,11 @@
 <script>
 import OptimizePage from "@/components/User/OptimizePage";
 import DrawTree from "@/components/User/KmeansTree";
+import KmeansTree from "@/components/User/KmeansTree";
 import OptimizeResult from "@/components/User/OptimizeResult";
 import OptimizeData from "@/components/User/OptimizeData";
 import OptimizeNodeList from "@/components/User/OptimizeNodeList";
-import KmeansTree from "@/components/User/KmeansTree";
+
 export default {
   name: "KmeansResultFrame",
   components: {KmeansTree, OptimizeNodeList, OptimizeData, OptimizeResult, DrawTree, OptimizePage},

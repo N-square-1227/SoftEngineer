@@ -42,7 +42,7 @@ public class UsersController {
     /**
      * 时间格式化
      */
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd/");
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd/");
 
     /**
      * 文件保存路径

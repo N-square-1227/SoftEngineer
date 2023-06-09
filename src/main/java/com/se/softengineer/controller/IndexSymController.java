@@ -41,8 +41,6 @@ public class IndexSymController {
     private IndexSym indexSym = new IndexSym();
     private List<Sample> data = new ArrayList<>();
 
-    private List<String> columnList = new ArrayList<>();
-
     /**by wxy
      * Just for test
      **/
@@ -183,7 +181,7 @@ public class IndexSymController {
      **/
     @GetMapping("/loadColumnNames")
     private Result load_columnNames(String table_name) {
-        columnList = sampleService.getColName(table_name);
+        List<String> columnList = sampleService.getColName(table_name);
         return columnList.size() != 0 ?Result.success(columnList):Result.fail();
     }
 
@@ -208,8 +206,8 @@ public class IndexSymController {
      * @return
      */
     @GetMapping("/entropy")
-    public Result use_entropy(String indexsym_name, String data_tablename) throws Exception {
-        IndexSym newIndexSym = optimizeService.entropy(indexsym_name, data_tablename);
+    public Result use_entropy(String indexsym_name, String data_tablename) {
+        IndexSym newIndexSym = optimizeService.entropy(indexsym_name, data_tablename).getKey();
         return newIndexSym!=null? Result.success(newIndexSym):Result.fail();
     }
 
