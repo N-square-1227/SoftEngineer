@@ -111,6 +111,8 @@ export default {
           sessionStorage.setItem("data", JSON.stringify(res.data.sampleData));
           // console.log(res.data.sampleData)
           sessionStorage.setItem("colNum", res.data.colNum);
+          eventBus.$emit('colNum', res.data.colNum);
+          // console.log(res.data.colNum)
           sessionStorage.setItem("sampleNum", res.data.sampleNum);
           this.setTableData();
         }

@@ -55,8 +55,6 @@ public class AESUtil implements CommandLineRunner, EnvironmentAware {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             IvParameterSpec iv = new IvParameterSpec(IV_PARAMETER.getBytes());
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
-//            byte[] encrypted1 = new BASE64Decoder().decodeBuffer(sSrc);//先用base64解密
-//            byte[] encrypted1 = Base64.getMimeDecoder().decode(sSrc);//先用base64解密
             byte[] encrypted1 = Base64.decodeBase64(sSrc);//先用base64解密
             byte[] original = cipher.doFinal(encrypted1);
             return new String(original, StandardCharsets.UTF_8);

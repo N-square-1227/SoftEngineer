@@ -18,6 +18,7 @@ export default {
     computed: {
       treeHeight() {
         console.log(this.leaf_num)
+        if(this.leaf_num == null) return 690
         return this.leaf_num * 30;
       }
     },
@@ -26,11 +27,19 @@ export default {
         eventBus.$on('updateTreeValue', (treeValue) => {
           this.showChart()
         });
+        // eventBus.$on('colNum', (colNum) => {
+        //   this.leaf_num = sessionStorage.getItem("colNum")
+        //   console.log(this.treeHeight)
+        //   this.$echarts.init(document.getElementById('treeChart')).resize();
+        // });
+        // console.log(this.treeHeight)
     },
     mounted() {
         this.treeValue();
         this.showChart();
         this.resizefun = ()=>{
+          // console.log("这里？")
+          // this.leaf_num = sessionStorage.getItem("colNum")
             this.$echarts.init(document.getElementById('treeChart')).resize();
             //多个echarts则在此处添加
         };

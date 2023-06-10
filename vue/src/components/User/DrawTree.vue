@@ -4,7 +4,7 @@
       <div id="treeChartWrapper" style="width: 70%; overflow: auto;">
         <div id="treeChart" :style="{ height: treeHeight + 'px',overflowX: 'auto',overflowY: 'auto', width: '100%',}"></div>
       </div>
-      <div style="height:75vh;width: 30%;float: left;overflow-x: auto;overflow-y: auto">
+      <div style="height:72vh;width: 30%;float: left;overflow-x: auto;overflow-y: auto">
         <div style="position: sticky; top: 0;">
           <p style="float: left;margin-left: 20px" >指标权重表</p>
           <el-tooltip
@@ -56,6 +56,7 @@ export default {
   computed: {
     treeHeight() {
       console.log(this.leaf_num)
+      if(this.leaf_num == null) return 690
       return this.leaf_num * 25;
     }
   },
@@ -139,7 +140,7 @@ export default {
       for (let i = 0; i < indexNum; i ++){
         const data = this.enData[i];
         for(const key in data){
-          console.log("key名称是："+key+",key的值是："+data[key]);
+          // console.log("key名称是："+key+",key的值是："+data[key]);
           const sample = {};
           sample[`idx_name`] = key;
           sample[`weight`] = data[key].toFixed(4);

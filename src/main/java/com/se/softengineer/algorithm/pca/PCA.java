@@ -81,7 +81,6 @@ public class PCA {
         // 截取前n个作为主成分，求因子载荷矩阵
         double[][] eigenMatrix = eigenvectors.getSubMatrix(0, conv_matrix.length - 1, 0, factor_num - 1).getData();
         int numRows = conv_matrix.length;
-        System.out.println("");
         for(int i = 0; i < numRows; i ++) {
             for(int j = 0; j < factor_num; j ++)
                 eigenMatrix[i][j] *= -Math.sqrt(eigenvalued[j]);

@@ -166,7 +166,7 @@ export default {
     },
     detail(row){
       this.$axios.get(this.$httpUrl + '/indexSymNode/getOriginalTreeData?tableName='+this.user.userName +"_"+ row.indexSymDTName).then(res => res.data).then(res => {
-        // console.log(res)
+        console.log(res)
         if (res.code == 200) {
           this.treeData= res.data
           sessionStorage.setItem("OriginalTreeData",JSON.stringify(this.treeData))

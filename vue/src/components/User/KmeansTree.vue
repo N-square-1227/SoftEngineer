@@ -37,6 +37,7 @@ export default {
   computed: {
     treeHeight() {
       console.log(this.leaf_num)
+      if(this.leaf_num == null) return 690
       return this.leaf_num * 25;
     }
   },

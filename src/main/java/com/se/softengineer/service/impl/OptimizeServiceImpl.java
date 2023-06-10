@@ -108,7 +108,7 @@ public class OptimizeServiceImpl implements OptimizeService {
         for(int i = 0; i < node_num; i ++) {
             List<Integer> son_nodes = pca.getNew_sym().getNodeTree().get(i + 1);
             if(son_nodes.size() != 0) continue;
-//            System.out.println(pca.getNew_sym().getNodeList().get(i).getNodeName());
+        //            System.out.println(pca.getNew_sym().getNodeList().get(i).getNodeName());
             /* 第idx个子节点*/
             int idx = Integer.parseInt(pca.getNew_sym().getNodeList().get(i).getNodeName());
             pca.getNew_sym().getNodeList().get(i).setNodeName(leaves.get(idx - 1).getNodeName());
