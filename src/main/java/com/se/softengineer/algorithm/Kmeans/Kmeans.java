@@ -17,7 +17,7 @@ public class Kmeans {
     private DistanceCompute disC = new DistanceCompute();
 
     private int kNum;       //簇的数目
-    private int iterRunTimes = 0;//单词迭代实际运行次数
+    private int iterRunTimes = 0;//单次迭代实际运行次数
 
     private int len = 0;    //每个数据点的维度
     private Double disdiff = (Double) 0.01;//单次迭代终止体哦阿健，两次运行中类中心的距离差
