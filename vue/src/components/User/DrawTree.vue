@@ -1,14 +1,9 @@
 <template>
   <div>
-    <div id="container" style="width:100%; height: auto;display: flex">
-      <div id="treeChart" style="height: 75vh;width: 70%;overflow-x: visible;overflow-y: auto">
-        <!--        <div class="chart-title" @click="toggleDrawer">优化结果</div>-->
+    <div id="container" style="width:100%; height: 72vh;display: flex">
+      <div id="treeChartWrapper" style="width: 70%; overflow: auto;">
+        <div id="treeChart" :style="{ height: treeHeight + 'px',overflowX: 'auto',overflowY: 'auto', width: '100%',}"></div>
       </div>
-
-      <!--      <el-drawer-->
-      <!--          title="因子载荷矩阵"-->
-      <!--          :visible.sync="tablevisible"-->
-      <!--          :with-header="false">-->
       <div style="height:75vh;width: 30%;float: left;overflow-x: auto;overflow-y: auto">
         <div style="position: sticky; top: 0;">
           <p style="float: left;margin-left: 20px" >指标权重表</p>
@@ -43,28 +38,38 @@
 </template>
 
 <script>
+import {eventBus} from "@/main";
+
 export default {
-  name: "PCATree",
+  name: "DrawTree",
   data() {
     return {
       treeData:[],
       en: [],
       enData:[],
-      // name:[],
-      // weight:[],
       total: 0,
-      // threshold: 0.0,
       colNames :[], // 表头
-      // indicators: [],
       tablevisible: false,
+      leaf_num: sessionStorage.getItem("colNum"),
     }
   },
-  // computed: {
-  //
-  // },
+  computed: {
+    treeHeight() {
+      console.log(this.leaf_num)
+      return this.leaf_num * 25;
+    }
+  },
   created() {
     this.getTreeData()
     this.getLoadMatrix();
+    eventBus.$on('updateTreeValue', (treeValue) => {
+      this.showChart()
+    });
+  },
+  updateTreeValue(value) {
+    // console.log("监听有用？")
+    this.treeValue = value; // 更新treeValue的值
+    this.showChart();
   },
   mounted() {
     this.treeValue();
@@ -98,16 +103,14 @@ export default {
       var name = params.data.name;
       if (id === 1) {
         return '<span style="position: relative;top: -10px;padding: 0 5px;">ID：' + params.data.id + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">指标值：' + this.treeValue()[params.data.id] + '</span>';
+            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>';
       }
       else {
         return '<span style="position: relative;top: -10px;padding: 0 5px;">ID：' + params.data.id + '</span>' + '<br>'
             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">名称：' + params.data.name + '</span>' + '<br>'
             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">类型：' + (params.data.type === 0 ? "定量负向指标" : "定量正向指标")+ '</span>' + '<br>'
             + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">权重：' + params.data.weight + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">父节点ID：' + params.data.parentID + '</span>' + '<br>'
-            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">指标值：' + this.treeValue()[params.data.id] + '</span>';
+            + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">父节点ID：' + params.data.parentID + '</span>' + '<br>';
         // + '<span style="padding-left:5px;height:30px;line-height:30px;display: inline-block;">最后登录时间：' + params.data.lastLoginTime + '</span>';
       }
     },
@@ -115,16 +118,7 @@ export default {
     getTreeData(){
       this.treeData = JSON.parse(sessionStorage.getItem('TreeData'))
     },
-    // when_overflow(row, column) {
-    //   const value = row[column.property];
-    //   if (!isNaN(value)) {
-    //     return `<span title="${formattedValue}">${formattedValue}</span>`;
-    //   }
-    //   return '';
-    // },
-    // toggleDrawer() {
-    //   this.tablevisible = true;
-    // },
+
     // 这是控制单元格内颜色的代码
     formatCell(value) {
       if (Math.abs(value) > this.threshold) {
@@ -134,19 +128,7 @@ export default {
       }
     },
     getLoadMatrix() {
-      // this.$axios.get(this.$httpUrl + '/indexSymNode/getTreeData').then(res => res.data).then(res => {
-      //   // console.log(res)
-      //   if (res.code === 200) {
-      //     this.loadmatrix = res.data.loadmatrix;
-      //   } else {
-      //     this.$message.error('失败！');
-      //   }
-      // });
       this.enData = JSON.parse(sessionStorage.getItem('entropy'))
-      //this.en = []
-      // const column = {label: `权重`, prop: `w`};
-      // this.colNames.push(column);
-
       console.log("halo");// 有
       console.log(this.enData);
       /* 给原本列表类型的loadmatrix加key*/
@@ -175,7 +157,7 @@ export default {
       // 指定图表的配置项和数据
       var option = {
         title: {
-          text: '优化结果',
+          text: '优化结果'
         },
         tooltip: {
           trigger: 'item',
@@ -191,7 +173,7 @@ export default {
             top: '1%',
             left: '10%',
             bottom: '1%',
-            right: '32%',
+            right: '25%',
 
             symbolSize: 7,
 
@@ -199,7 +181,12 @@ export default {
               position: 'left',
               verticalAlign: 'middle',
               align: 'right',
-              fontSize: 13,
+              fontSize: 10,
+              formatter: function(params) {
+                const originalLabel = params.name; // 获取原始的节点标签内容
+                const newLabel = originalLabel + ' \n(' + parseFloat(this.treeValue()[params.data.id]).toFixed(4) + ')'; // 修改标签内容
+                return newLabel;
+              }.bind(this)
             },
 
             leaves: {

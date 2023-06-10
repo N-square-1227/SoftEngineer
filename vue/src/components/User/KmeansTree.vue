@@ -8,16 +8,6 @@
 </template>
 
 <style>
-/*!*修改表格的滚动条*!*/
-/*#treeChart::-webkit-scrollbar {*/
-/*  width: 10px;*/
-/*  height: 10px;*/
-/*}*/
-/*!*滚动条的滑块*!*/
-/*#treeChart::-webkit-scrollbar-thumb {*/
-/*  background-color: #a1a3a9;*/
-/*  border-radius: 3px;*/
-/*}*/
 
 /*修改表格的滚动条*/
 #sslChart::-webkit-scrollbar {
@@ -57,6 +47,11 @@ export default {
     eventBus.$on('updateTreeValue', (treeValue) => {
       this.showChart()
     });
+  },
+  updateTreeValue(value) {
+    // console.log("监听有用？")
+    this.treeValue = value; // 更新treeValue的值
+    this.showChart();
   },
   mounted() {
     this.treeValue();
