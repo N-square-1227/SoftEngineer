@@ -15,6 +15,7 @@ import com.se.softengineer.entity.Sample;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.OptimizeService;
 import com.se.softengineer.service.SampleService;
+import org.apache.commons.math3.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class OptimizeServiceImpl implements OptimizeService {
      * @return
      */
     @Override
-    public IndexSym entropy(String indexsym_name, String data_tablename) {
+    public Pair<IndexSym,Map<String, List<Object>>> entropy(String indexsym_name, String data_tablename) {
         Entropy entropy = new Entropy();
 
         //这里的data需要从前端传回来
@@ -70,12 +71,26 @@ public class OptimizeServiceImpl implements OptimizeService {
         String newIndexSymName = indexsym_name + "_new_entropy";
         indexSymService.dropExistTable(newIndexSymName);
         indexSymService.createTable(newIndexSymName);
+        //System.out.println("halo");
         // 将新的指标体系存到数据库的新表里
         indexSymService.insertIntoSheet(newIndexSymName, entropy.getNode());
 
         /* 返回新的指标体系 */
         newIndexSym.setNodeList(entropy.getNode());
-        return newIndexSym;
+
+//        System.out.println(pair.getKey());
+//        System.out.println(pair.getValue());
+
+        Map<String, List<Object>> res = new HashMap<>();
+        List<Object> names = new ArrayList<>(30);
+        List<Object> weight = new ArrayList<>(30);
+        for (int i = 0; i < entropy.getNode().size(); i++) {
+            names.add(entropy.getNode().get(i).getNodeName());
+            weight.add(entropy.getNode().get(i).getNodeWeight());
+        }
+        res.put("names", names);
+        res.put("weight", weight);
+        return new Pair<>(newIndexSym, res);
     }
 
     @Override

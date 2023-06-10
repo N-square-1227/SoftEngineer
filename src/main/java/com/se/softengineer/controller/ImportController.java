@@ -1,21 +1,20 @@
 package com.se.softengineer.controller;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.se.softengineer.algorithm.caculate.CaculateSample;
-import com.se.softengineer.entity.*;
+import com.se.softengineer.entity.IndexSym;
+import com.se.softengineer.entity.IndexSymNode;
+import com.se.softengineer.entity.UsersData;
 import com.se.softengineer.mapper.IndexSymNodeMapper;
 import com.se.softengineer.service.IndexSymNodeService;
 import com.se.softengineer.service.IndexSymService;
 import com.se.softengineer.service.SampleService;
 import com.se.softengineer.service.UsersDataService;
+import com.se.softengineer.utils.AnalyExcel;
 import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
-import com.se.softengineer.utils.AnalyExcel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +31,11 @@ import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author xiaxue
@@ -43,7 +47,7 @@ public class ImportController {
     //获取当前用户名
     public String userName;
     //从excel中读到的临时数据
-    public static List<String[]> cells=new ArrayList<>();
+    public static List<String[]> cells = new ArrayList<>();
     //每个用户都有一个tableName
     public static String indexSymTableName;
     public static String indexDataTableName;
@@ -157,7 +161,7 @@ public class ImportController {
 
                     else if (childNodes.item(k).getNodeType() == Node.ELEMENT_NODE) {
                         // 获取element类型的节点和节点值
-//                        System.out.print("节点名：" + childNodes.item(k).getNodeName());
+                        System.out.print("节点名：" + childNodes.item(k).getNodeName());
                         //System.out.print(" --- 节点值：" + childNodes.item(k).getFirstChild().getNodeValue());
 //                        System.out.println(" --- 节点值："+childNodes.item(k).getTextContent());
                         temp[j++]=childNodes.item(k).getTextContent();

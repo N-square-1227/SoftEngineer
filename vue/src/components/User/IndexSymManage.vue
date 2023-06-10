@@ -20,6 +20,7 @@
 import drawOriginalTree from "@/components/User/Comments/DrawOriginalTree";
 import indexNode from "@/components/User/Comments/IndexNode";
 import indexNodeData from "@/components/User/Comments/IndexNodeData";
+
 export default {
   data() {
     return {

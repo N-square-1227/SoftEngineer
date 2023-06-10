@@ -1,7 +1,8 @@
 import vue from 'vue'
-import  Vuex from 'vuex'
+import Vuex from 'vuex'
 import router, {resetRouter} from "@/router";
 import createPersistedState from 'vuex-persistedstate'
+
 vue.use(Vuex)
 
 function addNewRoute(menuList) {

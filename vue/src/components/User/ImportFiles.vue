@@ -103,6 +103,7 @@ export default {
       treeData: [],
       symList:[],
       sse: [],
+      en: [],
       nodeName:"",
       algorithmOptions: [{
         value: 'kmeans',
@@ -245,8 +246,10 @@ export default {
         // console.log(res)
         if (res.code == 200) {
           this.treeData= res.data.treeData
+          this.en=res.data.en
           /* 优化结果 */
           sessionStorage.setItem("TreeData", JSON.stringify(this.treeData))
+          sessionStorage.setItem("entropy", JSON.stringify(this.en))
           this.$message({
             message: '优化成功！',
             type: 'success'

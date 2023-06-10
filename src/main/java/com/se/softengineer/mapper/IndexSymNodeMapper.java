@@ -1,8 +1,11 @@
 package com.se.softengineer.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.se.softengineer.entity. IndexSymNode;
-import org.apache.ibatis.annotations.*;
+import com.se.softengineer.entity.IndexSymNode;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -27,7 +30,7 @@ public interface IndexSymNodeMapper extends BaseMapper<IndexSymNode> {
     void createTable(@Param("tableName") String tableName);
 
 
-    @Update({"DROP TABLE IF ESIXTS #{tableName}"})
+    @Update({"DROP TABLE IF EXISTS #{tableName}"})
     void dropExistTable(@Param("tableName") String tableName);
 
     /**

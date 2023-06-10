@@ -42,7 +42,6 @@
 </template>
 
 <script>
-import OptimizePage from "@/components/User/OptimizePage";
 
 export default {
   name: "OptimizeNodeList",
