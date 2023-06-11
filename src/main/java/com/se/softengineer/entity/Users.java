@@ -36,7 +36,7 @@ public class Users implements Serializable {
     @TableId(value = "userID", type = IdType.AUTO)
     private Integer userID;
 
-    @TableField(value = "userName", typeHandler = AesTypeHandler.class)
+    @TableField(value = "userName")
     private String userName;
 
     @TableField(value = "userPassword", typeHandler = AesTypeHandler.class)

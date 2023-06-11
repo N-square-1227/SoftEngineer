@@ -183,7 +183,7 @@ public class UsersController {
         LambdaQueryWrapper<Users> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         if(StringUtils.isNotBlank(name) && !"null".equals(name)) {
             try {
-                lambdaQueryWrapper.like(Users::getUserName,handler.encrypt(name));
+                lambdaQueryWrapper.like(Users::getUserName,name);
             } catch (Exception e) {
                 return Result.fail();
             }
