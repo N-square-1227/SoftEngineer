@@ -76,8 +76,10 @@ public class IndexSymController {
 
         LambdaQueryWrapper<IndexSymNode> lambdaQueryWrapper = new LambdaQueryWrapper();
         /* 条件 */
-        if (StringUtils.isNotBlank(queryContent) && !("null".equals(queryContent)))
+        if (StringUtils.isNotBlank(queryContent) && !("null".equals(queryContent))) {
+//            page.setCurrent(1);
             lambdaQueryWrapper.like(IndexSymNode::getNodeName, queryContent);
+        }
 
         IPage result = indexSymService.nodePaged(page,table_name,lambdaQueryWrapper);
         System.out.println("total=="+result.getTotal());

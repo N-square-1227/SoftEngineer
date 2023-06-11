@@ -4,7 +4,7 @@
     <div style="margin-bottom: 5px;text-align: left">
       <el-input v-model="nodeName" placeholder="请输入节点名称" suffix-icon="el-icon-search" style="width: 200px;"
                 @keyup.enter.native="loadPost"></el-input>
-      <el-button style="margin-left: 10px;" @click="loadPost">查询</el-button>
+      <el-button style="margin-left: 10px;" @click.native="loadPost">查询</el-button>
       <el-button type="primary" plain @click="resetParam">重置</el-button>
     </div>
     <el-table :data="tableData"
@@ -53,7 +53,6 @@ export default {
       pageSize : 5,
       total: 1,
       tableName: "",
-
       nodeName: "",
     }
   },
@@ -62,8 +61,14 @@ export default {
     this.loadPost();
   },
   methods:{
+    resetCurrentPage() {
+      this.currentPage = 1;
+    },
     loadPost() {
-      console.log(this.tableName)
+      // console.log(this.tableName)
+      // console.log(this.nodeName)
+      if(this.nodeName !== "")
+        this.currentPage = 1;
       this.$axios.post(this.$httpUrl+'/indexsym/nodeListPage',{
         pageSize:this.pageSize,
         pageNum:this.currentPage,
@@ -74,9 +79,9 @@ export default {
       }).then(res=>res.data).then(res=>{
         // console.log(res)
         if (res.code==200) {
-          console.log(res.data)
-          console.log(res.total)
-          this.currentPage = 1;
+          // console.log(res.data)
+          // console.log(res.total)
+          // this.currentPage = 1;
           this.tableData = res.data
           this.total = res.total;
         }
