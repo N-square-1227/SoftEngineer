@@ -181,8 +181,13 @@ public class UsersController {
         page.setSize(query.getPageSize());
 
         LambdaQueryWrapper<Users> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        if(StringUtils.isNotBlank(name) && !"null".equals(name))
-            lambdaQueryWrapper.like(Users::getUserName,name);
+        if(StringUtils.isNotBlank(name) && !"null".equals(name)) {
+            try {
+                lambdaQueryWrapper.like(Users::getUserName,handler.encrypt(name));
+            } catch (Exception e) {
+                return Result.fail();
+            }
+        }
         IPage result = usersService.page(page,lambdaQueryWrapper);
         return Result.success(result.getRecords(),result.getTotal());
     }

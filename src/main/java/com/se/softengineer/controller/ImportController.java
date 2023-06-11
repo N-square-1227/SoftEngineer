@@ -67,6 +67,7 @@ public class ImportController {
     //标记是否是XML类型
     String FT="";
 
+
     @Autowired
     private IndexSymNodeService indexSymNodeService;
 
@@ -158,7 +159,6 @@ public class ImportController {
                         NodeList childNode=childNodes.item(k).getChildNodes();
                         moreNode(childNode);
                     }
-
                     else if (childNodes.item(k).getNodeType() == Node.ELEMENT_NODE) {
                         // 获取element类型的节点和节点值
                         System.out.print("节点名：" + childNodes.item(k).getNodeName());
@@ -171,9 +171,8 @@ public class ImportController {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+           e.printStackTrace();
         }
-
     }
 
     @RequestMapping("/keepExcel/{username}")

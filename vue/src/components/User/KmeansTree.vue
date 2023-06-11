@@ -1,7 +1,7 @@
 <template>
-  <div id="container" style="width:100%; height: 72vh;display: flex">
+  <div id="container" style="width:100%; height: 70vh;display: flex">
     <div id="treeChartWrapper" style="width: 70%; overflow: auto;">
-      <div id="treeChart" :style="{ height: treeHeight + 'px',overflowX: 'auto',overflowY: 'auto', width: '100%',}"></div>
+      <div id="treeChart" :style="{ height: treeHeight + 'px', width: '100%',}"></div>
     </div>
     <div id ='sslChart' style="height:70vh;width: 30%;float: right;overflow-x: auto;overflow-y: auto"></div>
   </div>
@@ -37,8 +37,8 @@ export default {
   computed: {
     treeHeight() {
       console.log(this.leaf_num)
-      if(this.leaf_num == null) return 690
-      return this.leaf_num * 25;
+      if(this.leaf_num == null) return 750
+      return this.leaf_num * 30;
     }
   },
   created() {

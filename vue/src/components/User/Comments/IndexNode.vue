@@ -63,7 +63,9 @@ export default {
   },
   methods:{
     loadPost() {
-      console.log(this.tableName)
+      // console.log(this.tableName)
+      if(this.nodeName !== "")
+        this.currentPage=1
       this.$axios.post(this.$httpUrl+'/indexsym/nodeListPage',{
         pageSize:this.pageSize,
         pageNum:this.currentPage,

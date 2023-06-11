@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div id="container" style="width:100%; height: 72vh;display: flex">
+    <div id="container" style="width:100%; height: 70vh;display: flex">
       <div id="treeChartWrapper" style="width: 70%; overflow: auto;">
-        <div id="treeChart" :style="{ height: treeHeight + 'px',overflowX: 'auto',overflowY: 'auto', width: '100%',  }">
+        <div id="treeChart" :style="{ height: treeHeight + 'px', width: '100%',  }">
   <!--        <div class="chart-title" @click="toggleDrawer">优化结果</div>-->
         </div>
       </div>
@@ -11,7 +11,7 @@
 <!--          title="因子载荷矩阵"-->
 <!--          :visible.sync="tablevisible"-->
 <!--          :with-header="false">-->
-        <div id ='loadmatrix' style="height:72vh;width: 30%;float: left;overflow-x: auto;overflow-y: auto">
+        <div id ='loadmatrix' style="height:70vh;width: 30%;float: left;overflow-x: auto;overflow-y: auto">
           <div style="position: sticky; top: 0;">
             <p style="float: left;margin-left: 20px" >因子载荷矩阵</p>
             <el-tooltip
