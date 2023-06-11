@@ -67,6 +67,7 @@ public class IndexSymController {
         HashMap param = query.getParam();
         String table_name = (String)param.get("table_name");
         String queryContent = (String)param.get("query_nodeName");
+//        System.out.println(queryContent);
 //        System.out.println(table_name);
 
         Page<IndexSymNode> page = new Page();
@@ -80,6 +81,7 @@ public class IndexSymController {
 
         IPage result = indexSymService.nodePaged(page,table_name,lambdaQueryWrapper);
         System.out.println("total=="+result.getTotal());
+//        System.out.println(result.getRecords());
         return Result.success(result.getRecords(), result.getTotal());
     }
 

@@ -74,8 +74,9 @@ export default {
       }).then(res=>res.data).then(res=>{
         // console.log(res)
         if (res.code==200) {
-          // console.log(res.data)
-          // console.log(res.total)
+          console.log(res.data)
+          console.log(res.total)
+          this.currentPage = 1;
           this.tableData = res.data
           this.total = res.total;
         }

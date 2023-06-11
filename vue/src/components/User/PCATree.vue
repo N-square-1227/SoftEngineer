@@ -2,7 +2,7 @@
   <div>
     <div id="container" style="width:100%; height: 72vh;display: flex">
       <div id="treeChartWrapper" style="width: 70%; overflow: auto;">
-        <div id="treeChart" :style="{ height: treeHeight + 'px',overflowX: 'auto',overflowY: 'auto', width: '100%',  }">
+        <div id="treeChart" :style="{ height: treeHeight + 'px', width: '100%',  }">
   <!--        <div class="chart-title" @click="toggleDrawer">优化结果</div>-->
         </div>
       </div>

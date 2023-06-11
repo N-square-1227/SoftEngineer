@@ -77,6 +77,7 @@ export default {
           // console.log(res.data)
           // console.log(res.total)
           this.tableData = res.data
+          this.currentPage = 1;
           this.total = res.total;
         }
         else
