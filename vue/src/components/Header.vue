@@ -3,13 +3,13 @@
         <div style="flex: 1;text-align: center;font-size: 25px;">
             <span>欢迎使用指标优化系统</span>
         </div>
-        <span style="font-size: 15px">用户： {{user.userName}}</span>
         <el-dropdown>
-            <i class="el-icon-arrow-down" style="margin-left: 8px;font-size: 10px"></i>
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="toUser">个人中心</el-dropdown-item>
-                <el-dropdown-item @click.native="toLeft">退出登录</el-dropdown-item>
-            </el-dropdown-menu>
+          <span style="font-size: 15px">用户： {{user.userName}}</span>
+          <i class="el-icon-arrow-down" style="margin-left: 8px;font-size: 10px"></i>
+          <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="toUser">个人中心</el-dropdown-item>
+              <el-dropdown-item @click.native="toLeft">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
         </el-dropdown>
     </div>
 </template>
