@@ -34,7 +34,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
     @Override
     public Users userLogin(String username, String password) throws Exception {
         List list = lambdaQuery()
-                .eq(Users::getUserName,handler.encrypt(username))
+                .eq(Users::getUserName,username)
                 .eq(Users::getUserPassword,handler.encrypt(password)).list();
         Users user = null;
         if(list.size()>0)
@@ -47,7 +47,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
      */
 
     private List<Users> getUserListByName(String name) throws Exception {
-        return lambdaQuery().eq(Users::getUserName,handler.encrypt(name)).list();
+        return lambdaQuery().eq(Users::getUserName,name).list();
     }
 
     /**

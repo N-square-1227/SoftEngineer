@@ -112,6 +112,8 @@ export default {
     },
     methods:{
         loadPost(){
+            if(this.name !== "")
+              this.pageNum = 1;
             this.$axios.post(this.$httpUrl+'/user/userListPage',{
                 pageSize:this.pageSize,
                 pageNum:this.pageNum,
@@ -121,7 +123,9 @@ export default {
             }).then(res=>res.data).then(res=>{
                 console.log(res)
                 if (res.code==200) {
-                    this.tableData = res.data,
+                    this.tableData = res.data
+                    for (let i = 0; i < this.tableData.length; i ++)
+                      this.tableData[i].userPassword = "********"
                     this.total = res.total
                 }
                 else
