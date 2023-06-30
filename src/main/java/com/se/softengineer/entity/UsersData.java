@@ -17,7 +17,9 @@ public class UsersData {
     @TableField("indexSymDTName")
     String indexSymDTName;
 
-    @TableField("uploadTime")
-    String uploadTime;
+//    这个字段是不是实际没用到
+//    可恶忘记了，这我亲手加的
+    @TableField("time")
+    String time;
 
 }

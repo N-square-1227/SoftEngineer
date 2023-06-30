@@ -19,6 +19,8 @@ public interface UsersDataService extends IService<UsersData> {
 
     int delIndex(String userTable,String indexName);
 
+    int addIndex(String tableName, String indexName);
+
     int renameTable(String origin_table, String new_table);
 
 

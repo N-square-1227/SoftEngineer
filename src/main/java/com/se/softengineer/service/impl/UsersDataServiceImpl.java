@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.SQLSyntaxErrorException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,7 +29,7 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
 
     @Override
     public int createTable(String tableName) {
-        System.out.println("掉这里");
+//        System.out.println("掉这里");
         return usersDataMapper.createTable(tableName);
     }
 
@@ -76,5 +79,22 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
     @Override
     public int delIndex(String userTable,String indexName){
         return usersDataMapper.delIndex(userTable,indexName);
+    }
+
+    @Override
+    public int addIndex(String tableName, String indexSymDTName) {
+        List<String> indexTables = usersDataMapper.getIndexSymTableNames(tableName);
+        if(indexTables.contains(indexSymDTName))    /* 如果已经包含应该删除原来的*/
+            usersDataMapper.delIndex(tableName, indexSymDTName);
+
+        Date date = new Date(System.currentTimeMillis());
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+        String format = dateFormat.format(date);
+
+        usersDataMapper.insertIntoTable(tableName, indexSymDTName + "_data", indexSymDTName, format);
+
+        return 0;
     }
 }

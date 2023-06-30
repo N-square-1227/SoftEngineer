@@ -49,6 +49,9 @@ public class Users implements Serializable {
     @TableField("role")
     private Integer role;
 
+//    @TableField("loginTime")
+//    private String loginTime;
+
 
     @Override
     public String toString() {

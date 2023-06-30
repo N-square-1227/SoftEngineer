@@ -18,11 +18,18 @@ public interface UsersDataMapper extends BaseMapper<UsersData> {
 
     int createTable(@Param("tableName") String tableName);
 
-    @Insert({"insert into ${tableName}(dataTableName,indexSymDTName,uploadTime) " +
-            "values(#{dataTableName},#{indexSymDTName},#{uploadTime});"
+    /**
+     * 已删除指标体系表中添加一条数据
+     * @param tableName 数据表名
+     * @param dataTableName 所属指标体系的数据的数据表名
+     * @param indexSymDTName 指标体系表名
+     * @param time 主要是删除表使用, 满20天永久删除
+     **/
+    @Insert({"insert into ${tableName}(dataTableName,indexSymDTName,time) " +
+            "values(#{dataTableName},#{indexSymDTName},#{time});"
     })
     int insertIntoTable(@Param("tableName")String tableName,@Param("dataTableName")String dataTableName,
-                        @Param("indexSymDTName")String indexSymDTName, @Param("uploadTime")String uploadTime);
+                        @Param("indexSymDTName")String indexSymDTName, @Param("time")String time);
 
     int deleteTable(String table_name);
 

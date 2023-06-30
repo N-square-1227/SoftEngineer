@@ -80,17 +80,18 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
             return null;
 
         /* 修改用户信息时有可能对用户名做了更改，因此需要修改存储用户名下指标体系的数据表username_data. by wxy*/
-        Users origin_user = usersMapper.selectById(user.getUserID());
-        try {
-            String origin_name = origin_user.getUserName();
-            if(!user.getUserName().equals(origin_name)) {  // 修改了名字才需要改
-                int role = origin_user.getRole();
-                if (role == 2)   // 只有普通用户才有这个表
-                    usersDataMapper.renameTable(origin_name + "_data", user.getUserName() + "_data");
-            }
-        }catch (Exception e) {
-            return null;
-        }
+        /* 最后的版本的是用户名无法修改，所以这段不用了 */
+//        Users origin_user = usersMapper.selectById(user.getUserID());
+//        try {
+//            String origin_name = origin_user.getUserName();
+//            if(!user.getUserName().equals(origin_name)) {  // 修改了名字才需要改
+//                int role = origin_user.getRole();
+//                if (role == 2)   // 只有普通用户才有这个表
+//                    usersDataMapper.renameTable(origin_name + "_data", user.getUserName() + "_data");
+//            }
+//        }catch (Exception e) {
+//            return null;
+//        }
         int i = usersMapper.updateById(user);
         if(i==1)
             return user;

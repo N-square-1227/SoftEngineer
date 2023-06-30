@@ -7,6 +7,11 @@ const routes = [
         component:()=>import('../components/Login')
     },
     {
+        path:'/Synthesis',
+        name:'Synthesis',
+        component:()=>import('../components/Synthesis')
+    },
+    {
         path:'/UserHomePage',
         name:'UserHomePage',
         component:()=>import('../components/UserHomePage'),

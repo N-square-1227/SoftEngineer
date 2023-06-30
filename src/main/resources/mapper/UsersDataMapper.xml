@@ -10,7 +10,7 @@
                                       `id` int NOT NULL AUTO_INCREMENT,
                                       `dataTableName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
                                       `indexSymDTName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-                                      `uploadTime` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+                                      `time` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
                                       PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
     </update>
