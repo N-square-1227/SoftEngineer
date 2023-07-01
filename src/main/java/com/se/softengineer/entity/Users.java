@@ -56,10 +56,12 @@ public class Users implements Serializable {
     @Override
     public String toString() {
         return "Users{" +
-                "userID='" + userID + '\'' +
+                "userID=" + userID +
                 ", userName='" + userName + '\'' +
                 ", userPassword='" + userPassword + '\'' +
                 ", userEmail='" + userEmail + '\'' +
+                ", role=" + role +
+                ", loginTime='" + loginTime + '\'' +
                 '}';
     }
 }

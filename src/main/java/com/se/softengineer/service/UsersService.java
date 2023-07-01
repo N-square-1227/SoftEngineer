@@ -26,4 +26,6 @@ public interface UsersService extends IService<Users> {
      * @author lmy
      */
     Users updateUser(Users user) throws Exception;
+
+    Boolean updateUserLoginTime(Users user);
 }

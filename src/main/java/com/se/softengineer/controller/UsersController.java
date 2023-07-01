@@ -63,9 +63,14 @@ public class UsersController {
         Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
         if(curUser!=null){
 
+//            System.out.println(curUser);
+//            System.out.println();
             // 少遍历几遍那个表，万一吃不消
-            if(TimeUtil.timeDifference(user.getLoginTime()) >= 1)
+            if(TimeUtil.timeDifference(curUser.getLoginTime()) >= 1)
                 usersDataService.delDeletedIndex(user);
+
+            /* 只更改数据库不写回，curUser里仍是“上次登录时间”*/
+            usersService.updateUserLoginTime(curUser);
 
             List menuList = menuService.lambdaQuery().like(Menu::getMenuRight,curUser.getRole()).list();
             HashMap res = new HashMap();

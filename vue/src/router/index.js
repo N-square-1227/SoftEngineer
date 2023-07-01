@@ -6,11 +6,11 @@ const routes = [
         name:'Login',
         component:()=>import('../components/Login')
     },
-    {
-        path:'/Synthesis',
-        name:'Synthesis',
-        component:()=>import('../components/Synthesis')
-    },
+    // {
+    //     path:'/Synthesis',
+    //     name:'Synthesis',
+    //     component:()=>import('../components/Synthesis')
+    // },
     {
         path:'/UserHomePage',
         name:'UserHomePage',

@@ -6,10 +6,12 @@ import com.se.softengineer.mapper.UsersDataMapper;
 import com.se.softengineer.mapper.UsersMapper;
 import com.se.softengineer.service.UsersService;
 import com.se.softengineer.utils.AesTypeHandler;
-import com.se.softengineer.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,8 +39,10 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
                 .eq(Users::getUserName,username)
                 .eq(Users::getUserPassword,handler.encrypt(password)).list();
         Users user = null;
-        if(list.size()>0)
-            user = (Users)list.get(0);
+        if(list.size()>0) {
+            user = (Users) list.get(0);
+        }
+//        System.out.println(user);
         return user;
     }
 
@@ -64,6 +68,12 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
         user.setUserPassword(password);
         user.setUserEmail(email);
         user.setRole(2);
+
+        Date date = new Date(System.currentTimeMillis());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format = dateFormat.format(date);
+        user.setLoginTime(format);
+
         int i = usersMapper.insert(user);
         return i==1?user:null;
     }
@@ -96,5 +106,17 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper,Users> implements 
         if(i==1)
             return user;
         return null;
+    }
+
+    @Override
+    public Boolean updateUserLoginTime(Users user){
+        Date date = new Date(System.currentTimeMillis());
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        String format = dateFormat.format(date);
+        user.setLoginTime(format);
+        System.out.println(user);
+        return usersMapper.updateById(user)==1;
     }
 }

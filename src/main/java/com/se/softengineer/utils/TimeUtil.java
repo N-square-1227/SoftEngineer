@@ -22,13 +22,13 @@ public class TimeUtil {
      * @return
      */
     static public long timeDifference(String time){
-        String lastTime = time;
         String pattern = "yyyy-MM-dd HH:mm:ss";
 
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         Date lastDate;
         try {
-            lastDate = sdf.parse(lastTime);
+            System.out.println(time);
+            lastDate = sdf.parse(time);
             LocalDateTime lastDateTime = LocalDateTime.ofInstant(lastDate.toInstant(), ZoneId.systemDefault());
 //            LocalDateTime dateTime2 = LocalDateTime.ofInstant(date2.toInstant(), ZoneId.systemDefault());
 
