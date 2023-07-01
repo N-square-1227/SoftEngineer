@@ -3,6 +3,7 @@ package com.se.softengineer.service;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.se.softengineer.entity.Users;
 import com.se.softengineer.entity.UsersData;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
@@ -21,7 +22,7 @@ public interface UsersDataService extends IService<UsersData> {
 
     int addIndex(String tableName, String indexName);
 
-    int renameTable(String origin_table, String new_table);
+    int delDeletedIndex(Users user);
 
 
     /**
@@ -30,4 +31,6 @@ public interface UsersDataService extends IService<UsersData> {
     List<String> getIndexSymTableNames(String tableName);
 
     IPage getISDTNamePage(IPage<UsersData> page, String tableName, Wrapper wrapper);
+
+
 }

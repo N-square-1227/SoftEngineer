@@ -10,6 +10,7 @@ import com.se.softengineer.service.*;
 import com.se.softengineer.utils.AesTypeHandler;
 import com.se.softengineer.utils.QueryPageParam;
 import com.se.softengineer.utils.Result;
+import com.se.softengineer.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +62,11 @@ public class UsersController {
     public Result login(@RequestBody Users user) throws Exception {
         Users curUser = usersService.userLogin(user.getUserName(),user.getUserPassword());
         if(curUser!=null){
+
+            // 少遍历几遍那个表，万一吃不消
+            if(TimeUtil.timeDifference(user.getLoginTime()) >= 1)
+                usersDataService.delDeletedIndex(user);
+
             List menuList = menuService.lambdaQuery().like(Menu::getMenuRight,curUser.getRole()).list();
             HashMap res = new HashMap();
             res.put("user",curUser);

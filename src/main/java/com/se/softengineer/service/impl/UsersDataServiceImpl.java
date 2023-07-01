@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.se.softengineer.entity.Sample;
+import com.se.softengineer.entity.Users;
 import com.se.softengineer.entity.UsersData;
 import com.se.softengineer.mapper.IndexSymMapper;
 import com.se.softengineer.mapper.SampleMapper;
 import com.se.softengineer.mapper.UsersDataMapper;
 import com.se.softengineer.service.UsersDataService;
+import com.se.softengineer.utils.TimeUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -26,6 +28,12 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
 
     @Resource
     IndexSymMapper indexSymMapper;
+
+
+    // 已删除的数据20天后自动过期
+    // 其实是用户登录的时候判断一遍是不是有过期的
+    // 但是这样的话如果数据量太大可能吃不消（没关系）
+    final int guaranteePeriod = 20;
 
     @Override
     public int createTable(String tableName) {
@@ -61,9 +69,14 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
         return usersDataMapper.deleteTable(table_name);
     }
 
-    @Override
-    public int renameTable(String origin_table, String new_table) {
-        return usersDataMapper.renameTable(origin_table, new_table);
+    public int delDeletedIndex(Users user){
+        String tableName = user.getUserName() + "_deleted";
+        List<UsersData> indexList = usersDataMapper.getDataList(tableName);
+        for (UsersData index: indexList) {
+            if(TimeUtil.timeDifference(index.getTime()) >= guaranteePeriod)
+                usersDataMapper.deleteById(index.getId());
+        }
+        return 0;
     }
 
     @Override
@@ -89,7 +102,7 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
 
         Date date = new Date(System.currentTimeMillis());
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         String format = dateFormat.format(date);
 
@@ -97,4 +110,5 @@ public class UsersDataServiceImpl extends ServiceImpl<UsersDataMapper, UsersData
 
         return 0;
     }
+
 }

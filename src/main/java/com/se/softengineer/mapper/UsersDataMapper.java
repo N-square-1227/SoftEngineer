@@ -44,6 +44,12 @@ public interface UsersDataMapper extends BaseMapper<UsersData> {
 
     List<String> getDataTableNames(String tableName);
 
-    int renameTable(String origin_name, String new_name);
+    /**
+     * 获取user_data或user_deleted表中的所有记录
+     * 主要用于拿出user_deleted表中的所有记录判断是不是过期
+     * @param tableName
+     * @return
+     */
+    List<UsersData> getDataList(String tableName);
 
 }

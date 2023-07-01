@@ -42,4 +42,8 @@
         FROM ${tableName} ${ew.customSqlSegment}
     </select>
 
+    <select id="getDataList" resultType="com.se.softengineer.entity.UsersData">
+        SELECT * FROM ${tableName}
+    </select>
+
 </mapper>
