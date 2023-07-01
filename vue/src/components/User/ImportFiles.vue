@@ -10,7 +10,9 @@
       <div style="text-align: right;float: right">
         <el-tooltip
             v-if="status===0"
-            class="item" effect="dark" content="查看已删除指标体系" placement="bottom-start" style="margin-right: 10px">
+            class="item" effect="dark"
+            content="查看已删除指标体系"
+            placement="bottom-start" style="margin-right: 10px">
           <el-button type="danger" icon="el-icon-delete" @click="getDelSyms" circle plain></el-button>
         </el-tooltip>
         <el-tooltip
@@ -275,7 +277,7 @@ export default {
         console.log(res)
         if(res.code==200){
           this.$message({
-            message: '删除成功！',
+            message: '删除成功！\n数据记录在20天后永久删除！',
             type: 'success'
           });
           this.getAllSyms()
